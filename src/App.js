@@ -14,8 +14,8 @@ function App() {
   return (
 
         [
-          <Navbar bg="light" expand="lg">
-            <Navbar.Brand href="#home">
+          <Navbar bg="light" fixed="top" className={"p-0 pl-2"}>
+            <Navbar.Brand>
                 <FontAwesomeIcon icon={faUserMd} /> <span className="small">COVID19</span>
             </Navbar.Brand>
           </Navbar>,
