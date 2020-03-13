@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import MapChart from "./MapChart";
 import ReactTooltip from "react-tooltip";
-import NavDropdown from 'react-bootstrap/NavDropdown';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -10,7 +9,6 @@ import Nav from 'react-bootstrap/Nav';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserMd, faDatabase, faCode } from '@fortawesome/free-solid-svg-icons';
-import { faBookDead} from '@fortawesome/free-solid-svg-icons';
 
 function App() {
   const [content, setContent] = useState("");
