@@ -5,9 +5,10 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserMd } from '@fortawesome/free-solid-svg-icons';
+import { faUserMd, faExternalLinkAlt, faCode } from '@fortawesome/free-solid-svg-icons';
 
 function App() {
   const [content, setContent] = useState("");
@@ -16,8 +17,19 @@ function App() {
         [
           <Navbar bg="light" fixed="top" className={"p-0 pl-2"}>
             <Navbar.Brand>
-                <FontAwesomeIcon icon={faUserMd} /> <span className="small">COVID19</span>
+                <FontAwesomeIcon icon={faUserMd} />
+                <span className="small"> COVID19 </span>
             </Navbar.Brand>
+              <Navbar.Collapse id="basic-navbar-nav">
+                <Nav className="mr-auto">
+                  <Nav.Link className="small p-0 m-0" href={"https://github.com/daniel-karl/covid19-map"}>
+                    <FontAwesomeIcon icon={faCode} /> Source on GitHub
+                  </Nav.Link>
+                  <Nav.Link className="small p-0 m-0 ml-3" href={"https://github.com/CSSEGISandData/COVID-19"}>
+                    <FontAwesomeIcon icon={faExternalLinkAlt} /> Data source
+                  </Nav.Link>
+                </Nav>
+              </Navbar.Collapse>
           </Navbar>,
 
           <Container fluid className={"p-0"}>
