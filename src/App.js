@@ -33,9 +33,9 @@ function App() {
             </Navbar.Collapse>
           </Navbar>,
 
-          <Container fluid className={"p-0"}>
-            <Row noGutters={"true"}>
-              <Col>
+          <Container fluid className={"w-100 h-100 p-0"}>
+            <Row noGutters={"true"} className={"h-100"}>
+              <Col className={"h-100"}>
                 <MapChart setTooltipContent={setContent} style={{marginTop: "50px"}}/>
                 <ReactTooltip>{content}</ReactTooltip>
               </Col>

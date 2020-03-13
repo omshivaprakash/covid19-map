@@ -10,7 +10,7 @@ import {
 import Papa from "papaparse";
 
 const geoUrl =
-  "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json";
+  "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-10m.json";
 
 const rounded = num => {
   if (num > 1000000000) {
@@ -41,7 +41,12 @@ class MapChart extends React.Component {
 
   render() {
     return (
-      <ComposableMap projection={"geoMercator"}>
+      <ComposableMap
+          projection={"geoMercator"}
+          height={window.innerWidth}
+          width={window.innerHeight - 50}
+          style={{width: "100%", height: "100%"}}
+      >
         <ZoomableGroup zoom={1}>
           <Geographies geography={geoUrl}>
             {
