@@ -8,7 +8,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserMd, faExternalLinkAlt, faCode } from '@fortawesome/free-solid-svg-icons';
+import { faUserMd, faDatabase, faCode } from '@fortawesome/free-solid-svg-icons';
 
 function App() {
   const [content, setContent] = useState("");
@@ -22,11 +22,11 @@ function App() {
             </Navbar.Brand>
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto">
-                  <Nav.Link className="small p-0 m-0" href={"https://github.com/daniel-karl/covid19-map"}>
-                    <FontAwesomeIcon icon={faCode} /> Source on GitHub
+                  <Nav.Link className="small p-0 m-0 mr-3" href={"https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series"}>
+                    <FontAwesomeIcon icon={faDatabase} /> Data
                   </Nav.Link>
-                  <Nav.Link className="small p-0 m-0 ml-3" href={"https://github.com/CSSEGISandData/COVID-19"}>
-                    <FontAwesomeIcon icon={faExternalLinkAlt} /> Data source
+                  <Nav.Link className="small p-0 m-0" href={"https://github.com/daniel-karl/covid19-map"}>
+                    <FontAwesomeIcon icon={faCode} /> Code
                   </Nav.Link>
                 </Nav>
               </Navbar.Collapse>
