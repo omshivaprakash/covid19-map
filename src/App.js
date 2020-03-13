@@ -36,7 +36,7 @@ function App() {
           <Container fluid className={"p-0"}>
             <Row noGutters={"true"}>
               <Col>
-                <MapChart setTooltipContent={setContent} />
+                <MapChart setTooltipContent={setContent} style={{marginTop: "50px"}}/>
                 <ReactTooltip>{content}</ReactTooltip>
               </Col>
             </Row>

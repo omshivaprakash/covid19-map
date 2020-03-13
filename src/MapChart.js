@@ -22,53 +22,63 @@ const rounded = num => {
   }
 };
 
-const MapChart = ({setTooltipContent}) => {
-
-  Papa.parse("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv", {
-    download: true,
-    complete: function(results) {
-      alert("Loaded information about " + results.data.length + " countries or regions.");
+class MapChart extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      setTooltipContent: props.setTooltipContent
     }
-  });
+  }
 
-  return (
-    <ComposableMap projection={"geoMercator"}>
-      <ZoomableGroup zoom={1}>
-        <Geographies geography={geoUrl}>
-          {
-            ({geographies}) =>
-              geographies.map(geo => (
-                <Geography
-                  key={geo.rsmKey}
-                  geography={geo}
-                  onMouseEnter={() => {
-                    const {NAME, POP_EST} = geo.properties;
-                    setTooltipContent(`${NAME} — ${rounded(POP_EST)}`);
-                  }}
-                  onMouseLeave={() => {
-                    setTooltipContent("");
-                  }}
-                  style={{
-                    default: {
-                      fill: "#D6D6DA",
-                      outline: "none"
-                    },
-                    hover: {
-                      fill: "#F53",
-                      outline: "none"
-                    },
-                    pressed: {
-                      fill: "#E42",
-                      outline: "none"
-                    }
-                  }}
-                />
-              ))
-          }
-        </Geographies>
-      </ZoomableGroup>
-    </ComposableMap>
-  );
-};
+  componentDidMount() {
+    Papa.parse("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv", {
+      download: true,
+      complete: function(results) {
+        alert("Loaded information about " + results.data.length + " countries or regions.");
+      }
+    });
+  }
+
+  render() {
+    return (
+      <ComposableMap projection={"geoMercator"}>
+        <ZoomableGroup zoom={1}>
+          <Geographies geography={geoUrl}>
+            {
+              ({geographies}) =>
+                geographies.map(geo => (
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    onMouseEnter={() => {
+                      const {NAME, POP_EST} = geo.properties;
+                      this.state.setTooltipContent(`${NAME} — ${rounded(POP_EST)}`);
+                    }}
+                    onMouseLeave={() => {
+                      this.state.setTooltipContent("");
+                    }}
+                    style={{
+                      default: {
+                        fill: "#D6D6DA",
+                        outline: "none"
+                      },
+                      hover: {
+                        fill: "#F53",
+                        outline: "none"
+                      },
+                      pressed: {
+                        fill: "#E42",
+                        outline: "none"
+                      }
+                    }}
+                  />
+                ))
+            }
+          </Geographies>
+        </ZoomableGroup>
+      </ComposableMap>
+    );
+  }
+}
 
 export default memo(MapChart);
