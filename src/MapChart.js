@@ -34,7 +34,7 @@ class MapChart extends React.Component {
     Papa.parse("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv", {
       download: true,
       complete: function(results) {
-        alert("Loaded information about " + results.data.length + " countries or regions.");
+        console.log("Loaded information about " + results.data.length + " countries or regions.");
       }
     });
   }
@@ -47,7 +47,7 @@ class MapChart extends React.Component {
           width={window.innerHeight - 50}
           style={{width: "100%", height: "100%"}}
       >
-        <ZoomableGroup zoom={1}>
+        <ZoomableGroup zoom={1} maxZoom={1000}>
           <Geographies geography={geoUrl}>
             {
               ({geographies}) =>
@@ -57,6 +57,9 @@ class MapChart extends React.Component {
                     geography={geo}
                     onMouseEnter={() => {
                       const {NAME, POP_EST} = geo.properties;
+                      if(NAME === "Antarctica") {
+                        return;
+                      }
                       this.state.setTooltipContent(`${NAME} — ${rounded(POP_EST)}`);
                     }}
                     onMouseLeave={() => {
@@ -64,15 +67,15 @@ class MapChart extends React.Component {
                     }}
                     style={{
                       default: {
-                        fill: "#D6D6DA",
+                        fill: "#ccc",
                         outline: "none"
                       },
                       hover: {
-                        fill: "#F53",
+                        fill: "#666",
                         outline: "none"
                       },
                       pressed: {
-                        fill: "#E42",
+                        fill: "#666",
                         outline: "none"
                       }
                     }}
