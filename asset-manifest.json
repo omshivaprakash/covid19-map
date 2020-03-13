@@ -1,25 +1,25 @@
 {
   "files": {
     "main.css": "/covid19-map/static/css/main.ec95ab59.chunk.css",
-    "main.js": "/covid19-map/static/js/main.4e51047e.chunk.js",
-    "main.js.map": "/covid19-map/static/js/main.4e51047e.chunk.js.map",
+    "main.js": "/covid19-map/static/js/main.baf246b0.chunk.js",
+    "main.js.map": "/covid19-map/static/js/main.baf246b0.chunk.js.map",
     "runtime-main.js": "/covid19-map/static/js/runtime-main.a4c2c609.js",
     "runtime-main.js.map": "/covid19-map/static/js/runtime-main.a4c2c609.js.map",
     "static/css/2.de424728.chunk.css": "/covid19-map/static/css/2.de424728.chunk.css",
-    "static/js/2.31120460.chunk.js": "/covid19-map/static/js/2.31120460.chunk.js",
-    "static/js/2.31120460.chunk.js.map": "/covid19-map/static/js/2.31120460.chunk.js.map",
+    "static/js/2.b582c7c3.chunk.js": "/covid19-map/static/js/2.b582c7c3.chunk.js",
+    "static/js/2.b582c7c3.chunk.js.map": "/covid19-map/static/js/2.b582c7c3.chunk.js.map",
     "index.html": "/covid19-map/index.html",
-    "precache-manifest.862cb9e231efd7c625edf91e0bc43401.js": "/covid19-map/precache-manifest.862cb9e231efd7c625edf91e0bc43401.js",
+    "precache-manifest.96b039f038a7cf9c3af5d9cf1256dc42.js": "/covid19-map/precache-manifest.96b039f038a7cf9c3af5d9cf1256dc42.js",
     "service-worker.js": "/covid19-map/service-worker.js",
     "static/css/2.de424728.chunk.css.map": "/covid19-map/static/css/2.de424728.chunk.css.map",
     "static/css/main.ec95ab59.chunk.css.map": "/covid19-map/static/css/main.ec95ab59.chunk.css.map",
-    "static/js/2.31120460.chunk.js.LICENSE.txt": "/covid19-map/static/js/2.31120460.chunk.js.LICENSE.txt"
+    "static/js/2.b582c7c3.chunk.js.LICENSE.txt": "/covid19-map/static/js/2.b582c7c3.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.a4c2c609.js",
     "static/css/2.de424728.chunk.css",
-    "static/js/2.31120460.chunk.js",
+    "static/js/2.b582c7c3.chunk.js",
     "static/css/main.ec95ab59.chunk.css",
-    "static/js/main.4e51047e.chunk.js"
+    "static/js/main.baf246b0.chunk.js"
   ]
 }
