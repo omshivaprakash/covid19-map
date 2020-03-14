@@ -187,7 +187,7 @@ class MapChart extends React.Component {
           width={window.innerHeight - 50}
           style={{width: "100%", height: "100%"}}
       >
-        <ZoomableGroup zoom={2} maxZoom={1000}>
+        <ZoomableGroup zoom={1} maxZoom={1000}>
           <Geographies geography={geoUrl}>
             {
               ({geographies}) =>
