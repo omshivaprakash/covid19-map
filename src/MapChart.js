@@ -72,7 +72,7 @@ class MapChart extends React.Component {
 
         for(let i = 0; i < markers.length; i++) {
           console.log(markers[i].size + ", " + minSize + ", " + maxSize);
-          markers[i].size = (markers[i].size - minSize) / (maxSize - minSize);
+          markers[i].size = Math.sqrt((markers[i].size - minSize) / (maxSize - minSize));
           console.log(markers[i].size);
         }
         that.setState({});
@@ -128,7 +128,7 @@ class MapChart extends React.Component {
           {
             markers.map(({ name, coordinates, markerOffset, size }) => (
               <Marker coordinates={coordinates}>
-                <circle r={size} fill="#F00"  />
+                <circle r={size * 2} fill="#F009"  />
                 <text
                   textAnchor="middle"
                   y={markerOffset}

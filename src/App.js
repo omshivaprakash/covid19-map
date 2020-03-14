@@ -21,6 +21,7 @@ function App() {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" className={"border-0 "} />
         <Navbar.Collapse id="basic-navbar-nav">
+            <span class="small text-danger">JOHN HOPKINS MAP SEEMS A LITTLE EXAGGERATED!!!</span>
           <Nav className="mr-auto">
             <Nav.Link className="small" href={"https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series"}>
               <FontAwesomeIcon icon={faDatabase} /> Data source
@@ -31,7 +32,6 @@ function App() {
           </Nav>
         </Navbar.Collapse>
       </Navbar>,
-
       <Container fluid className={"w-100 h-100 p-0"}>
         <Row noGutters={"true"} className={"h-100"}>
           <Col className={"h-100"}>
