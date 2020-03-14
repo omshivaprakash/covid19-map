@@ -10,6 +10,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDatabase, faCode } from '@fortawesome/free-solid-svg-icons';
 import { faDotCircle} from '@fortawesome/free-regular-svg-icons';
 
+const date = new Date();
+
 function App() {
   const [content, setContent] = useState("");
   const [hidden, setHidden] = useState(false);
@@ -34,7 +36,7 @@ function App() {
         <span class="text-success">Green: recovered</span><br />
         <span class="text-dark">Black: deceased</span><br />
         <sub>
-          Using live data from <br /><a target="_blank" href={"https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series"}><FontAwesomeIcon icon={faDatabase} /> John Hopkins repository</a><br/>Last synchronized on {new Date().toLocaleDateString()} at {new Date().toLocaleTimeString()}<br/>
+          Using live data from <br /><a target="_blank" href={"https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series"}><FontAwesomeIcon icon={faDatabase} /> John Hopkins repository</a><br/>Last synchronized on {date.toLocaleDateString()} at {date.toLocaleTimeString()}<br/>
             <a target="_blank" href={"https://github.com/daniel-karl/covid19-map"}><FontAwesomeIcon icon={faCode} /> Who made this?</a>
         </sub><br />
         <span className="small text-danger">Hold &lt;CTRL&gt; key to zoom</span>
