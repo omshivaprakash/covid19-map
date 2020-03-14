@@ -12,6 +12,7 @@ import { faUserMd, faDatabase, faCode } from '@fortawesome/free-solid-svg-icons'
 
 function App() {
   const [content, setContent] = useState("");
+  const [hidden, setHidden] = useState(false);
   return (
     [
       <Navbar bg="light" fixed="top" className={"p-0 pl-2"}  expand="lg">
@@ -40,7 +41,7 @@ function App() {
           </Col>
         </Row>
       </Container>,
-      <div class="info small text-muted">
+      <div className="info small text-muted" style={hidden ? {display: "none"} : {display:"block"}} onClick={() => {setHidden(true)}}>
         <span class="text-danger">Red: confirmed</span><br />
         <span class="text-success">Green: recovered</span><br />
         <span class="text-dark">Black: deceased</span><br />
