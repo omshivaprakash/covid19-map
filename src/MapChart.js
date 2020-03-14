@@ -128,7 +128,7 @@ class MapChart extends React.Component {
           {
             markers.map(({ name, coordinates, markerOffset, size }) => (
               <Marker coordinates={coordinates}>
-                <circle r={size * 2} fill="#F009"  />
+                <circle r={size * 3} fill="#F00B"  />
                 <text
                   textAnchor="middle"
                   y={markerOffset}
