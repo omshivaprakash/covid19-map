@@ -49,7 +49,7 @@ function App() {
           Using live data from John Hopkins repository.<br />
           Last synchronized on:<br />
           {new Date().toLocaleDateString()}<br />
-          {new Date().toLocaleTimeString()}<br />
+          {new Date().toLocaleTimeString()}
         </sub>
       </div>
     ]
