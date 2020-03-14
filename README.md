@@ -4,7 +4,7 @@
 
 Hi, I'm Daniel Karl 👋
 
-I wanted to know whether John Hopkins' map of COVID19 is accurate. 
+I wanted to know whether Johns Hopkins' map of COVID19 is accurate. 
 Therefore I set out to build my own map using the very same live data source,
 however, with
 
