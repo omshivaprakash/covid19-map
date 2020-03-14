@@ -36,7 +36,8 @@ function App() {
         <sub>
           Using live data from <br /><a target="_blank" href={"https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series"}><FontAwesomeIcon icon={faDatabase} /> John Hopkins repository</a><br/>Last synchronized on {new Date().toLocaleDateString()} at {new Date().toLocaleTimeString()}<br/>
             <a target="_blank" href={"https://github.com/daniel-karl/covid19-map"}><FontAwesomeIcon icon={faCode} /> Who made this?</a>
-        </sub>
+        </sub><br />
+        <span className="small text-danger">Hold &lt;CTRL&gt; key to zoom</span>
       </div>
     ]
   );
