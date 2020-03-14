@@ -40,6 +40,9 @@ class MapChart extends React.Component {
     super(props);
     this.state = {
       setTooltipContent: props.setTooltipContent,
+      setTotConf: props.setTotConf,
+      setTotRec: props.setTotRec,
+      setTotDead: props.setTotDead,
       chart: "pie"
     }
   }
@@ -81,6 +84,7 @@ class MapChart extends React.Component {
           totConf += size;
           confirmed.push(marker)
         }
+        that.state.setTotConf(totConf);
         console.log(maxSize);
         for(let i = 0; i < confirmed.length; i++) {
           confirmed[i].size = (confirmed[i].size - minSize) / (maxSize - minSize);
@@ -124,7 +128,7 @@ class MapChart extends React.Component {
           totRec += size;
           recovered.push(marker)
         }
-
+        that.state.setTotRec(totRec);
         for(let i = 0; i < recovered.length; i++) {
           // console.log(recovered[i].size + ", " + minSize + ", " + maxSize);
           recovered[i].size = (recovered[i].size - minSize) / (maxSize - minSize);
@@ -168,7 +172,7 @@ class MapChart extends React.Component {
           totDead += size;
           deaths.push(marker)
         }
-
+        that.state.setTotDead(totDead);
         for(let i = 0; i < deaths.length; i++) {
           // console.log(deaths[i].size + ", " + minSize + ", " + maxSize);
           deaths[i].size = (deaths[i].size - minSize) / (maxSize - minSize);
@@ -186,9 +190,6 @@ class MapChart extends React.Component {
         <div className="ml-3 small controls">
           <Form.Check inline checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onClick={() => {that.setState({chart: "pie"});}}/>
           <Form.Check inline checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onClick={() => {that.setState({chart: "bar"});}} />
-          <span className={"small text-danger ml-3"}>{rounded(totConf)}</span><br />
-          <span className={"small text-success ml-3"}>{rounded(totRec)}</span><br />
-          <span className={"small text-dark ml-3"}>{rounded(totDead)}</span>
         </div>
       </Form>
       <ComposableMap
