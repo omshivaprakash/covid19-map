@@ -40,10 +40,16 @@ function App() {
           </Col>
         </Row>
       </Container>,
-      <div class="info">
-          red: confirmed<br />
-          green: recovered<br />
-          black: death<br />
+      <div class="info small text-muted">
+        <span class="text-danger">Red: confirmed</span><br />
+        <span class="text-success">Green: recovered</span><br />
+        <span class="text-dark">Black: deceased</span><br />
+        <sub>
+          Using live data from John Hopkins repository.<br />
+          Last synchronized on:<br />
+          {new Date().toLocaleDateString()}<br />
+          {new Date().toLocaleTimeString()}
+        </sub>
       </div>
     ]
   );
