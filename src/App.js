@@ -5,7 +5,6 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserMd, faDatabase, faCode } from '@fortawesome/free-solid-svg-icons';
@@ -36,7 +35,7 @@ function App() {
         <span class="text-dark">Black: deceased</span><br />
         <sub>
           Using live data from <br /><a target="_blank" href={"https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series"}><FontAwesomeIcon icon={faDatabase} /> John Hopkins repository</a><br/>Last synchronized on {new Date().toLocaleDateString()} at {new Date().toLocaleTimeString()}<br/>
-            <a target="_blank" href={"https://github.com/daniel-karl/covid19-map"}><FontAwesomeIcon icon={faCode} /> Code on GitHub</a>
+            <a target="_blank" href={"https://github.com/daniel-karl/covid19-map"}><FontAwesomeIcon icon={faCode} /> Who made this?</a>
         </sub>
       </div>
     ]
