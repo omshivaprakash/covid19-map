@@ -19,3 +19,12 @@ body {
 * {
   outline: none !important;
 }
+
+.info {
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  background: #ccc8;
+  padding: 10px;
+  border-radius: 10px;
+}

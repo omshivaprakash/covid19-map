@@ -12,7 +12,10 @@ import Papa from "papaparse";
 const geoUrl =
   "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-10m.json";
 
-const markers = [];
+const confirmed = [];
+const recovered = [];
+const deaths = [];
+const MAX_SIZE = 67786;
 
 const rounded = num => {
   if (num > 1000000000) {
@@ -37,10 +40,10 @@ class MapChart extends React.Component {
     Papa.parse("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv", {
       download: true,
       complete: function(results) {
-        that.markers = [];
+        that.confirmed = [];
         let skipRow = true;
         let minSize = 0;
-        let maxSize = 0;
+        let maxSize = MAX_SIZE;
         for(let data of results.data) {
           if(skipRow) {
             skipRow = false;
@@ -65,12 +68,95 @@ class MapChart extends React.Component {
             coordinates: [data[3], data[2]],
             size: size
           };
-          markers.push(marker)
+          confirmed.push(marker)
+        }
+        console.log(maxSize);
+        for(let i = 0; i < confirmed.length; i++) {
+          confirmed[i].size = Math.sqrt(confirmed[i].size - minSize) / Math.sqrt(maxSize - minSize);
+        }
+        that.setState({});
+      }
+    });
+
+    Papa.parse("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv", {
+      download: true,
+      complete: function(results) {
+        that.recovered = [];
+        let skipRow = true;
+        let minSize = 0;
+        let maxSize = MAX_SIZE;
+        for(let data of results.data) {
+          if(skipRow) {
+            skipRow = false;
+            continue;
+          }
+          let size = "";
+          let i = data.length - 1;
+          while(size==="" && i > 0) {
+            size = data[i];
+            i = i - 1;
+          }
+          if(size==="") {
+            size = 0;
+          }
+          size = Number(size);
+          if(size > maxSize) {
+            maxSize = size;
+          }
+          let marker = {
+            markerOffset: 0,
+            name: data[0] ? data[0] + ", " + data[1] : data[1],
+            coordinates: [data[3], data[2]],
+            size: size
+          };
+          recovered.push(marker)
         }
 
-        for(let i = 0; i < markers.length; i++) {
-          // console.log(markers[i].size + ", " + minSize + ", " + maxSize);
-          markers[i].size = Math.sqrt(markers[i].size - minSize) / Math.sqrt(maxSize - minSize);
+        for(let i = 0; i < recovered.length; i++) {
+          // console.log(recovered[i].size + ", " + minSize + ", " + maxSize);
+          recovered[i].size = Math.sqrt(recovered[i].size - minSize) / Math.sqrt(maxSize - minSize);
+        }
+        that.setState({});
+      }
+    });
+
+    Papa.parse("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv", {
+      download: true,
+      complete: function(results) {
+        that.deaths = [];
+        let skipRow = true;
+        let minSize = 0;
+        let maxSize = MAX_SIZE;
+        for(let data of results.data) {
+          if(skipRow) {
+            skipRow = false;
+            continue;
+          }
+          let size = "";
+          let i = data.length - 1;
+          while(size==="" && i > 0) {
+            size = data[i];
+            i = i - 1;
+          }
+          if(size==="") {
+            size = 0;
+          }
+          size = Number(size);
+          if(size > maxSize) {
+            maxSize = size;
+          }
+          let marker = {
+            markerOffset: 0,
+            name: data[0] ? data[0] + ", " + data[1] : data[1],
+            coordinates: [data[3], data[2]],
+            size: size
+          };
+          deaths.push(marker)
+        }
+
+        for(let i = 0; i < deaths.length; i++) {
+          // console.log(deaths[i].size + ", " + minSize + ", " + maxSize);
+          deaths[i].size = Math.sqrt(deaths[i].size - minSize) / Math.sqrt(maxSize - minSize);
         }
         that.setState({});
       }
@@ -123,9 +209,39 @@ class MapChart extends React.Component {
             }
           </Geographies>
           {
-            markers.map(({ name, coordinates, markerOffset, size }) => (
+            confirmed.map(({ name, coordinates, markerOffset, size }) => (
               <Marker coordinates={coordinates}>
                 <circle r={size * 10} fill="#F008" style={{hover: {fill: "#F00"}}} />
+                <title>{name}</title>
+                <text
+                  textAnchor="middle"
+                  y={markerOffset}
+                  style={{ fontSize: "2px", fontFamily: "system-ui", fill: "#5D5A6D" }}
+                >
+                  {/*name*/}
+                </text>
+              </Marker>
+            ))
+          }
+          {
+            recovered.map(({ name, coordinates, markerOffset, size }) => (
+              <Marker coordinates={coordinates}>
+                <circle r={size * 10} fill="#0F08" style={{hover: {fill: "#0F0"}}} />
+                <title>{name}</title>
+                <text
+                  textAnchor="middle"
+                  y={markerOffset}
+                  style={{ fontSize: "2px", fontFamily: "system-ui", fill: "#5D5A6D" }}
+                >
+                  {/*name*/}
+                </text>
+              </Marker>
+            ))
+          }
+          {
+            deaths.map(({ name, coordinates, markerOffset, size }) => (
+              <Marker coordinates={coordinates}>
+                <circle r={size * 5} fill="#0008" style={{hover: {fill: "#000"}}} />
                 <title>{name}</title>
                 <text
                   textAnchor="middle"

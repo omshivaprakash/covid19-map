@@ -39,7 +39,12 @@ function App() {
             <ReactTooltip>{content}</ReactTooltip>
           </Col>
         </Row>
-      </Container>
+      </Container>,
+      <div class="info">
+          red: confirmed<br />
+          green: recovered<br />
+          black: death<br />
+      </div>
     ]
   );
 }
