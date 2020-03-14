@@ -29,3 +29,13 @@ body {
   border-radius: 10px;
   width: 180px;
 }
+
+.controls {
+  position: absolute;
+  left: 0px;
+  top: 10px;
+  background: #ccc8;
+  padding: 10px;
+  border-radius: 10px;
+  width: 100px;
+}

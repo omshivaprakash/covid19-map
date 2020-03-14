@@ -176,9 +176,9 @@ class MapChart extends React.Component {
     return (
       <>
       <Form>
-        <div className="ml-3 small">
-          <Form.Check inline checked={that.state.chart==="pie" } label="Pie chart" type={"radio"} name={"a"} id={`inline-radio-1`} onClick={() => {that.setState({chart: "pie"});}}/>
-          <Form.Check inline checked={that.state.chart==="bar" } label="Bar chart" type={"radio"} name={"a"} id={`inline-radio-2`} onClick={() => {that.setState({chart: "bar"});}} />
+        <div className="ml-3 small controls">
+          <Form.Check inline checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onClick={() => {that.setState({chart: "pie"});}}/>
+          <Form.Check inline checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onClick={() => {that.setState({chart: "bar"});}} />
         </div>
       </Form>
       <ComposableMap
