@@ -1,15 +1,21 @@
 # COVID19 Map
 
-# About
+## About
 
-Hi, I'm Daniel Karl.
+Hi, I'm Daniel Karl 👋
 
-In my humble opinion the John Hopkins map of COVID19 is a little distorted for
-multiple reason. Therefore I set out today, to build a map that is more realistic 
-using their very same dataset. 
+I wanted to know whether John Hopkins' map of COVID19 is accurate. 
+Therefore I set out to build my own map with
 
-It looks like the John Hopkins map is exaggerating a bit, and maybe makes people more afraid than necessary.
-I will continue to build this more realistic map. Please start looking at this one instead.
+- Linear normalization of data
+- Mapping the numbers to marker area rather than radius (to avoid data is perceived quadratically skewed)
+- No increase/decrease of marker size when zooming in/out
+
+When comparing this to the John Hopkins map visualization the data
+appears quite a bit less threatening.
+
+Please, feel free to contribute to this open source code to make this visualization more feature-rich.
+ 
 
 ## Users
 Open https://daniel-karl.github.io/covid19-map/
