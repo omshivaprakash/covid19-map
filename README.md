@@ -5,11 +5,12 @@
 Hi, I'm Daniel Karl 👋
 
 I wanted to know whether John Hopkins' map of COVID19 is accurate. 
-Therefore I set out to build my own map with
+Therefore I set out to build my own map using the very same live data source,
+however, with
 
-- Linear normalization of data
-- Mapping the numbers to marker area rather than radius (to avoid data is perceived quadratically skewed)
-- No increase/decrease of marker size when zooming in/out
+- linear normalization of data,
+- mapping the numbers to marker area rather than radius (to avoid data is perceived quadratically skewed), and
+- no increase/decrease of marker size when zooming in/out.
 
 When comparing this to the John Hopkins map visualization the data
 appears quite a bit less threatening.
