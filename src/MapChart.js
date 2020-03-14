@@ -39,7 +39,7 @@ class MapChart extends React.Component {
       complete: function(results) {
         that.markers = [];
         let skipRow = true;
-        let minSize = 100000000000000000000;
+        let minSize = 0;
         let maxSize = 0;
         for(let data of results.data) {
           if(skipRow) {
@@ -55,15 +55,13 @@ class MapChart extends React.Component {
           if(size==="") {
             size = 0;
           }
-          if(size < minSize) {
-            minSize = size;
-          }
+          size = Number(size);
           if(size > maxSize) {
             maxSize = size;
           }
           let marker = {
             markerOffset: 0,
-            name: data[0],
+            name: data[0] ? data[0] + ", " + data[1] : data[1],
             coordinates: [data[3], data[2]],
             size: size
           };
@@ -71,9 +69,8 @@ class MapChart extends React.Component {
         }
 
         for(let i = 0; i < markers.length; i++) {
-          console.log(markers[i].size + ", " + minSize + ", " + maxSize);
-          markers[i].size = Math.sqrt((markers[i].size - minSize) / (maxSize - minSize));
-          console.log(markers[i].size);
+          // console.log(markers[i].size + ", " + minSize + ", " + maxSize);
+          markers[i].size = Math.sqrt(markers[i].size - minSize) / Math.sqrt(maxSize - minSize);
         }
         that.setState({});
       }
@@ -128,7 +125,8 @@ class MapChart extends React.Component {
           {
             markers.map(({ name, coordinates, markerOffset, size }) => (
               <Marker coordinates={coordinates}>
-                <circle r={size * 3} fill="#F008"  />
+                <circle r={size * 10} fill="#F008" style={{hover: {fill: "#F00"}}} />
+                <title>{name}</title>
                 <text
                   textAnchor="middle"
                   y={markerOffset}
