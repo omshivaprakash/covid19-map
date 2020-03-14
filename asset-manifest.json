@@ -1,25 +1,25 @@
 {
   "files": {
     "main.css": "/covid19-map/static/css/main.221bd5e8.chunk.css",
-    "main.js": "/covid19-map/static/js/main.a42e84b8.chunk.js",
-    "main.js.map": "/covid19-map/static/js/main.a42e84b8.chunk.js.map",
+    "main.js": "/covid19-map/static/js/main.40c426ac.chunk.js",
+    "main.js.map": "/covid19-map/static/js/main.40c426ac.chunk.js.map",
     "runtime-main.js": "/covid19-map/static/js/runtime-main.a4c2c609.js",
     "runtime-main.js.map": "/covid19-map/static/js/runtime-main.a4c2c609.js.map",
     "static/css/2.de424728.chunk.css": "/covid19-map/static/css/2.de424728.chunk.css",
-    "static/js/2.61ccd0ac.chunk.js": "/covid19-map/static/js/2.61ccd0ac.chunk.js",
-    "static/js/2.61ccd0ac.chunk.js.map": "/covid19-map/static/js/2.61ccd0ac.chunk.js.map",
+    "static/js/2.bb31e70f.chunk.js": "/covid19-map/static/js/2.bb31e70f.chunk.js",
+    "static/js/2.bb31e70f.chunk.js.map": "/covid19-map/static/js/2.bb31e70f.chunk.js.map",
     "index.html": "/covid19-map/index.html",
-    "precache-manifest.b0c75ef52cd33fcf307cff3d4e65d318.js": "/covid19-map/precache-manifest.b0c75ef52cd33fcf307cff3d4e65d318.js",
+    "precache-manifest.0bd8ed599873c67494c24c1c4ef5d156.js": "/covid19-map/precache-manifest.0bd8ed599873c67494c24c1c4ef5d156.js",
     "service-worker.js": "/covid19-map/service-worker.js",
     "static/css/2.de424728.chunk.css.map": "/covid19-map/static/css/2.de424728.chunk.css.map",
     "static/css/main.221bd5e8.chunk.css.map": "/covid19-map/static/css/main.221bd5e8.chunk.css.map",
-    "static/js/2.61ccd0ac.chunk.js.LICENSE.txt": "/covid19-map/static/js/2.61ccd0ac.chunk.js.LICENSE.txt"
+    "static/js/2.bb31e70f.chunk.js.LICENSE.txt": "/covid19-map/static/js/2.bb31e70f.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.a4c2c609.js",
     "static/css/2.de424728.chunk.css",
-    "static/js/2.61ccd0ac.chunk.js",
+    "static/js/2.bb31e70f.chunk.js",
     "static/css/main.221bd5e8.chunk.css",
-    "static/js/main.a42e84b8.chunk.js"
+    "static/js/main.40c426ac.chunk.js"
   ]
 }
