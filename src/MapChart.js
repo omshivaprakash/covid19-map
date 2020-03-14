@@ -244,7 +244,7 @@ class MapChart extends React.Component {
                 <text
                   textAnchor="middle"
                   y={markerOffset}
-                  style={{ fontSize: name.endsWith(", US") ? "0.005em" : "2px", fontFamily: "Arial", fill: "#5D5A6D33" }}
+                  style={{ fontSize: name.endsWith(", US") ? "0.005em" : "2px", fontFamily: "Arial", fill: "#5D5A6D33", pointerEvents: "none" }}
                 >
                   {name}
                 </text>
