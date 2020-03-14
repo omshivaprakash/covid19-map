@@ -15,23 +15,12 @@ function App() {
   const [hidden, setHidden] = useState(false);
   return (
     [
-      <Navbar bg="light" fixed="top" className={"p-0 pl-2"}  expand="lg">
+      <Navbar bg="light" fixed="top" className={"p-0 pl-2"}>
         <Navbar.Brand>
             <FontAwesomeIcon icon={faUserMd} />
             <span className="small"> COVID19 </span>
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" className={"border-0 "} />
-        <Navbar.Collapse id="basic-navbar-nav">
-            <span className="small text-danger">Map data responsibly!</span>
-          <Nav className="mr-auto">
-            <Nav.Link className="small" href={"https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series"}>
-              <FontAwesomeIcon icon={faDatabase} /> Data source
-            </Nav.Link>
-            <Nav.Link className="small" href={"https://github.com/daniel-karl/covid19-map"}>
-              <FontAwesomeIcon icon={faCode} /> Source code
-            </Nav.Link>
-          </Nav>
-        </Navbar.Collapse>
+        <span className="small text-danger">Map data responsibly!</span>
       </Navbar>,
       <Container fluid className={"w-100 h-100 p-0"}>
         <Row noGutters={"true"} className={"h-100"}>
@@ -46,10 +35,8 @@ function App() {
         <span class="text-success">Green: recovered</span><br />
         <span class="text-dark">Black: deceased</span><br />
         <sub>
-          Using live data from John Hopkins repository.<br />
-          Last synchronized on:<br />
-          {new Date().toLocaleDateString()}<br />
-          {new Date().toLocaleTimeString()}
+          Using live data from <br /><a target="_blank" href={"https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series"}><FontAwesomeIcon icon={faDatabase} /> John Hopkins repository</a><br/>Last synchronized on {new Date().toLocaleDateString()} at {new Date().toLocaleTimeString()}<br/>
+            <a target="_blank" href={"https://github.com/daniel-karl/covid19-map"}><FontAwesomeIcon icon={faCode} /> Code on GitHub</a>
         </sub>
       </div>
     ]
