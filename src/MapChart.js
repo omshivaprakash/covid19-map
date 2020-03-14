@@ -12,6 +12,8 @@ import Papa from "papaparse";
 const geoUrl =
   "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-10m.json";
 
+const markers = [];
+
 const rounded = num => {
   if (num > 1000000000) {
     return Math.round(num / 100000000) / 10 + "Bn";
@@ -31,16 +33,56 @@ class MapChart extends React.Component {
   }
 
   componentDidMount() {
+    let that = this;
     Papa.parse("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv", {
       download: true,
       complete: function(results) {
-        console.log("Loaded information about " + results.data.length + " countries or regions.");
+        that.markers = [];
+        let skipRow = true;
+        let minSize = 100000000000000000000;
+        let maxSize = 0;
+        for(let data of results.data) {
+          if(skipRow) {
+            skipRow = false;
+            continue;
+          }
+          let size = "";
+          let i = data.length - 1;
+          while(size==="" && i > 0) {
+            size = data[i];
+            i = i - 1;
+          }
+          if(size==="") {
+            size = 0;
+          }
+          if(size < minSize) {
+            minSize = size;
+          }
+          if(size > maxSize) {
+            maxSize = size;
+          }
+          let marker = {
+            markerOffset: 0,
+            name: data[0],
+            coordinates: [data[3], data[2]],
+            size: size
+          };
+          markers.push(marker)
+        }
+
+        for(let i = 0; i < markers.length; i++) {
+          console.log(markers[i].size + ", " + minSize + ", " + maxSize);
+          markers[i].size = (markers[i].size - minSize) / (maxSize - minSize);
+          console.log(markers[i].size);
+        }
+        that.setState({});
       }
     });
   }
 
   render() {
     return (
+      <>
       <ComposableMap
           projection={"geoMercator"}
           height={window.innerWidth}
@@ -83,8 +125,23 @@ class MapChart extends React.Component {
                 ))
             }
           </Geographies>
+          {
+            markers.map(({ name, coordinates, markerOffset, size }) => (
+              <Marker coordinates={coordinates}>
+                <circle r={size} fill="#F00"  />
+                <text
+                  textAnchor="middle"
+                  y={markerOffset}
+                  style={{ fontSize: "2px", fontFamily: "system-ui", fill: "#5D5A6D" }}
+                >
+                  {/*name*/}
+                </text>
+              </Marker>
+            ))
+          }
         </ZoomableGroup>
       </ComposableMap>
+    </>
     );
   }
 }
