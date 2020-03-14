@@ -18,6 +18,10 @@ const recovered = [];
 const deaths = [];
 const MAX_SIZE = 67786;
 
+let totConf = 0;
+let totRec = 0;
+let totDead = 0;
+
 const FACTOR = 40;
 const WIDTH = 0.75;
 
@@ -74,6 +78,7 @@ class MapChart extends React.Component {
             size: size,
             val: size
           };
+          totConf += size;
           confirmed.push(marker)
         }
         console.log(maxSize);
@@ -116,6 +121,7 @@ class MapChart extends React.Component {
             size: size,
             val: size
           };
+          totRec += size;
           recovered.push(marker)
         }
 
@@ -159,6 +165,7 @@ class MapChart extends React.Component {
             size: size,
             val: size
           };
+          totDead += size;
           deaths.push(marker)
         }
 
@@ -179,6 +186,9 @@ class MapChart extends React.Component {
         <div className="ml-3 small controls">
           <Form.Check inline checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onClick={() => {that.setState({chart: "pie"});}}/>
           <Form.Check inline checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onClick={() => {that.setState({chart: "bar"});}} />
+          <span className={"small text-danger ml-3"}>{rounded(totConf)}</span><br />
+          <span className={"small text-success ml-3"}>{rounded(totRec)}</span><br />
+          <span className={"small text-dark ml-3"}>{rounded(totDead)}</span>
         </div>
       </Form>
       <ComposableMap
