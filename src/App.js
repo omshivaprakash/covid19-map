@@ -7,19 +7,19 @@ import Col from 'react-bootstrap/Col';
 import Navbar from 'react-bootstrap/Navbar';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserMd, faDatabase, faCode } from '@fortawesome/free-solid-svg-icons';
+import { faDatabase, faCode } from '@fortawesome/free-solid-svg-icons';
+import { faDotCircle} from '@fortawesome/free-regular-svg-icons';
 
 function App() {
   const [content, setContent] = useState("");
   const [hidden, setHidden] = useState(false);
   return (
     [
-      <Navbar bg="light" fixed="top" className={"p-0 pl-2"}>
+      <Navbar bg="light" fixed="top" className={"p-0 pl-2"} expand={"xs"}>
         <Navbar.Brand>
-            <FontAwesomeIcon icon={faUserMd} />
-            <span className="small"> COVID19 </span>
+            <span className="small">C<FontAwesomeIcon icon={faDotCircle} />VID19 </span>
         </Navbar.Brand>
-        <span className="small text-danger">Map data responsibly!</span>
+        <span className="small text-muted mr-3">Map data responsibly!</span>
       </Navbar>,
       <Container fluid className={"w-100 h-100 p-0"}>
         <Row noGutters={"true"} className={"h-100"}>
