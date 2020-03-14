@@ -19,7 +19,7 @@ const deaths = [];
 const MAX_SIZE = 67786;
 
 const FACTOR = 40;
-const WIDTH = 2;
+const WIDTH = 0.75;
 
 const rounded = num => {
   if (num > 1000000000) {
