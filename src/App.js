@@ -21,7 +21,7 @@ function App() {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" className={"border-0 "} />
         <Navbar.Collapse id="basic-navbar-nav">
-            <span className="small text-danger">How accurate is John Hopkins' COVID19 map?</span>
+            <span className="small text-danger">Map data responsibly!</span>
           <Nav className="mr-auto">
             <Nav.Link className="small" href={"https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series"}>
               <FontAwesomeIcon icon={faDatabase} /> Data source
