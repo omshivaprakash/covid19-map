@@ -261,7 +261,7 @@ class MapChart extends React.Component {
               <Marker coordinates={coordinates}>
                 <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} x={WIDTH * 2 - WIDTH * 1.5} y={-size * FACTOR / WIDTH} width={WIDTH} height={size * FACTOR / WIDTH} fill="#0008" />
                 <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} r={Math.sqrt(size) * 5} fill="#0008" />
-                <title>{name + " - " + val + " deaths"}</title>
+                <title>{name + " - " + val + " deceased"}</title>
                 <text
                   textAnchor="middle"
                   y={markerOffset}
