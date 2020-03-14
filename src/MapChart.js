@@ -233,9 +233,9 @@ class MapChart extends React.Component {
                 <text
                   textAnchor="middle"
                   y={markerOffset}
-                  style={{ fontSize: "2px", fontFamily: "system-ui", fill: "#5D5A6D" }}
+                  style={{ fontSize: name.endsWith(", US") ? "0.005em" : "2px", fontFamily: "Arial", fill: "#5D5A6D33" }}
                 >
-                  {/*name*/}
+                  {name}
                 </text>
               </Marker>
             ))
@@ -249,7 +249,7 @@ class MapChart extends React.Component {
                 <text
                   textAnchor="middle"
                   y={markerOffset}
-                  style={{ fontSize: "2px", fontFamily: "system-ui", fill: "#5D5A6D" }}
+                  style={{ fontSize: "1px", fontFamily: "system-ui", fill: "#5D5A6D", pointerEvents: "none" }}
                 >
                   {/*name*/}
                 </text>
@@ -265,7 +265,7 @@ class MapChart extends React.Component {
                 <text
                   textAnchor="middle"
                   y={markerOffset}
-                  style={{ fontSize: "2px", fontFamily: "system-ui", fill: "#5D5A6D" }}
+                  style={{ fontSize: "1px", fontFamily: "system-ui", fill: "#5D5A6D33", pointerEvents: "none" }}
                 >
                   {/*name*/}
                 </text>
