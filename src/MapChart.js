@@ -309,7 +309,7 @@ class MapChart extends React.Component {
               }
               return (<Marker coordinates={coordinates}>
                 <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} x={that.state.width * 2 - that.state.width * 1.5} y={-size * that.state.factor} width={that.state.width} height={size * that.state.factor} fill="#000" />
-                <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#666f"}}} r={Math.sqrt(size) * that.state.factor} fill="#333f" />
+                <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#2128"}}} r={Math.sqrt(size) * that.state.factor} fill="#2128" />
                 <title>{name + " - " + val + " deceased"}</title>
                 <text
                   textAnchor="middle"
