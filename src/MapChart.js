@@ -14,6 +14,8 @@ import ReactBootstrapSlider from "react-bootstrap-slider";
 const geoUrl =
   "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-10m.json";
 
+const deathsByRowId = {}
+
 const confirmed = [];
 const recovered = [];
 const deaths = [];
@@ -57,6 +59,7 @@ class MapChart extends React.Component {
         let skipRow = true;
         let minSize = 0;
         let maxSize = MAX_SIZE;
+        let rowId = 0;
         for(let data of results.data) {
           if(skipRow) {
             skipRow = false;
@@ -80,10 +83,12 @@ class MapChart extends React.Component {
             name: (data[0] ? data[0] + ", " + data[1] : data[1]) ? (data[0] ? data[0] + ", " + data[1] : data[1]) : "",
             coordinates: [data[3], data[2]],
             size: size,
-            val: size
+            val: size,
+            rowId: rowId
           };
           totConf += size;
-          confirmed.push(marker)
+          confirmed.push(marker);
+          rowId++;
         }
         that.state.setTotConf(totConf);
         console.log(maxSize);
@@ -101,6 +106,7 @@ class MapChart extends React.Component {
         let skipRow = true;
         let minSize = 0;
         let maxSize = MAX_SIZE;
+        let rowId = 0;
         for(let data of results.data) {
           if(skipRow) {
             skipRow = false;
@@ -124,10 +130,12 @@ class MapChart extends React.Component {
             name: data[0] ? data[0] + ", " + data[1] : data[1],
             coordinates: [data[3], data[2]],
             size: size,
-            val: size
+            val: size,
+            rowId: rowId
           };
           totRec += size;
-          recovered.push(marker)
+          recovered.push(marker);
+          rowId++;
         }
         that.state.setTotRec(totRec);
         for(let i = 0; i < recovered.length; i++) {
@@ -145,6 +153,7 @@ class MapChart extends React.Component {
         let skipRow = true;
         let minSize = 0;
         let maxSize = MAX_SIZE;
+        let rowId = 0;
         for(let data of results.data) {
           if(skipRow) {
             skipRow = false;
@@ -168,15 +177,18 @@ class MapChart extends React.Component {
             name: data[0] ? data[0] + ", " + data[1] : data[1],
             coordinates: [data[3], data[2]],
             size: size,
-            val: size
+            val: size,
+            rowId: rowId
           };
           totDead += size;
-          deaths.push(marker)
+          deaths.push(marker);
+          rowId++;
         }
         that.state.setTotDead(totDead);
         for(let i = 0; i < deaths.length; i++) {
           // console.log(deaths[i].size + ", " + minSize + ", " + maxSize);
           deaths[i].size = (deaths[i].size - minSize) / (maxSize - minSize);
+          deathsByRowId[deaths[i].rowId] = deaths[i].size;
         }
         that.setState({});
       }
@@ -268,9 +280,12 @@ class MapChart extends React.Component {
           }
           {
             !that.state.jhmode &&
-            recovered.map(({ name, coordinates, markerOffset, size, val }) => {
+            recovered.map(({rowId, name, coordinates, markerOffset, size, val }) => {
               if(that.state.jhmode) {
                 size = Math.log(size * 100000) / 25;
+              }
+              if(that.state.chart==="pie") {
+                size += deathsByRowId[rowId];
               }
               return (<Marker coordinates={coordinates}>
                 <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} x={that.state.width * 1 - that.state.width * 1.5} y={-size * that.state.factor} width={that.state.width} height={size * that.state.factor} fill="#0F08" />
@@ -288,13 +303,13 @@ class MapChart extends React.Component {
           }
           {
             !that.state.jhmode &&
-            deaths.map(({ name, coordinates, markerOffset, size, val }) => {
+            deaths.map(({name, coordinates, markerOffset, size, val }) => {
               if(that.state.jhmode) {
                 size = Math.log(size * 100000) / 25;
               }
               return (<Marker coordinates={coordinates}>
-                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} x={that.state.width * 2 - that.state.width * 1.5} y={-size * that.state.factor} width={that.state.width} height={size * that.state.factor} fill="#0008" />
-                <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} r={Math.sqrt(size) * that.state.factor} fill="#0008" />
+                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} x={that.state.width * 2 - that.state.width * 1.5} y={-size * that.state.factor} width={that.state.width} height={size * that.state.factor} fill="#000" />
+                <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#666f"}}} r={Math.sqrt(size) * that.state.factor} fill="#333f" />
                 <title>{name + " - " + val + " deceased"}</title>
                 <text
                   textAnchor="middle"
