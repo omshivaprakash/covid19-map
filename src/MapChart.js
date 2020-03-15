@@ -224,7 +224,7 @@ class MapChart extends React.Component {
                     }}
                     style={{
                       default: {
-                        fill: "#333",
+                        fill: "#ddd",
                         outline: "none"
                       },
                       hover: {
