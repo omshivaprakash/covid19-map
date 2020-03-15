@@ -43,7 +43,7 @@ class MapChart extends React.Component {
       setTotConf: props.setTotConf,
       setTotRec: props.setTotRec,
       setTotDead: props.setTotDead,
-      chart: "pill",
+      chart: "pie",
       factor: 20,
       width: 2,
       jhmode: false
@@ -202,14 +202,14 @@ class MapChart extends React.Component {
       <Form>
         <div className="ml-3 small controls">
           <Form.Check inline className="small" checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onClick={() => {that.setState({chart: "pie"});}}/>
-          <Form.Check inline className="small" checked={that.state.chart==="pill" } label="Progress" type={"radio"} name={"a"} id={`inline-radio-3`} onClick={() => {that.setState({chart: "pill"});}} />
-          <Form.Check inline className="small" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onClick={() => {that.setState({chart: "bar"});}} />
+          <Form.Check inline className="small hideInJh" checked={that.state.chart==="pill" } label="Progress" type={"radio"} name={"a"} id={`inline-radio-3`} onClick={() => {that.setState({chart: "pill"});}} />
+          <Form.Check inline className="small hideInJh" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onClick={() => {that.setState({chart: "bar"});}} />
         </div>
       </Form>
       <div className="small controls2">
         <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1} />
         <Form.Check inline className="small" checked={that.state.jhmode} label={<span style={{color: "white", background: "black", padding: "0 3px"}}>Johns Hopkins Mode 🤔🤷</span>}type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
-                    onClick={() => {that.setState({jhmode: !that.state.jhmode});}} />
+                    onClick={() => {that.setState({jhmode: !that.state.jhmode, chart: "pie", factor: 20});}} />
       </div>
       {
         that.state.jhmode &&
