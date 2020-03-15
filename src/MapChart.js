@@ -43,7 +43,8 @@ class MapChart extends React.Component {
       setTotDead: props.setTotDead,
       chart: "pie",
       factor: 20,
-      width: 2
+      width: 2,
+      jhmode: false
     }
   }
 
@@ -190,6 +191,7 @@ class MapChart extends React.Component {
         <div className="ml-3 small controls">
           <Form.Check inline checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onClick={() => {that.setState({chart: "pie"});}}/>
           <Form.Check inline checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onClick={() => {that.setState({chart: "bar"});}} />
+          <Form.Check inline checked={that.state.jhmode} label="Johns Hopkins Mode" type={"checkbox"} name={"a"} id={`inline-checkbox-2`} onClick={() => {that.setState({jhmode: !that.state.jhmode, factor:5});}} />
         </div>
       </Form>
       <div className="small controls2">
@@ -222,7 +224,7 @@ class MapChart extends React.Component {
                     }}
                     style={{
                       default: {
-                        fill: "#ddd",
+                        fill: "#333",
                         outline: "none"
                       },
                       hover: {
@@ -239,8 +241,11 @@ class MapChart extends React.Component {
             }
           </Geographies>
           {
-            confirmed.map(({ name, coordinates, markerOffset, size, val }) => (
-              <Marker coordinates={coordinates}>
+            confirmed.map(({ name, coordinates, markerOffset, size, val }) => {
+              if(that.state.jhmode) {
+                size = Math.log(size * 100000);
+              }
+              return (<Marker coordinates={coordinates}>
                 <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} x={that.state.width * 0 - that.state.width * 1.5} y={-size * that.state.factor} width={that.state.width} height={size * that.state.factor} fill="#F008" />
                 <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} r={Math.sqrt(size) * that.state.factor} fill="#F008" />
                 <title>{name + " - " + val + " confirmed"}</title>
@@ -252,11 +257,15 @@ class MapChart extends React.Component {
                   {name}
                 </text>
               </Marker>
-            ))
+            )})
           }
           {
-            recovered.map(({ name, coordinates, markerOffset, size, val }) => (
-              <Marker coordinates={coordinates}>
+            !that.state.jhmode &&
+            recovered.map(({ name, coordinates, markerOffset, size, val }) => {
+              if(that.state.jhmode) {
+                size = Math.log(size * 100000);
+              }
+              return (<Marker coordinates={coordinates}>
                 <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} x={that.state.width * 1 - that.state.width * 1.5} y={-size * that.state.factor} width={that.state.width} height={size * that.state.factor} fill="#0F08" />
                 <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} r={Math.sqrt(size) * that.state.factor} fill="#0F08" />
                 <title>{name + " - " + val + " recovered"}</title>
@@ -268,11 +277,15 @@ class MapChart extends React.Component {
                   {/*name*/}
                 </text>
               </Marker>
-            ))
+            )})
           }
           {
-            deaths.map(({ name, coordinates, markerOffset, size, val }) => (
-              <Marker coordinates={coordinates}>
+            !that.state.jhmode &&
+            deaths.map(({ name, coordinates, markerOffset, size, val }) => {
+              if(that.state.jhmode) {
+                size = Math.log(size * 100000);
+              }
+              return (<Marker coordinates={coordinates}>
                 <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} x={that.state.width * 2 - that.state.width * 1.5} y={-size * that.state.factor} width={that.state.width} height={size * that.state.factor} fill="#0008" />
                 <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} r={Math.sqrt(size) * that.state.factor} fill="#0008" />
                 <title>{name + " - " + val + " deceased"}</title>
@@ -284,7 +297,7 @@ class MapChart extends React.Component {
                   {/*name*/}
                 </text>
               </Marker>
-            ))
+            )})
           }
         </ZoomableGroup>
       </ComposableMap>
