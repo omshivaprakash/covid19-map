@@ -9,6 +9,7 @@ import {
 
 import Papa from "papaparse";
 import Form from 'react-bootstrap/Form';
+import ReactBootstrapSlider from "react-bootstrap-slider";
 
 const geoUrl =
   "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-10m.json";
@@ -21,9 +22,6 @@ const MAX_SIZE = 67786;
 let totConf = 0;
 let totRec = 0;
 let totDead = 0;
-
-const FACTOR = 40;
-const WIDTH = 0.75;
 
 const rounded = num => {
   if (num > 1000000000) {
@@ -43,7 +41,9 @@ class MapChart extends React.Component {
       setTotConf: props.setTotConf,
       setTotRec: props.setTotRec,
       setTotDead: props.setTotDead,
-      chart: "pie"
+      chart: "pie",
+      factor: 20,
+      width: 2
     }
   }
 
@@ -76,7 +76,7 @@ class MapChart extends React.Component {
           }
           let marker = {
             markerOffset: 0,
-            name: data[0] ? data[0] + ", " + data[1] : data[1],
+            name: (data[0] ? data[0] + ", " + data[1] : data[1]) ? (data[0] ? data[0] + ", " + data[1] : data[1]) : "",
             coordinates: [data[3], data[2]],
             size: size,
             val: size
@@ -192,6 +192,9 @@ class MapChart extends React.Component {
           <Form.Check inline checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onClick={() => {that.setState({chart: "bar"});}} />
         </div>
       </Form>
+      <div className="small controls2">
+        <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1} />
+      </div>
       <ComposableMap
           projection={"geoMercator"}
           projectionConfig={{scale: 200}}
@@ -238,8 +241,8 @@ class MapChart extends React.Component {
           {
             confirmed.map(({ name, coordinates, markerOffset, size, val }) => (
               <Marker coordinates={coordinates}>
-                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} x={WIDTH * 0 - WIDTH * 1.5} y={-size * FACTOR / WIDTH} width={WIDTH} height={size * FACTOR / WIDTH} fill="#F008" />
-                <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} r={Math.sqrt(size) * 10} fill="#F008" />
+                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} x={that.state.width * 0 - that.state.width * 1.5} y={-size * that.state.factor} width={that.state.width} height={size * that.state.factor} fill="#F008" />
+                <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} r={Math.sqrt(size) * that.state.factor} fill="#F008" />
                 <title>{name + " - " + val + " confirmed"}</title>
                 <text
                   textAnchor="middle"
@@ -254,8 +257,8 @@ class MapChart extends React.Component {
           {
             recovered.map(({ name, coordinates, markerOffset, size, val }) => (
               <Marker coordinates={coordinates}>
-                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} x={WIDTH * 1 - WIDTH * 1.5} y={-size * FACTOR / WIDTH} width={WIDTH} height={size * FACTOR / WIDTH} fill="#0F08" />
-                <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} r={Math.sqrt(size) * 10} fill="#0F08" />
+                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} x={that.state.width * 1 - that.state.width * 1.5} y={-size * that.state.factor} width={that.state.width} height={size * that.state.factor} fill="#0F08" />
+                <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} r={Math.sqrt(size) * that.state.factor} fill="#0F08" />
                 <title>{name + " - " + val + " recovered"}</title>
                 <text
                   textAnchor="middle"
@@ -270,8 +273,8 @@ class MapChart extends React.Component {
           {
             deaths.map(({ name, coordinates, markerOffset, size, val }) => (
               <Marker coordinates={coordinates}>
-                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} x={WIDTH * 2 - WIDTH * 1.5} y={-size * FACTOR / WIDTH} width={WIDTH} height={size * FACTOR / WIDTH} fill="#0008" />
-                <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} r={Math.sqrt(size) * 5} fill="#0008" />
+                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} x={that.state.width * 2 - that.state.width * 1.5} y={-size * that.state.factor} width={that.state.width} height={size * that.state.factor} fill="#0008" />
+                <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} r={Math.sqrt(size) * that.state.factor} fill="#0008" />
                 <title>{name + " - " + val + " deceased"}</title>
                 <text
                   textAnchor="middle"
