@@ -43,7 +43,7 @@ class MapChart extends React.Component {
       setTotConf: props.setTotConf,
       setTotRec: props.setTotRec,
       setTotDead: props.setTotDead,
-      chart: "pie",
+      chart: "pill",
       factor: 20,
       width: 2,
       jhmode: false
@@ -202,6 +202,7 @@ class MapChart extends React.Component {
       <Form>
         <div className="ml-3 small controls">
           <Form.Check inline className="small" checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onClick={() => {that.setState({chart: "pie"});}}/>
+          <Form.Check inline className="small" checked={that.state.chart==="pill" } label="Progress" type={"radio"} name={"a"} id={`inline-radio-3`} onClick={() => {that.setState({chart: "pill"});}} />
           <Form.Check inline className="small" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onClick={() => {that.setState({chart: "bar"});}} />
         </div>
       </Form>
@@ -278,8 +279,12 @@ class MapChart extends React.Component {
               if(that.state.jhmode) {
                 size = Math.log(size * 100000) / 25;
               }
+              if(that.state.chart==="pill" || that.state.chart==="bar") {
+                size *= 10;
+              }
               return (<Marker coordinates={coordinates}>
-                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} x={that.state.width * 0 - that.state.width * 1.5} y={-size * that.state.factor} width={that.state.width} height={size * that.state.factor} fill="#F008" />
+                <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} x={- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={size * that.state.factor} fill="#F008" />
+                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} x={that.state.width * 3 * 0 - that.state.width * 3 * 1.5} y={-size * that.state.factor} width={that.state.width * 3} height={size * that.state.factor} fill="#F008" />
                 <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} r={Math.sqrt(size) * that.state.factor} fill="#F008" />
                 <title>{name + " - " + val + " confirmed"}</title>
                 <text
@@ -298,11 +303,15 @@ class MapChart extends React.Component {
               if(that.state.jhmode) {
                 size = Math.log(size * 100000) / 25;
               }
-              if(that.state.chart==="pie") {
+              if(that.state.chart==="pie" || that.state.chart==="pill") {
                 size += deathsByRowId[rowId];
               }
+              if(that.state.chart==="pill" || that.state.chart==="bar") {
+                size *= 10;
+              }
               return (<Marker coordinates={coordinates}>
-                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} x={that.state.width * 1 - that.state.width * 1.5} y={-size * that.state.factor} width={that.state.width} height={size * that.state.factor} fill="#0F08" />
+                <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} x={- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={size * that.state.factor} fill="#0F08" />
+                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} x={that.state.width * 3 * 1 - that.state.width * 3 * 1.5} y={-size * that.state.factor} width={that.state.width * 3} height={size * that.state.factor} fill="#0F08" />
                 <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} r={Math.sqrt(size) * that.state.factor} fill="#0F08" />
                 <title>{name + " - " + val + " recovered"}</title>
                 <text
@@ -321,8 +330,12 @@ class MapChart extends React.Component {
               if(that.state.jhmode) {
                 size = Math.log(size * 100000) / 25;
               }
+              if(that.state.chart==="pill" || that.state.chart==="bar") {
+                size *= 10;
+              }
               return (<Marker coordinates={coordinates}>
-                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} x={that.state.width * 2 - that.state.width * 1.5} y={-size * that.state.factor} width={that.state.width} height={size * that.state.factor} fill="#000" />
+                <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} x={- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={size * that.state.factor} fill="#000" />
+                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} x={that.state.width * 3 * 2 - that.state.width * 3 * 1.5} y={-size * that.state.factor} width={that.state.width * 3} height={size * that.state.factor} fill="#000" />
                 <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#2128"}}} r={Math.sqrt(size) * that.state.factor} fill="#2128" />
                 <title>{name + " - " + val + " deceased"}</title>
                 <text
