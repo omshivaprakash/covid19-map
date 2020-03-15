@@ -207,7 +207,7 @@ class MapChart extends React.Component {
       </Form>
       <div className="small controls2">
         <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1} />
-        <Form.Check inline className="small" checked={that.state.jhmode} label="Johns Hopkins Mode" type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
+        <Form.Check inline className="small" checked={that.state.jhmode} label={<span style={{color: "white", background: "black", padding: "0 3px"}}>Johns Hopkins Mode 🤔🤷</span>}type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
                     onClick={() => {that.setState({jhmode: !that.state.jhmode});}} />
       </div>
       {
