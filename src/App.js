@@ -39,7 +39,7 @@ function App() {
             <span className={"small text-muted mr-3"}>Total:</span>
             <span className={"small text-danger mr-3"}>{rounded(totConf)}</span>
             <span className={"small text-success mr-3"}>{rounded(totRec)}</span>
-            <span className={"small text-dark mr-3"}>{rounded(totDead)}</span>
+            <span className={"small mr-3"}>{rounded(totDead)}</span>
           </span>
       </Navbar>,
       <Container fluid className={"w-100 h-100 p-0"}>
@@ -57,10 +57,10 @@ function App() {
         </Row>
       </Container>,
       <div className="info small text-muted" style={hidden ? {display: "none"} : {display:"block"}} onClick={() => {setHidden(true)}}>
-        <span class="text-danger">Red: confirmed</span><br />
-        <span class="text-success">Green: recovered</span><br />
-        <span class="text-dark">Black: deceased</span><br />
-        <sub>
+        <span className="text-danger">Red: confirmed</span><br />
+        <span className="text-success hideInJh">Green: recovered</span><br className="hideInJh" />
+        <span className="text-dark hideInJh">Black: deceased</span><br className="hideInJh" />
+        <sub className={"lightInJh"}>
           Using live data from <br /><a target="_blank" href={"https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series"}><FontAwesomeIcon icon={faDatabase} /> Johns Hopkins repository</a><br/>Last synchronized on {date.toLocaleDateString()} at {date.toLocaleTimeString()}<br/>
             <a target="_blank" href={"https://github.com/daniel-karl/covid19-map"}><FontAwesomeIcon icon={faCode} /> Who made this?</a>
         </sub><br />

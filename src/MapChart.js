@@ -213,7 +213,21 @@ class MapChart extends React.Component {
       {
         that.state.jhmode &&
         <style dangerouslySetInnerHTML={{__html: `
-          .container-fluid { background: black }
+          .container-fluid { background: #000914 }
+          .hideInJh {
+            display: none !important;
+          }
+          .lightInJh {
+            color: #eee;
+          }
+          * {
+            border-radius: 0 !important;
+          }
+          .info, .controls, .controls2 {
+            border: 1px solid #444;
+            background: #222;
+            color: white;
+          }
         `}} />
       }
       <ComposableMap
