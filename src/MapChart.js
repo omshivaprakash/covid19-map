@@ -14,7 +14,10 @@ import ReactBootstrapSlider from "react-bootstrap-slider";
 const geoUrl =
   "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-10m.json";
 
-const deathsByRowId = {}
+const deathsByRowId = {};
+const recoveredAbsByRowId = {};
+const deathsAbsByRowId = {};
+
 
 const confirmed = [];
 const recovered = [];
@@ -140,6 +143,7 @@ class MapChart extends React.Component {
         that.state.setTotRec(totRec);
         for(let i = 0; i < recovered.length; i++) {
           // console.log(recovered[i].size + ", " + minSize + ", " + maxSize);
+          recoveredAbsByRowId[recovered[i].rowId] = recovered[i].size;
           recovered[i].size = (recovered[i].size - minSize) / (maxSize - minSize);
         }
         that.setState({});
@@ -187,6 +191,7 @@ class MapChart extends React.Component {
         that.state.setTotDead(totDead);
         for(let i = 0; i < deaths.length; i++) {
           // console.log(deaths[i].size + ", " + minSize + ", " + maxSize);
+          deathsAbsByRowId[deaths[i].rowId] = deaths[i].size;
           deaths[i].size = (deaths[i].size - minSize) / (maxSize - minSize);
           deathsByRowId[deaths[i].rowId] = deaths[i].size;
         }
@@ -275,7 +280,8 @@ class MapChart extends React.Component {
             }
           </Geographies>
           {
-            confirmed.map(({ name, coordinates, markerOffset, size, val }) => {
+            confirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
+              let active = val - recoveredAbsByRowId[rowId] - deathsAbsByRowId [rowId];
               if(that.state.jhmode) {
                 size = Math.log(size * 100000) / 25;
               }
@@ -286,7 +292,7 @@ class MapChart extends React.Component {
                 <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} x={- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={size * that.state.factor} fill="#F008" />
                 <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} x={that.state.width * 3 * 0 - that.state.width * 3 * 1.5} y={-size * that.state.factor} width={that.state.width * 3} height={size * that.state.factor} fill="#F008" />
                 <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} r={Math.sqrt(size) * that.state.factor} fill="#F008" />
-                <title>{name + " - " + val + " confirmed"}</title>
+                <title>{`${name} - ${val} confirmed, ${active} active`}</title>
                 <text
                   textAnchor="middle"
                   y={markerOffset}
