@@ -189,13 +189,13 @@ class MapChart extends React.Component {
       <>
       <Form>
         <div className="ml-3 small controls">
-          <Form.Check inline checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onClick={() => {that.setState({chart: "pie"});}}/>
-          <Form.Check inline checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onClick={() => {that.setState({chart: "bar"});}} />
-          <Form.Check inline checked={that.state.jhmode} label="Johns Hopkins Mode" type={"checkbox"} name={"a"} id={`inline-checkbox-2`} onClick={() => {that.setState({jhmode: !that.state.jhmode, factor:5});}} />
+          <Form.Check inline className="small" checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onClick={() => {that.setState({chart: "pie"});}}/>
+          <Form.Check inline className="small" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onClick={() => {that.setState({chart: "bar"});}} />
         </div>
       </Form>
       <div className="small controls2">
         <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1} />
+        <Form.Check inline className="small" checked={that.state.jhmode} label="Johns Hopkins Mode" type={"checkbox"} name={"a"} id={`inline-checkbox-2`} onClick={() => {that.setState({jhmode: !that.state.jhmode});}} />
       </div>
       <ComposableMap
           projection={"geoMercator"}
@@ -243,7 +243,7 @@ class MapChart extends React.Component {
           {
             confirmed.map(({ name, coordinates, markerOffset, size, val }) => {
               if(that.state.jhmode) {
-                size = Math.log(size * 100000);
+                size = Math.log(size * 100000) / 25;
               }
               return (<Marker coordinates={coordinates}>
                 <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} x={that.state.width * 0 - that.state.width * 1.5} y={-size * that.state.factor} width={that.state.width} height={size * that.state.factor} fill="#F008" />
@@ -263,7 +263,7 @@ class MapChart extends React.Component {
             !that.state.jhmode &&
             recovered.map(({ name, coordinates, markerOffset, size, val }) => {
               if(that.state.jhmode) {
-                size = Math.log(size * 100000);
+                size = Math.log(size * 100000) / 25;
               }
               return (<Marker coordinates={coordinates}>
                 <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} x={that.state.width * 1 - that.state.width * 1.5} y={-size * that.state.factor} width={that.state.width} height={size * that.state.factor} fill="#0F08" />
@@ -283,7 +283,7 @@ class MapChart extends React.Component {
             !that.state.jhmode &&
             deaths.map(({ name, coordinates, markerOffset, size, val }) => {
               if(that.state.jhmode) {
-                size = Math.log(size * 100000);
+                size = Math.log(size * 100000) / 25;
               }
               return (<Marker coordinates={coordinates}>
                 <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} x={that.state.width * 2 - that.state.width * 1.5} y={-size * that.state.factor} width={that.state.width} height={size * that.state.factor} fill="#0008" />
