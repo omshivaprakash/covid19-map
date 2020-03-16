@@ -49,3 +49,7 @@ body {
   border-radius: 10px;
   width: 230px;
 }
+
+.showInMomentum {
+  display: none;
+}

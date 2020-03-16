@@ -57,9 +57,12 @@ function App() {
         </Row>
       </Container>,
       <div className="info small text-muted" style={hidden ? {display: "none"} : {display:"block"}} onClick={() => {setHidden(true)}}>
-        <span className="text-danger">Red: confirmed</span><br />
-        <span className="text-success hideInJh">Green: recovered</span><br className="hideInJh" />
-        <span className="text-dark hideInJh">Black: deceased</span><br className="hideInJh" />
+        <span className="text-danger showInMomentum">Red: increase active</span>
+        <span className="text-success showInMomentum">Green: decrease active</span>
+        <span className="text-dark showInMomentum">where "active" is newly confirmed minus newly recovered (excluding deceased)</span>
+        <span className="text-danger hideInMomentum">Red: confirmed</span><br className="hideInMomentum"/>
+        <span className="text-success hideInJh hideInMomentum">Green: recovered</span><br className="hideInJh hideInMomentum" />
+        <span className="text-dark hideInJh hideInMomentum">Black: deceased</span><br className="hideInJh hideInMomentum" />
         <sub className={"lightInJh"}>
           Using live data from <br /><a target="_blank" href={"https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series"}><FontAwesomeIcon icon={faDatabase} /> Johns Hopkins repository</a><br/>Last synchronized on {date.toLocaleDateString()} at {date.toLocaleTimeString()}<br/>
             <a target="_blank" href={"https://github.com/daniel-karl/covid19-map"}><FontAwesomeIcon icon={faCode} /> Who made this?</a>
