@@ -823,7 +823,7 @@ class MapChart extends React.Component {
         </Form.Control>
         <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1} />
         <Form.Check inline className="small hideInJh" checked={that.state.ppmmode} label={<span>Normalize by population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
-                    onClick={() => {that.setState({ppmmode: !that.state.ppmmode, chart: "pie", factor: 20, momentum: "none"});}} />
+                    onClick={() => {that.setState({ppmmode: !that.state.ppmmode, chart: "pie", factor: 20});}} />
         <Form.Check inline className="small" checked={that.state.jhmode} label={<span>Johns Hopkins Mode </span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
                     onClick={() => {that.setState({jhmode: !that.state.jhmode, ppmmode: false, chart: "pie", factor: 20, momentum: "none"});}} />
       </div>
@@ -929,9 +929,12 @@ class MapChart extends React.Component {
                 //if(that.state.jhmode) {
                 //  size = Math.log(size * 100000) / 25;
                 //}
+                if(that.state.ppmmode && population[name]) {
+                  size = 10000000 * size / population[name];
+                }
                 return (<Marker coordinates={coordinates}>
                   <circle r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill={pos ? "#F008" : "#0F08"} />
-                  <title>{`${name} - ${Math.abs(val)} ${pos ? "INCREASE" : "DECREASE"} in active(= confirmed-recovered) cases (excl. deceased)`}</title>
+                  <title>{`${name} - ${Math.abs(val)} ${pos ? "INCREASE" : "DECREASE"} in active(= confirmed-recovered) cases (excl. deceased) (`+Math.round(1000000*val/population[name])+ ` ppm)`}</title>
                   <text
                     textAnchor="middle"
                     y={markerOffset}
