@@ -575,7 +575,7 @@ class MapChart extends React.Component {
       setTotRec: props.setTotRec,
       setTotDead: props.setTotDead,
       chart: "pie",
-      factor: 20,
+      factor: 50,
       width: 2,
       jhmode: false,
       momentum: "none",
@@ -821,11 +821,12 @@ class MapChart extends React.Component {
           <option  value="last3">Show change last 3 days</option>
           <option value="last7">Show change last 7 days</option>
         </Form.Control>
-        <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1} />
+        <span className="small text-muted">Scale:</span>
+        <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1}></ReactBootstrapSlider>
         <Form.Check inline className="small hideInJh" checked={that.state.ppmmode} label={<span>Normalize by population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
-                    onClick={() => {that.setState({ppmmode: !that.state.ppmmode, chart: "pie", factor: 20});}} />
-        <Form.Check inline className="small" checked={that.state.jhmode} label={<span>Johns Hopkins Mode </span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
-                    onClick={() => {that.setState({jhmode: !that.state.jhmode, ppmmode: false, chart: "pie", factor: 20, momentum: "none"});}} />
+                    onClick={() => {that.setState({ppmmode: !that.state.ppmmode, chart: "pie", factor: 50});}} />
+        {/*<Form.Check inline className="small" checked={that.state.jhmode} label={<span>Johns Hopkins Mode </span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
+                    onClick={() => {that.setState({jhmode: !that.state.jhmode, ppmmode: false, chart: "pie", factor: 20, momentum: "none"});}} />*/}
       </div>
       {
         that.state.jhmode &&
