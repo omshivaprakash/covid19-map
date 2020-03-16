@@ -274,7 +274,7 @@ class MapChart extends React.Component {
           <option selected={that.state.momentum==="none"} value="none">Show live situation</option>
           <option selected={that.state.momentum==="last1"} value="last1">Show change last 1 day</option>
           <option selected={that.state.momentum==="last3"} value="last3">Show change last 3 days</option>
-          <option selected={that.state.momentum==="last7"} value="last7">Show change last 7 day</option>
+          <option selected={that.state.momentum==="last7"} value="last7">Show change last 7 days</option>
         </Form.Control>
         <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1} />
         <Form.Check inline className="small" checked={that.state.jhmode} label={<span style={{color: "white", background: "black", padding: "0 3px"}}>Johns Hopkins Mode 🤔🤷</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
