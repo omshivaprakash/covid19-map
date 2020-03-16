@@ -31,4 +31,4 @@ npm start
 
 # Contributors
 - Daniel Karl
-- Michael Baentsch (first version of normalization by population)
+- Michael Baentsch (normalization by population)
