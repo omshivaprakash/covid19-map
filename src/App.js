@@ -64,8 +64,8 @@ function App() {
         <span className="text-success hideInJh hideInMomentum">Green: recovered</span><br className="hideInJh hideInMomentum" />
         <span className="text-dark hideInJh hideInMomentum">Black: deceased</span><br className="hideInJh hideInMomentum" />
         <sub className={"lightInJh"}>
-          Using live data from <br /><a target="_blank" href={"https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series"}><FontAwesomeIcon icon={faDatabase} /> Johns Hopkins repository</a><br/>Last synchronized on {date.toLocaleDateString()} at {date.toLocaleTimeString()}<br/>
-            <a target="_blank" href={"https://github.com/daniel-karl/covid19-map"}><FontAwesomeIcon icon={faCode} /> Who made this?</a>
+          Using live data from <br /><a target="_blank" rel="noopener noreferrer" href={"https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series"}><FontAwesomeIcon icon={faDatabase} /> Johns Hopkins repository</a><br/>Last synchronized on {date.toLocaleDateString()} at {date.toLocaleTimeString()}<br/>
+            <a target="_blank" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map"}><FontAwesomeIcon icon={faCode} /> Who made this?</a>
         </sub><br />
         <span className="small text-danger">Hold &lt;CTRL&gt; key to zoom</span>
       </div>
