@@ -18,7 +18,6 @@ const deathsByRowId = {};
 const recoveredAbsByRowId = {};
 const deathsAbsByRowId = {};
 
-
 const confirmed = [];
 const recovered = [];
 const deaths = [];
@@ -49,7 +48,8 @@ class MapChart extends React.Component {
       chart: "pie",
       factor: 20,
       width: 2,
-      jhmode: false
+      jhmode: false,
+      momentum: "none"
     }
   }
 
@@ -69,15 +69,33 @@ class MapChart extends React.Component {
             continue;
           }
           let size = "";
+          let sizeMin1 = "";
+          let sizeMin3 = "";
+          let sizeMin7 = "";
           let i = data.length - 1;
           while(size==="" && i > 0) {
             size = data[i];
+            sizeMin1 = data[i - 1];
+            sizeMin3 = data[i - 3];
+            sizeMin7 = data[i - 7];
             i = i - 1;
           }
           if(size==="") {
             size = 0;
           }
+          if(sizeMin1==="") {
+            sizeMin1 = 0;
+          }
+          if(sizeMin3==="") {
+            sizeMin3 = 0;
+          }
+          if(sizeMin7==="") {
+            sizeMin7 = 0;
+          }
           size = Number(size);
+          sizeMin1 = Number(sizeMin1);
+          sizeMin3 = Number(sizeMin3);
+          sizeMin7 = Number(sizeMin7);
           if(size > maxSize) {
             maxSize = size;
           }
@@ -86,8 +104,14 @@ class MapChart extends React.Component {
             name: (data[0] ? data[0] + ", " + data[1] : data[1]) ? (data[0] ? data[0] + ", " + data[1] : data[1]) : "",
             coordinates: [data[3], data[2]],
             size: size,
+            sizeMin1: sizeMin1,
+            sizeMin3: sizeMin3,
+            sizeMin7: sizeMin7,
             val: size,
-            rowId: rowId
+            rowId: rowId,
+            valMin1: size - sizeMin1,
+            valMin3: size - sizeMin3,
+            valMin7: size - sizeMin7
           };
           totConf += size;
           confirmed.push(marker);
@@ -97,6 +121,9 @@ class MapChart extends React.Component {
         console.log(maxSize);
         for(let i = 0; i < confirmed.length; i++) {
           confirmed[i].size = (confirmed[i].size - minSize) / (maxSize - minSize);
+          confirmed[i].momentumLast1 = confirmed[i].size - (confirmed[i].sizeMin1 - minSize) / (maxSize - minSize);
+          confirmed[i].momentumLast3 = confirmed[i].size - (confirmed[i].sizeMin3 - minSize) / (maxSize - minSize);
+          confirmed[i].momentumLast7 = confirmed[i].size - (confirmed[i].sizeMin7 - minSize) / (maxSize - minSize);
         }
         that.setState({});
       }
@@ -207,14 +234,18 @@ class MapChart extends React.Component {
       <Form>
         <div className="ml-3 small controls">
           <Form.Check inline className="small" checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onClick={() => {that.setState({chart: "pie"});}}/>
-          <Form.Check inline className="small hideInJh" checked={that.state.chart==="pill" } label="Progress" type={"radio"} name={"a"} id={`inline-radio-3`} onClick={() => {that.setState({chart: "pill"});}} />
-          <Form.Check inline className="small hideInJh" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onClick={() => {that.setState({chart: "bar"});}} />
+          <Form.Check inline className="small hideInJh" checked={that.state.chart==="pill" } label="Progress" type={"radio"} name={"a"} id={`inline-radio-3`} onClick={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/>
+          <Form.Check inline className="small hideInJh" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onClick={() => {that.setState({chart: "bar"});}} disabled={that.state.momentum!=="none" ? true : false}/>
         </div>
       </Form>
       <div className="small controls2">
         <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1} />
         <Form.Check inline className="small" checked={that.state.jhmode} label={<span style={{color: "white", background: "black", padding: "0 3px"}}>Johns Hopkins Mode 🤔🤷</span>}type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
-                    onClick={() => {that.setState({jhmode: !that.state.jhmode, chart: "pie", factor: 20});}} />
+                    onClick={() => {that.setState({jhmode: !that.state.jhmode, chart: "pie", factor: 20, momentum: "none"});}} />
+        <Form.Check inline className="small hideInJh" checked={that.state.momentum==="none" } label="Current situation" type={"radio"} name={"a"} id={`inline-radio-4`} onClick={() => {that.setState({momentum: "none"});}} />
+        <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last1" } label="Confirmed increase last 1 day" type={"radio"} name={"b"} id={`inline-radio-5`} onClick={() => {that.setState({momentum: "last1", chart: "pie"});}} />
+        <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last3" } label="Confirmed increase last 3 day" type={"radio"} name={"b"} id={`inline-radio-6`} onClick={() => {that.setState({momentum: "last3", chart: "pie"});}} />
+        <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last7" } label="Confirmed increase last 7 day" type={"radio"} name={"b"} id={`inline-radio-7`} onClick={() => {that.setState({momentum: "last7", chart: "pie"});}} />
       </div>
       {
         that.state.jhmode &&
@@ -280,6 +311,41 @@ class MapChart extends React.Component {
             }
           </Geographies>
           {
+            that.state.momentum!=="none" &&
+              confirmed.map(({ rowId, name, coordinates, markerOffset, momentumLast1, momentumLast3, momentumLast7, valMin1, valMin3, valMin7 }) => {
+                let size;
+                let val;
+                switch(that.state.momentum) {
+                  case "last1":
+                    size = momentumLast1;
+                    val = valMin1;
+                    break;
+                  case "last3":
+                    size = momentumLast3;
+                    val = valMin3;
+                    break;
+                  case "last7":
+                    size = momentumLast7;
+                    val = valMin7;
+                    break;
+                };
+                let pos = Math.abs(size) >= 0;
+                size = Math.abs(size);
+                return (<Marker coordinates={coordinates}>
+                  <circle r={Math.sqrt(size) * that.state.factor} fill={pos ? "#F008" : "#0F08"} />
+                  <title>{`${name} - ${val} ${pos ? "increase" : "decrease"} in confirmed cases`}</title>
+                  <text
+                    textAnchor="middle"
+                    y={markerOffset}
+                    style={{ fontSize: name.endsWith(", US") ? "0.005em" : "2px", fontFamily: "Arial", fill: "#5D5A6D33", pointerEvents: "none" }}
+                  >
+                    {name}
+                  </text>
+                </Marker>
+            )})
+          }
+          {
+            that.state.momentum==="none" &&
             confirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
               let active = val - recoveredAbsByRowId[rowId] - deathsAbsByRowId [rowId];
               if(that.state.jhmode) {
@@ -304,7 +370,7 @@ class MapChart extends React.Component {
             )})
           }
           {
-            !that.state.jhmode &&
+            that.state.momentum==="none" && !that.state.jhmode &&
             recovered.map(({rowId, name, coordinates, markerOffset, size, val }) => {
               if(that.state.jhmode) {
                 size = Math.log(size * 100000) / 25;
@@ -331,7 +397,7 @@ class MapChart extends React.Component {
             )})
           }
           {
-            !that.state.jhmode &&
+            that.state.momentum==="none" && !that.state.jhmode &&
             deaths.map(({name, coordinates, markerOffset, size, val }) => {
               if(that.state.jhmode) {
                 size = Math.log(size * 100000) / 25;
