@@ -266,13 +266,19 @@ class MapChart extends React.Component {
         </div>
       </Form>
       <div className="small controls2">
-        <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1} />
-        <Form.Check inline className="small" checked={that.state.jhmode} label={<span style={{color: "white", background: "black", padding: "0 3px"}}>Johns Hopkins Mode 🤔🤷</span>}type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
-                    onClick={() => {that.setState({jhmode: !that.state.jhmode, chart: "pie", factor: 20, momentum: "none"});}} />
-        <Form.Check inline className="small hideInJh" checked={that.state.momentum==="none" } label="Live situation" type={"radio"} name={"a"} id={`inline-radio-4`} onClick={() => {that.setState({momentum: "none"});}} />
+        {/*<Form.Check inline className="small hideInJh" checked={that.state.momentum==="none" } label="Live situation" type={"radio"} name={"a"} id={`inline-radio-4`} onClick={() => {that.setState({momentum: "none"});}} />
         <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last1" } label="Momentum last 1 day" type={"radio"} name={"b"} id={`inline-radio-5`} onClick={() => {that.setState({momentum: "last1", chart: "pie"});}} />
         <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last3" } label="Momentum last 3 days" type={"radio"} name={"b"} id={`inline-radio-6`} onClick={() => {that.setState({momentum: "last3", chart: "pie"});}} />
-        <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last7" } label="Momentum last 7 days" type={"radio"} name={"b"} id={`inline-radio-7`} onClick={() => {that.setState({momentum: "last7", chart: "pie"});}} />
+        <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last7" } label="Momentum last 7 days" type={"radio"} name={"b"} id={`inline-radio-7`} onClick={() => {that.setState({momentum: "last7", chart: "pie"});}} />*/}
+        <Form.Control disabled={that.state.jhmode} inline style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({momentum: e.nativeEvent.target.value, chart: "pie"});}}>
+          <option selected={that.state.momentum==="none"} value="none">Show live situation</option>
+          <option selected={that.state.momentum==="last1"} value="last1">Show change last 1 day</option>
+          <option selected={that.state.momentum==="last3"} value="last3">Show change last 3 days</option>
+          <option selected={that.state.momentum==="last7"} value="last7">Show change last 7 day</option>
+        </Form.Control>
+        <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1} />
+        <Form.Check inline className="small" checked={that.state.jhmode} label={<span style={{color: "white", background: "black", padding: "0 3px"}}>Johns Hopkins Mode 🤔🤷</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
+                    onClick={() => {that.setState({jhmode: !that.state.jhmode, chart: "pie", factor: 20, momentum: "none"});}} />
       </div>
       {
         that.state.jhmode &&
@@ -372,6 +378,9 @@ class MapChart extends React.Component {
                 };
                 let pos = size >= 0;
                 size = Math.abs(size);
+                //if(that.state.jhmode) {
+                //  size = Math.log(size * 100000) / 25;
+                //}
                 return (<Marker coordinates={coordinates}>
                   <circle r={Math.sqrt(size) * that.state.factor} fill={pos ? "#F008" : "#0F08"} />
                   <title>{`${name} - ${Math.abs(val)} ${pos ? "INCREASE" : "DECREASE"} in active(= confirmed-recovered) cases (excl. deceased)`}</title>
