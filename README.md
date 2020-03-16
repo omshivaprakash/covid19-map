@@ -28,3 +28,7 @@ Open https://daniel-karl.github.io/covid19-map/
 npm install         # first time only
 npm start
 ```
+
+# Contributors
+- Daniel Karl
+- Michael Baentsch (first version of normalization by population)
