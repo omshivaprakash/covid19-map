@@ -578,7 +578,8 @@ class MapChart extends React.Component {
       factor: 20,
       width: 2,
       jhmode: false,
-      momentum: "none"
+      momentum: "none",
+      ppmmode: false
     }
   }
 
@@ -821,6 +822,8 @@ class MapChart extends React.Component {
           <option value="last7">Show change last 7 days</option>
         </Form.Control>
         <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1} />
+        <Form.Check inline className="small" checked={that.state.ppmmode} label={<span>Normalize by population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
+                    onClick={() => {that.setState({ppmmode: !that.state.ppmmode, chart: "pie", factor: 20, momentum: "none"});}} />
         <Form.Check inline className="small" checked={that.state.jhmode} label={<span>Johns Hopkins Mode </span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
                     onClick={() => {that.setState({jhmode: !that.state.jhmode, chart: "pie", factor: 20, momentum: "none"});}} />
       </div>
@@ -955,6 +958,9 @@ class MapChart extends React.Component {
 		      else {
 			      console.log("population of " + name + " is " + population[name]);
 		      }*/
+		      if(that.state.ppmmode && population[name]) {
+                size = 10000000 * size / population[name];
+              }
               return (<Marker coordinates={coordinates}>
                 <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} x={isNaN(size)?0:- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={isNaN(size)?0:size * that.state.factor} fill="#F008" />
                 <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} x={that.state.width * 3 * 0 - that.state.width * 3 * 1.5} y={isNaN(size)?0:-size * that.state.factor} width={that.state.width * 3} height={isNaN(size)?0:size * that.state.factor} fill="#F008" />
@@ -982,6 +988,9 @@ class MapChart extends React.Component {
               if(that.state.chart==="pill" || that.state.chart==="bar") {
                 size *= 10;
               }
+              if(that.state.ppmmode && population[name]) {
+                size = 10000000 * size / population[name];
+              }
               return (<Marker coordinates={coordinates}>
                 <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} x={isNaN(size)?0:- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={isNaN(size)?0:size * that.state.factor} fill="#0F08" />
                 <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} x={that.state.width * 3 * 1 - that.state.width * 3 * 1.5} y={isNaN(size)?0:-size * that.state.factor} width={that.state.width * 3} height={isNaN(size)?0:size * that.state.factor} fill="#0F08" />
@@ -1005,6 +1014,9 @@ class MapChart extends React.Component {
               }
               if(that.state.chart==="pill" || that.state.chart==="bar") {
                 size *= 10;
+              }
+              if(that.state.ppmmode && population[name]) {
+                size = 10000000 * size / population[name];
               }
               return (<Marker coordinates={coordinates}>
                 <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} x={isNaN(size)?0:- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={isNaN(size)?0:size * that.state.factor} fill="#000" />
