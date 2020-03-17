@@ -4,7 +4,7 @@
 
 Hi, I'm Daniel Karl 👋
 
-I wanted to see whether I can reproduce the Johns Hopkins map of COVID19. Therefore I set out to build my own version (https://daniel-karl.github.io/covid19-map/) using the very same live data source that they kindly provide in their GitHub repo.
+I wanted to see whether I can reproduce the Johns Hopkins map of COVID19. Therefore I set out to build my own version using the very same live data source that they kindly provide in their GitHub repo.
 
 Thanks to the already available data set the process of ramping up the visualization tool went fairly smooth. So, after the timespan of a weekend it already has the following features:
 
