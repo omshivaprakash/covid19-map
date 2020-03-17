@@ -26,7 +26,12 @@ const MAX_SIZE = 67786;
 let totConf = 0;
 let totRec = 0;
 let totDead = 0;
-//straight from https://www.census.gov/newsroom/press-kits/2019/national-state-estimates.html:
+// Population counts extracted from the following sources:
+// US States: from https://www.census.gov/newsroom/press-kits/2019/national-state-estimates.html:
+// Countries: from https://population.un.org/wpp/Download/Files/1_Indicators%20(Standard)/CSV_FILES/WPP2019_TotalPopulationBySex.csv
+// China: from https://www.worldatlas.com/articles/chinese-provinces-by-population.html
+// Australia: from https://en.wikipedia.org/wiki/States_and_territories_of_Australia
+// Diamond Princess: https://www.nytimes.com/2020/03/08/world/asia/coronavirus-cruise-ship.html
 let population = {
   "Alabama, US": 4903185,
   "Alaska, US": 731545,
@@ -290,7 +295,6 @@ let population = {
   "High-income countries": 1263092934,
   "Holy Sea": 809,
   "Honduras": 9904608,
-  "Hubei, China": 58500000,
   "Hungary": 9660350,
   "Iceland": 341250,
   "India": 1380004385,
@@ -553,7 +557,47 @@ let population = {
   "World Bank Regional Groups (developing only)": 6528762227,
   "Yemen": 29825968,
   "Zambia": 18383956,
-  "Zimbabwe": 14862927
+  "Zimbabwe": 14862927,
+	"Guangdong, China":	104303132,
+	"Shandong, China":	100063065,
+	"Henan, China":	94023567,
+	"Sichuan, China":	80418200,
+	"Jiangsu, China":	78659903,
+	"Hebei, China":	71854202,
+	"Hunan, China":	65683722,
+	"Anhui, China":	59500510,
+	"Hubei, China":	57237740,
+	"Zhejiang, China":	54426891,
+	"Guangxi, China":	46026629,
+	"Yunnan, China":	45966239,
+	"Jiangxi, China":	44567475,
+	"Liaoning, China":	43746323,
+	"Fujian, China":	36894216,
+	"Shaanxi, China":	37327378,
+	"Heilongjiang, China":	38312224,
+	"Shanxi, China":	37022111,
+	"Guizhou, China":	35806468,
+	"Chongqing, China":	28846170,
+	"Jilin, China":	27462297,
+	"Gansu, China":	25575254,
+	"Inner Mongolia, China":	24706321,
+	"Xinjiang, China":	21813334,
+	"Shanghai, China":	23019148,
+	"Beijing, China":	19612368,
+	"Tianjin, China":	12938224,
+	"Hainan, China":	9261518,
+	"Hong Kong, China":	7061200,
+	"Ningxia, China":	6176900,
+	"Qinghai, China":	5626722,
+	"Tibet, China":	3002166,
+	"Macau, China":	552503,
+	"New South Wales, Australia": 8089952,
+	"Queensland, Australia": 5095100,
+	"South Australia, Australia": 1044353,
+	"Tasmania, Australia": 534281,
+	"Victoria, Australia": 6594804,
+	"Westerna Australia, Australia": 2621680,
+  "Diamond Princess, Cruise Ship": 3800
 };
 
 const rounded = num => {
