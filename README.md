@@ -4,20 +4,17 @@
 
 Hi, I'm Daniel Karl 👋
 
-I wanted to know whether Johns Hopkins' map of COVID19 is accurate. 
-Therefore I set out to build my own map using the very same live data source,
-however, with
+I wanted to see whether I can reproduce the Johns Hopkins map of COVID19. Therefore I set out to build my own version (https://daniel-karl.github.io/covid19-map/) using the very same live data source that they kindly provide in their GitHub repo.
 
-- linear normalization of data,
-- mapping the numbers to marker area rather than radius (to avoid data is perceived quadratically skewed), and
-- no increase/decrease of marker size when zooming in/out.
+Thanks to the already available data set the process of ramping up the visualization tool went fairly smooth. So, after the timespan of a weekend it already has the following features:
 
-When mapping the data carefully "as is" it appears to be quite different from the view offered by the Johns Hopkins map visualization. Johns Hopkins should disclose what exactly they show in their approach. It could be a logarithmically scaled version of the data, which I believe is not very easy to interpret for the untrained observer.
+- offers alternative glyphs (circles can be hard to compare in the human eye)
+- can show the momentum of the spread in glyphs directly, i.e. change over the last 1, 3 or 7 days
+- can additionally normalize by population (kindly contributed by Michael Baentsch)
+- is open source, therefore allows other researchers to contribute on GitHub
 
-I additionally show the momentum of the last 1, 3 or 7 days to display which countries are successfully recovering more compared to accumulating more confirmed infections.
-
-Please, feel free to contribute to this open source code to make this visualization more feature-rich.
- 
+Please check it out, and hopefully it helps to drive more research and to provide a better understanding of the situation we are currently facing. 
+If you want to contribute a feature I will roll out your pull request timely and add your name here.
 
 ## Users
 Open https://daniel-karl.github.io/covid19-map/
