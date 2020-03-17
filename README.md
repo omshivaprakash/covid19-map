@@ -6,7 +6,7 @@ Hi, I'm Daniel Karl 👋
 
 I wanted to see whether I can reproduce the Johns Hopkins map visualization of COVID19. Therefore I set out to build my own version using the very same live data source that they kindly provide in their GitHub repo.
 
-Thanks to the already available data set the process of ramping up the visualization tool went fairly smooth. So, after the timespan of a weekend it already has the following features:
+Thanks to the already available data set the process of ramping up a visualization tool in React went fairly smooth. So, after the timespan of a weekend it already has the following features:
 
 - offers alternative glyphs (circles can be hard to compare in the human eye)
 - can show the momentum of the spread in glyphs directly, i.e. change over the last 1, 3 or 7 days
