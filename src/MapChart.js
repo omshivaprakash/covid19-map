@@ -953,10 +953,13 @@ class MapChart extends React.Component {
                 let pos = size >= 0;
                 size = Math.abs(size);
                 if(that.state.logmode) {
-                  size = Math.log(size * 100000) / 25;
+                  size = Math.log(size * 100000) / 100;
                 }
                 if(that.state.ppmmode && population[name]) {
                   size = 10000000 * size / population[name];
+                }
+                if(that.state.logmode && that.state.ppmmode) {
+                  size = size / 20
                 }
                 return (<Marker coordinates={coordinates}>
                   <circle r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill={pos ? "#F008" : "#0F08"} />
@@ -979,10 +982,13 @@ class MapChart extends React.Component {
                 size *= 10;
               }
 		      if(that.state.logmode) {
-                size = Math.log(size * 100000) / 25;
+                size = Math.log(size * 100000) / 100;
               }
 		      if(that.state.ppmmode && population[name]) {
                 size = 10000000 * size / population[name];
+              }
+		      if(that.state.logmode && that.state.ppmmode) {
+                size = size / 20
               }
 		      let ppms = population[name] && !isNaN(val) ? '(' + Math.round(1000000 * val / population[name]) + ' ppm)'  : '';
 		      let ppms2 = population[name] && !isNaN(active) ? '(' + Math.round(1000000 * active / population[name]) + ' ppm)'  : '';
@@ -1011,10 +1017,13 @@ class MapChart extends React.Component {
                 size *= 10;
               }
               if(that.state.logmode) {
-                size = Math.log(size * 100000) / 25;
+                size = Math.log(size * 100000) / 100;
               }
               if(that.state.ppmmode && population[name]) {
                 size = 10000000 * size / population[name];
+              }
+              if(that.state.logmode && that.state.ppmmode) {
+                size = size / 20
               }
               let ppms = population[name] && !isNaN(val) ? '(' + Math.round(1000000 * val / population[name]) + ' ppm)'  : '';
               return (<Marker coordinates={coordinates}>
@@ -1039,10 +1048,13 @@ class MapChart extends React.Component {
                 size *= 10;
               }
               if(that.state.logmode) {
-                size = Math.log(size * 100000) / 25;
+                size = Math.log(size * 100000) / 100;
               }
               if(that.state.ppmmode && population[name]) {
                 size = 10000000 * size / population[name];
+              }
+              if(that.state.logmode && that.state.ppmmode) {
+                size = size / 20
               }
               let ppms = population[name] && !isNaN(val) ? '(' + Math.round(1000000 * val / population[name]) + ' ppm)'  : '';
               return (<Marker coordinates={coordinates}>
