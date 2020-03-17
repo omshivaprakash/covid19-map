@@ -596,8 +596,7 @@ let population = {
 	"South Australia, Australia": 1044353,
 	"Tasmania, Australia": 534281,
 	"Victoria, Australia": 6594804,
-	"Westerna Australia, Australia": 2621680,
-  "Diamond Princess, Cruise Ship": 3800
+	"Westerna Australia, Australia": 2621680
 };
 
 const rounded = num => {
