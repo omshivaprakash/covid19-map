@@ -604,8 +604,10 @@ const rounded = num => {
     return Math.round(num / 100000000) / 10 + "Bn";
   } else if (num > 1000000) {
     return Math.round(num / 100000) / 10 + "M";
-  } else {
+  } else if (num > 1000) {
     return Math.round(num / 100) / 10 + "K";
+  } else {
+    return num;
   }
 };
 
@@ -993,9 +995,6 @@ class MapChart extends React.Component {
             that.state.momentum==="none" &&
             confirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
               let active = val - recoveredAbsByRowId[rowId] - deathsAbsByRowId[rowId];
-	      let ppms = "NN ppm";
-	      let ppms2 = "NN ppm";
-
               if(that.state.jhmode) {
                 size = Math.log(size * 100000) / 25;
               }
@@ -1011,13 +1010,13 @@ class MapChart extends React.Component {
 		      if(that.state.ppmmode && population[name]) {
                 size = 10000000 * size / population[name];
               }
+		      let ppms = population[name] && !isNaN(val) ? '(' + Math.round(1000000 * val / population[name]) + ' ppm)'  : '';
+		      let ppms2 = population[name] && !isNaN(active) ? '(' + Math.round(1000000 * active / population[name]) + ' ppm)'  : '';
               return (<Marker coordinates={coordinates}>
-		      {ppms =  (population[name] && !isNaN(val)) ? `(`+Math.round(1000000*val/population[name])+` ppm)`  : ``  }
-		      {ppms2 =  (population[name] && !isNaN(active)) ? `(`+Math.round(1000000*active/population[name])+` ppm)`  : ``  }
                 <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} x={isNaN(size)?0:- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={isNaN(size)?0:size * that.state.factor} fill="#F008" />
                 <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} x={that.state.width * 3 * 0 - that.state.width * 3 * 1.5} y={isNaN(size)?0:-size * that.state.factor} width={that.state.width * 3} height={isNaN(size)?0:size * that.state.factor} fill="#F008" />
                 <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill="#F008" />
-                <title>{`${name} - ${val} confirmed ${ppms}, ${active} active ${ppms2}`}</title>
+                <title>{`${name} - ${rounded(val)} confirmed ${ppms}, ${rounded(active)} active ${ppms2}`}</title>
                 <text
                   textAnchor="middle"
                   y={markerOffset}
@@ -1031,7 +1030,6 @@ class MapChart extends React.Component {
           {
             that.state.momentum==="none" && !that.state.jhmode &&
             recovered.map(({rowId, name, coordinates, markerOffset, size, val }) => {
-	      let ppms = "(NN ppm)";
               if(that.state.jhmode) {
                 size = Math.log(size * 100000) / 25;
               }
@@ -1044,12 +1042,12 @@ class MapChart extends React.Component {
               if(that.state.ppmmode && population[name]) {
                 size = 10000000 * size / population[name];
               }
+              let ppms = population[name] && !isNaN(val) ? '(' + Math.round(1000000 * val / population[name]) + ' ppm)'  : '';
               return (<Marker coordinates={coordinates}>
-		      {ppms =  (population[name] && !isNaN(val)) ? `(`+Math.round(1000000*val/population[name])+` ppm)`  : ``  }
                 <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} x={isNaN(size)?0:- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={isNaN(size)?0:size * that.state.factor} fill="#0F08" />
                 <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} x={that.state.width * 3 * 1 - that.state.width * 3 * 1.5} y={isNaN(size)?0:-size * that.state.factor} width={that.state.width * 3} height={isNaN(size)?0:size * that.state.factor} fill="#0F08" />
                 <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill="#0F08" />
-                <title>{name + " - " + val + " recovered " + ppms}</title>
+                <title>{name + " - " + rounded(val) + " recovered " + ppms}</title>
                 <text
                   textAnchor="middle"
                   y={markerOffset}
@@ -1063,7 +1061,6 @@ class MapChart extends React.Component {
           {
             that.state.momentum==="none" && !that.state.jhmode &&
             deaths.map(({name, coordinates, markerOffset, size, val }) => {
-              let ppms = "(NN ppm)";
               if(that.state.jhmode) {
                 size = Math.log(size * 100000) / 25;
               }
@@ -1073,12 +1070,12 @@ class MapChart extends React.Component {
               if(that.state.ppmmode && population[name]) {
                 size = 10000000 * size / population[name];
               }
+              let ppms = population[name] && !isNaN(val) ? '(' + Math.round(1000000 * val / population[name]) + ' ppm)'  : '';
               return (<Marker coordinates={coordinates}>
-		      {ppms =  (population[name] && !isNaN(val)) ? `(`+Math.round(1000000*val/population[name])+` ppm)`  : ``  }
                 <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} x={isNaN(size)?0:- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={isNaN(size)?0:size * that.state.factor} fill="#000" />
                 <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} x={that.state.width * 3 * 2 - that.state.width * 3 * 1.5} y={isNaN(size)?0:-size * that.state.factor} width={that.state.width * 3} height={isNaN(size)?0:size * that.state.factor} fill="#000" />
                 <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#2128"}}} r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill="#2128" />
-                <title>{name + " - " + val + " deceased "+ppms}</title>
+                <title>{name + " - " + rounded(val) + " deceased " + ppms}</title>
                 <text
                   textAnchor="middle"
                   y={markerOffset}
