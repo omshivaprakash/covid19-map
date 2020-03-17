@@ -622,7 +622,7 @@ class MapChart extends React.Component {
       chart: "pie",
       factor: 50,
       width: 2,
-      jhmode: false,
+      logmode: true,
       momentum: "none",
       ppmmode: false
     }
@@ -851,8 +851,8 @@ class MapChart extends React.Component {
       <Form>
         <div className="ml-3 small controls">
           <Form.Check inline className="small" checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onClick={() => {that.setState({chart: "pie"});}}/>
-          <Form.Check inline className="small hideInJh" checked={that.state.chart==="pill" } label="Progress" type={"radio"} name={"a"} id={`inline-radio-3`} onClick={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/>
-          <Form.Check inline className="small hideInJh" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onClick={() => {that.setState({chart: "bar"});}} disabled={that.state.momentum!=="none" ? true : false}/>
+          <Form.Check inline className="small hideInMomentum" checked={that.state.chart==="pill" } label="Progress" type={"radio"} name={"a"} id={`inline-radio-3`} onClick={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/>
+          <Form.Check inline className="small hideInMomentum" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onClick={() => {that.setState({chart: "bar"});}} disabled={that.state.momentum!=="none" ? true : false}/>
         </div>
       </Form>
       <div className="small controls2">
@@ -860,39 +860,19 @@ class MapChart extends React.Component {
         <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last1" } label="Momentum last 1 day" type={"radio"} name={"b"} id={`inline-radio-5`} onClick={() => {that.setState({momentum: "last1", chart: "pie"});}} />
         <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last3" } label="Momentum last 3 days" type={"radio"} name={"b"} id={`inline-radio-6`} onClick={() => {that.setState({momentum: "last3", chart: "pie"});}} />
         <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last7" } label="Momentum last 7 days" type={"radio"} name={"b"} id={`inline-radio-7`} onClick={() => {that.setState({momentum: "last7", chart: "pie"});}} />*/}
-        <Form.Control value={that.state.momentum} disabled={that.state.jhmode} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({momentum: e.nativeEvent.target.value, chart: "pie"});}}>
-          <option  value="none">Show live situation</option>
-          <option  value="last1">Show change last 1 day</option>
-          <option  value="last3">Show change last 3 days</option>
+        <Form.Control value={that.state.momentum} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({momentum: e.nativeEvent.target.value, chart: "pie"});}}>
+          <option value="none">Show live situation</option>
+          <option value="last1">Show change last 1 day</option>
+          <option value="last3">Show change last 3 days</option>
           <option value="last7">Show change last 7 days</option>
         </Form.Control>
         <span className="small text-muted">Scale:</span>
         <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1}></ReactBootstrapSlider>
         <Form.Check inline className="small hideInJh" checked={that.state.ppmmode} label={<span>Normalize by population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
-                    onClick={() => {that.setState({ppmmode: !that.state.ppmmode, chart: "pie", factor: 50});}} />
-        {/*<Form.Check inline className="small" checked={that.state.jhmode} label={<span>Johns Hopkins Mode </span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
-                    onClick={() => {that.setState({jhmode: !that.state.jhmode, ppmmode: false, chart: "pie", factor: 20, momentum: "none"});}} />*/}
+                    onClick={() => {that.setState({ppmmode: !that.state.ppmmode});}} />
+        <Form.Check inline className="small" checked={that.state.logmode} label={<span>Normalize logarithmically</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
+                    onClick={() => {that.setState({logmode: !that.state.logmode});}} />
       </div>
-      {
-        that.state.jhmode &&
-        <style dangerouslySetInnerHTML={{__html: `
-          .container-fluid { background: #000914 }
-          .hideInJh {
-            display: none !important;
-          }
-          .lightInJh {
-            color: #eee;
-          }
-          * {
-            border-radius: 0 !important;
-          }
-          .info, .controls, .controls2 {
-            border: 1px solid #444;
-            background: #222;
-            color: white;
-          }
-        `}} />
-      }
       {
         that.state.momentum !== "none" &&
         <style dangerouslySetInnerHTML={{__html: `
@@ -931,15 +911,15 @@ class MapChart extends React.Component {
                     }}
                     style={{
                       default: {
-                        fill: that.state.jhmode ? "#333" : "#ddd" ,
+                        fill: "#ddd" ,
                         outline: "none"
                       },
                       hover: {
-                        fill: that.state.jhmode ? "#666" : "#999",
+                        fill: "#999",
                         outline: "none"
                       },
                       pressed: {
-                        fill: that.state.jhmode ? "#333" : "#ddd",
+                        fill: "#ddd",
                         outline: "none"
                       }
                     }}
@@ -972,9 +952,9 @@ class MapChart extends React.Component {
                 };
                 let pos = size >= 0;
                 size = Math.abs(size);
-                //if(that.state.jhmode) {
-                //  size = Math.log(size * 100000) / 25;
-                //}
+                if(that.state.logmode) {
+                  size = Math.log(size * 100000) / 25;
+                }
                 if(that.state.ppmmode && population[name]) {
                   size = 10000000 * size / population[name];
                 }
@@ -995,18 +975,12 @@ class MapChart extends React.Component {
             that.state.momentum==="none" &&
             confirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
               let active = val - recoveredAbsByRowId[rowId] - deathsAbsByRowId[rowId];
-              if(that.state.jhmode) {
-                size = Math.log(size * 100000) / 25;
-              }
               if(that.state.chart==="pill" || that.state.chart==="bar") {
                 size *= 10;
               }
-		      /*if (!population[name]) {
-			      console.log("no population data for " + name);
-		      }
-		      else {
-			      console.log("population of " + name + " is " + population[name]);
-		      }*/
+		      if(that.state.logmode) {
+                size = Math.log(size * 100000) / 25;
+              }
 		      if(that.state.ppmmode && population[name]) {
                 size = 10000000 * size / population[name];
               }
@@ -1030,14 +1004,14 @@ class MapChart extends React.Component {
           {
             that.state.momentum==="none" && !that.state.jhmode &&
             recovered.map(({rowId, name, coordinates, markerOffset, size, val }) => {
-              if(that.state.jhmode) {
-                size = Math.log(size * 100000) / 25;
-              }
               if(that.state.chart==="pie" || that.state.chart==="pill") {
                 size += deathsByRowId[rowId];
               }
               if(that.state.chart==="pill" || that.state.chart==="bar") {
                 size *= 10;
+              }
+              if(that.state.logmode) {
+                size = Math.log(size * 100000) / 25;
               }
               if(that.state.ppmmode && population[name]) {
                 size = 10000000 * size / population[name];
@@ -1061,11 +1035,11 @@ class MapChart extends React.Component {
           {
             that.state.momentum==="none" && !that.state.jhmode &&
             deaths.map(({name, coordinates, markerOffset, size, val }) => {
-              if(that.state.jhmode) {
-                size = Math.log(size * 100000) / 25;
-              }
               if(that.state.chart==="pill" || that.state.chart==="bar") {
                 size *= 10;
+              }
+              if(that.state.logmode) {
+                size = Math.log(size * 100000) / 25;
               }
               if(that.state.ppmmode && population[name]) {
                 size = 10000000 * size / population[name];
