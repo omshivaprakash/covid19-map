@@ -433,7 +433,7 @@ let population = {
   "Saint Pierre and Miquelon": 5795,
   "Saint Vincent and the Grenadines": 110947,
   "Samoa": 198410,
-  "San Marino": 33938,
+  "San Marino, Republic of": 33938,
   "Sao Tome and Principe": 219161,
   "Saudi Arabia": 34813867,
   "Senegal": 16743930,
