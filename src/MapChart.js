@@ -8,8 +8,7 @@ import {
 } from "react-simple-maps";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faWindowMinimize } from '@fortawesome/free-solid-svg-icons';
-import {faWindowRestore} from '@fortawesome/free-regular-svg-icons';
+import { faWindowMinimize, faWindowRestore } from '@fortawesome/free-solid-svg-icons';
 
 import Papa from "papaparse";
 import Form from 'react-bootstrap/Form';
