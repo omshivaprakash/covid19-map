@@ -873,6 +873,7 @@ class MapChart extends React.Component {
       </div>
       <div className="small timeline">
         Timeline
+        <span class="small ml-3">Come back soon for more details</span>
       </div>
       {
         that.state.momentum !== "none" &&
