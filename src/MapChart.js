@@ -848,14 +848,7 @@ class MapChart extends React.Component {
     let that = this;
     return (
       <>
-      <Form>
-        <div className="ml-3 small controls">
-          <Form.Check inline className="small" checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onClick={() => {that.setState({chart: "pie"});}}/>
-          <Form.Check inline className="small hideInMomentum" checked={that.state.chart==="pill" } label="Progress" type={"radio"} name={"a"} id={`inline-radio-3`} onClick={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/>
-          <Form.Check inline className="small hideInMomentum" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onClick={() => {that.setState({chart: "bar"});}} disabled={that.state.momentum!=="none" ? true : false}/>
-        </div>
-      </Form>
-      <div className="small controls2">
+      <div className="small controls">
         {/*<Form.Check inline className="small hideInJh" checked={that.state.momentum==="none" } label="Live situation" type={"radio"} name={"a"} id={`inline-radio-4`} onClick={() => {that.setState({momentum: "none"});}} />
         <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last1" } label="Momentum last 1 day" type={"radio"} name={"b"} id={`inline-radio-5`} onClick={() => {that.setState({momentum: "last1", chart: "pie"});}} />
         <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last3" } label="Momentum last 3 days" type={"radio"} name={"b"} id={`inline-radio-6`} onClick={() => {that.setState({momentum: "last3", chart: "pie"});}} />
@@ -866,12 +859,20 @@ class MapChart extends React.Component {
           <option value="last3">Show change last 3 days</option>
           <option value="last7">Show change last 7 days</option>
         </Form.Control>
+        <span className="small text-muted mr-2">Normalize</span>
+        <Form.Check inline className="small hideInJh" checked={that.state.ppmmode} label={<span>by population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
+                    onClick={() => {that.setState({ppmmode: !that.state.ppmmode});}} />
+        <Form.Check inline className="small" checked={that.state.logmode} label={<span>logarithmically</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
+                    onClick={() => {that.setState({logmode: !that.state.logmode});}} /><br />
+        <span className="small text-muted mr-2">Glyphs:</span>
+        <Form.Check inline className="small" checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onClick={() => {that.setState({chart: "pie"});}}/>
+        <Form.Check inline className="small hideInMomentum" checked={that.state.chart==="pill" } label="Progress" type={"radio"} name={"a"} id={`inline-radio-3`} onClick={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/>
+        <Form.Check inline className="small hideInMomentum" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onClick={() => {that.setState({chart: "bar"});}} disabled={that.state.momentum!=="none" ? true : false}/><br/>
         <span className="small text-muted">Scale:</span>
         <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1}></ReactBootstrapSlider>
-        <Form.Check inline className="small hideInJh" checked={that.state.ppmmode} label={<span>Normalize by population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
-                    onClick={() => {that.setState({ppmmode: !that.state.ppmmode});}} />
-        <Form.Check inline className="small" checked={that.state.logmode} label={<span>Normalize logarithmically</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
-                    onClick={() => {that.setState({logmode: !that.state.logmode});}} />
+      </div>
+      <div className="small timeline">
+        Timeline
       </div>
       {
         that.state.momentum !== "none" &&
