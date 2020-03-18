@@ -859,21 +859,21 @@ class MapChart extends React.Component {
           <option value="last3">Show change last 3 days</option>
           <option value="last7">Show change last 7 days</option>
         </Form.Control>
-        <span className="small text-muted mr-2">Normalize</span>
-        <Form.Check inline className="small hideInJh" checked={that.state.ppmmode} label={<span>by population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
-                    onClick={() => {that.setState({ppmmode: !that.state.ppmmode});}} />
-        <Form.Check inline className="small" checked={that.state.logmode} label={<span>logarithmically</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
-                    onClick={() => {that.setState({logmode: !that.state.logmode});}} /><br />
-        <span className="small text-muted mr-2">Glyphs:</span>
-        <Form.Check inline className="small" checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onClick={() => {that.setState({chart: "pie"});}}/>
-        <Form.Check inline className="small hideInMomentum" checked={that.state.chart==="pill" } label="Progress" type={"radio"} name={"a"} id={`inline-radio-3`} onClick={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/>
-        <Form.Check inline className="small hideInMomentum" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onClick={() => {that.setState({chart: "bar"});}} disabled={that.state.momentum!=="none" ? true : false}/><br/>
         <span className="small text-muted">Scale:</span>
         <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1}></ReactBootstrapSlider>
+        <span className="small text-muted mr-2">Normalize</span>
+        <Form.Check inline className="small" checked={that.state.logmode} label={<span>logarithmically</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
+                    onChange={() => {that.setState({logmode: !that.state.logmode});}} />
+        <Form.Check inline className="small" checked={that.state.ppmmode} label={<span>by population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
+                    onChange={() => {that.setState({ppmmode: !that.state.ppmmode});}} /><br />
+        <span className="small text-muted mr-2">Glyphs:</span>
+        <Form.Check inline className="small" checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onChange={() => {that.setState({chart: "pie"});}}/>
+        <Form.Check inline className="small hideInMomentum" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onChange={() => {that.setState({chart: "bar"});}} disabled={that.state.momentum!=="none" ? true : false}/>
+        <Form.Check inline className="small hideInMomentum" checked={that.state.chart==="pill" } label="Progress" type={"radio"} name={"a"} id={`inline-radio-3`} onChange={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/>
       </div>
       <div className="small timeline">
         Timeline
-        <span class="small ml-3">Come back soon for more details</span>
+        <span className="small ml-3">Come back soon for more details</span>
       </div>
       {
         that.state.momentum !== "none" &&
@@ -951,11 +951,13 @@ class MapChart extends React.Component {
                     alert("something went wrong");
                     console.log("something went wrong");
                     break;
-                };
+                }
                 let pos = size >= 0;
                 size = Math.abs(size);
                 if(that.state.logmode) {
-                  size = Math.log(size * 100000) / 100;
+                  if(size > 0) {
+                    size = Math.log(size * 100000) / 100;
+                  }
                 }
                 if(that.state.ppmmode && population[name]) {
                   size = 10000000 * size / population[name];
@@ -984,7 +986,9 @@ class MapChart extends React.Component {
                 size *= 10;
               }
 		      if(that.state.logmode) {
-                size = Math.log(size * 100000) / 100;
+		        if(size > 0) {
+                  size = Math.log(size * 100000) / 100;
+                }
               }
 		      if(that.state.ppmmode && population[name]) {
                 size = 10000000 * size / population[name];
@@ -994,7 +998,7 @@ class MapChart extends React.Component {
               }
 		      let ppms = population[name] && !isNaN(val) ? '(' + Math.round(1000000 * val / population[name]) + ' ppm)'  : '';
 		      let ppms2 = population[name] && !isNaN(active) ? '(' + Math.round(1000000 * active / population[name]) + ' ppm)'  : '';
-              return (<Marker coordinates={coordinates}>
+              return (<Marker coordinates={coordinates} key={"confirmed_" + rowId}>
                 <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} x={isNaN(size)?0:- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={isNaN(size)?0:size * that.state.factor} fill="#F008" />
                 <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} x={that.state.width * 3 * 0 - that.state.width * 3 * 1.5} y={isNaN(size)?0:-size * that.state.factor} width={that.state.width * 3} height={isNaN(size)?0:size * that.state.factor} fill="#F008" />
                 <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill="#F008" />
@@ -1019,7 +1023,9 @@ class MapChart extends React.Component {
                 size *= 10;
               }
               if(that.state.logmode) {
-                size = Math.log(size * 100000) / 100;
+                if(size > 0) {
+                  size = Math.log(size * 100000) / 100;
+                }
               }
               if(that.state.ppmmode && population[name]) {
                 size = 10000000 * size / population[name];
@@ -1028,7 +1034,7 @@ class MapChart extends React.Component {
                 size = size / 20
               }
               let ppms = population[name] && !isNaN(val) ? '(' + Math.round(1000000 * val / population[name]) + ' ppm)'  : '';
-              return (<Marker coordinates={coordinates}>
+              return (<Marker coordinates={coordinates} key={"recovered_" + rowId}>
                 <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} x={isNaN(size)?0:- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={isNaN(size)?0:size * that.state.factor} fill="#0F08" />
                 <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} x={that.state.width * 3 * 1 - that.state.width * 3 * 1.5} y={isNaN(size)?0:-size * that.state.factor} width={that.state.width * 3} height={isNaN(size)?0:size * that.state.factor} fill="#0F08" />
                 <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill="#0F08" />
@@ -1045,12 +1051,14 @@ class MapChart extends React.Component {
           }
           {
             that.state.momentum==="none" && !that.state.jhmode &&
-            deaths.map(({name, coordinates, markerOffset, size, val }) => {
+            deaths.map(({rowId, name, coordinates, markerOffset, size, val }) => {
               if(that.state.chart==="pill" || that.state.chart==="bar") {
                 size *= 10;
               }
               if(that.state.logmode) {
-                size = Math.log(size * 100000) / 100;
+                if(size > 0) {
+                  size = Math.log(size * 100000) / 100;
+                }
               }
               if(that.state.ppmmode && population[name]) {
                 size = 10000000 * size / population[name];
@@ -1059,7 +1067,7 @@ class MapChart extends React.Component {
                 size = size / 20
               }
               let ppms = population[name] && !isNaN(val) ? '(' + Math.round(1000000 * val / population[name]) + ' ppm)'  : '';
-              return (<Marker coordinates={coordinates}>
+              return (<Marker coordinates={coordinates} key={"deceased_" + rowId}>
                 <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} x={isNaN(size)?0:- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={isNaN(size)?0:size * that.state.factor} fill="#000" />
                 <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} x={that.state.width * 3 * 2 - that.state.width * 3 * 1.5} y={isNaN(size)?0:-size * that.state.factor} width={that.state.width * 3} height={isNaN(size)?0:size * that.state.factor} fill="#000" />
                 <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#2128"}}} r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill="#2128" />
