@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col';
 import Navbar from 'react-bootstrap/Navbar';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDatabase, faCode } from '@fortawesome/free-solid-svg-icons';
+import {faDatabase, faCode, faWindowClose} from '@fortawesome/free-solid-svg-icons';
 import { faDotCircle} from '@fortawesome/free-regular-svg-icons';
 
 const date = new Date();
@@ -56,7 +56,8 @@ function App() {
           </Col>
         </Row>
       </Container>,
-      <div className="info small text-muted" style={hidden ? {display: "none"} : {display:"block"}} onClick={() => {setHidden(true)}}>
+      <div className="info small text-muted" style={hidden ? {display: "none"} : {display:"block"}}>
+        <a className={"btn-collapse"} onClick={() => {setHidden(true)}}>close <FontAwesomeIcon icon={faWindowClose}/></a>
         <span className="text-danger showInMomentum">Red: increase active</span>
         <span className="text-success showInMomentum">Green: decrease active</span>
         <span className="text-dark showInMomentum">where "active" is newly confirmed minus newly recovered (excluding deceased)</span>

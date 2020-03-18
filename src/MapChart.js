@@ -1,4 +1,4 @@
-import React, { memo} from "react";
+import React, {memo, useState} from "react";
 import {
   ComposableMap,
   Geographies,
@@ -6,6 +6,9 @@ import {
   ZoomableGroup,
   Marker
 } from "react-simple-maps";
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faWindowMinimize, faWindowRestore } from '@fortawesome/free-solid-svg-icons';
 
 import Papa from "papaparse";
 import Form from 'react-bootstrap/Form';
@@ -624,7 +627,8 @@ class MapChart extends React.Component {
       width: 2,
       logmode: true,
       momentum: "none",
-      ppmmode: false
+      ppmmode: false,
+      minimized: false
     }
   }
 
@@ -848,32 +852,36 @@ class MapChart extends React.Component {
     let that = this;
     return (
       <>
-      <div className="small controls">
+      <div className={"small controls" + (that.state.minimized ? " minimized" : "")}>
         {/*<Form.Check inline className="small hideInJh" checked={that.state.momentum==="none" } label="Live situation" type={"radio"} name={"a"} id={`inline-radio-4`} onClick={() => {that.setState({momentum: "none"});}} />
         <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last1" } label="Momentum last 1 day" type={"radio"} name={"b"} id={`inline-radio-5`} onClick={() => {that.setState({momentum: "last1", chart: "pie"});}} />
         <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last3" } label="Momentum last 3 days" type={"radio"} name={"b"} id={`inline-radio-6`} onClick={() => {that.setState({momentum: "last3", chart: "pie"});}} />
         <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last7" } label="Momentum last 7 days" type={"radio"} name={"b"} id={`inline-radio-7`} onClick={() => {that.setState({momentum: "last7", chart: "pie"});}} />*/}
-        <span className="small text-muted">Mode:</span>
-        <Form.Control value={that.state.momentum} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({momentum: e.nativeEvent.target.value, chart: "pie"});}}>
-          <option value="none">Live</option>
-          <option value="last1">Change since last 24 hours</option>
-          <option value="last3">Change since last 3 days</option>
-          <option value="last7">Change since last 7 days</option>
-        </Form.Control>
-        <span className="small text-muted mr-2">Normalization:</span><br />
-        <Form.Check inline className="small" checked={that.state.logmode} label={<span>logarithmically</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
-                    onChange={() => {that.setState({logmode: !that.state.logmode});}} />
-        <Form.Check inline className="small" checked={that.state.ppmmode} label={<span>by population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
-                    onChange={() => {that.setState({ppmmode: !that.state.ppmmode});}} /><br />
-        <span className="small text-muted mr-2">Representation:</span><br/>
-        <Form.Check inline className="small" checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onChange={() => {that.setState({chart: "pie"});}}/>
-        <Form.Check inline className="small hideInMomentum" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onChange={() => {that.setState({chart: "bar"});}} disabled={that.state.momentum!=="none" ? true : false}/>
-        <Form.Check inline className="small hideInMomentum" checked={that.state.chart==="pill" } label="Progress" type={"radio"} name={"a"} id={`inline-radio-3`} onChange={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/><br />
-        <span className="small text-muted">Scaling:</span>
-        <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1}></ReactBootstrapSlider>
+        <a hidden={that.state.minimized} className={"btn-collapse"} onClick={() => {that.setState({minimized: true})}}>minimize <FontAwesomeIcon icon={faWindowMinimize}/></a>
+        <a hidden={!that.state.minimized} className={"btn-collapse"} onClick={() => {that.setState({minimized: false})}}><FontAwesomeIcon icon={faWindowRestore}/></a>
+        <div hidden={that.state.minimized}>
+          <span className="small text-muted">Mode:</span>
+          <Form.Control value={that.state.momentum} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({momentum: e.nativeEvent.target.value, chart: "pie"});}}>
+            <option value="none">Live</option>
+            <option value="last1">Change since last 24 hours</option>
+            <option value="last3">Change since last 3 days</option>
+            <option value="last7">Change since last 7 days</option>
+          </Form.Control>
+          <span className="small text-muted mr-2">Normalization:</span><br />
+          <Form.Check inline className="small" checked={that.state.logmode} label={<span>logarithmically</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
+                      onChange={() => {that.setState({logmode: !that.state.logmode});}} />
+          <Form.Check inline className="small" checked={that.state.ppmmode} label={<span>by population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
+                      onChange={() => {that.setState({ppmmode: !that.state.ppmmode});}} /><br />
+          <span className="small text-muted mr-2">Representation:</span><br/>
+          <Form.Check inline className="small" checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onChange={() => {that.setState({chart: "pie"});}}/>
+          <Form.Check inline className="small hideInMomentum" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onChange={() => {that.setState({chart: "bar"});}} disabled={that.state.momentum!=="none" ? true : false}/>
+          <Form.Check inline className="small hideInMomentum" checked={that.state.chart==="pill" } label="Progress" type={"radio"} name={"a"} id={`inline-radio-3`} onChange={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/><br />
+          <span className="small text-muted">Scaling:</span>
+          <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1}></ReactBootstrapSlider>
+        </div>
       </div>
       <div className="small timeline">
-        Timeline
+        Timeline view
         <span className="small ml-3">Come back soon for more details</span>
       </div>
       {

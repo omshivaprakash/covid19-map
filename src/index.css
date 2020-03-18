@@ -40,6 +40,15 @@ body {
   width: 230px;
 }
 
+.controls.minimized {
+  width: 20px;
+  height: 20px;
+}
+
+.controls.minimized .btn-collapse{
+  right: 5px;
+}
+
 .timeline {
   position: absolute;
   bottom: 10px;
@@ -52,4 +61,20 @@ body {
 
 .showInMomentum {
   display: none;
+}
+
+.btn-collapse {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  font-size: 10px !important;
+  line-height: 12px !important;
+  height: 12px !important;
+  outline: none !important;
+  cursor: pointer;
+  color: #337ab7 !important;
+}
+
+.btn-collapse:hover {
+  color: #000 !important;
 }
