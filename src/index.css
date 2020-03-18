@@ -43,10 +43,14 @@ body {
 .controls.minimized {
   width: 20px;
   height: 20px;
+  background: white;
+  border: 1px solid #337ab7;
+  border-radius: 50%;
 }
 
 .controls.minimized .btn-collapse{
   right: 5px;
+  top: 4px;
 }
 
 .timeline {
