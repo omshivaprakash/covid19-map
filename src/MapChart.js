@@ -21,7 +21,7 @@ const deathsAbsByRowId = {};
 const confirmed = [];
 const recovered = [];
 const deaths = [];
-const MAX_SIZE = 67786;
+const MAX_SIZE = 67799;
 
 let totConf = 0;
 let totRec = 0;
@@ -853,23 +853,24 @@ class MapChart extends React.Component {
         <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last1" } label="Momentum last 1 day" type={"radio"} name={"b"} id={`inline-radio-5`} onClick={() => {that.setState({momentum: "last1", chart: "pie"});}} />
         <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last3" } label="Momentum last 3 days" type={"radio"} name={"b"} id={`inline-radio-6`} onClick={() => {that.setState({momentum: "last3", chart: "pie"});}} />
         <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last7" } label="Momentum last 7 days" type={"radio"} name={"b"} id={`inline-radio-7`} onClick={() => {that.setState({momentum: "last7", chart: "pie"});}} />*/}
+        <span className="small text-muted">Mode:</span>
         <Form.Control value={that.state.momentum} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({momentum: e.nativeEvent.target.value, chart: "pie"});}}>
-          <option value="none">Show live situation</option>
-          <option value="last1">Show change last 1 day</option>
-          <option value="last3">Show change last 3 days</option>
-          <option value="last7">Show change last 7 days</option>
+          <option value="none">Live</option>
+          <option value="last1">Change since last 24 hours</option>
+          <option value="last3">Change since last 3 days</option>
+          <option value="last7">Change since last 7 days</option>
         </Form.Control>
-        <span className="small text-muted">Scale:</span>
-        <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1}></ReactBootstrapSlider>
-        <span className="small text-muted mr-2">Normalize</span>
+        <span className="small text-muted mr-2">Normalization:</span><br />
         <Form.Check inline className="small" checked={that.state.logmode} label={<span>logarithmically</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
                     onChange={() => {that.setState({logmode: !that.state.logmode});}} />
         <Form.Check inline className="small" checked={that.state.ppmmode} label={<span>by population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
                     onChange={() => {that.setState({ppmmode: !that.state.ppmmode});}} /><br />
-        <span className="small text-muted mr-2">Glyphs:</span>
+        <span className="small text-muted mr-2">Representation:</span><br/>
         <Form.Check inline className="small" checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onChange={() => {that.setState({chart: "pie"});}}/>
         <Form.Check inline className="small hideInMomentum" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onChange={() => {that.setState({chart: "bar"});}} disabled={that.state.momentum!=="none" ? true : false}/>
-        <Form.Check inline className="small hideInMomentum" checked={that.state.chart==="pill" } label="Progress" type={"radio"} name={"a"} id={`inline-radio-3`} onChange={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/>
+        <Form.Check inline className="small hideInMomentum" checked={that.state.chart==="pill" } label="Progress" type={"radio"} name={"a"} id={`inline-radio-3`} onChange={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/><br />
+        <span className="small text-muted">Scaling:</span>
+        <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1}></ReactBootstrapSlider>
       </div>
       <div className="small timeline">
         Timeline
@@ -957,15 +958,18 @@ class MapChart extends React.Component {
                 if(that.state.logmode) {
                   if(size > 0) {
                     size = Math.log(size * 100000) / 100;
+                    size = Math.abs(size);
                   }
                 }
                 if(that.state.ppmmode && population[name]) {
-                  size = 10000000 * size / population[name];
+                  if(size > 0) {
+                    size = 10000000 * size / population[name];
+                  }
                 }
                 if(that.state.logmode && that.state.ppmmode) {
                   size = size / 20
                 }
-                return (<Marker coordinates={coordinates}>
+                return (<Marker coordinates={coordinates} key={"change_" + rowId}>
                   <circle r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill={pos ? "#F008" : "#0F08"} />
                   <title>{`${name} - ${Math.abs(val)} ${pos ? "INCREASE" : "DECREASE"} in active(= confirmed-recovered) cases (excl. deceased) (`+Math.round(1000000*val/population[name])+ ` ppm)`}</title>
                   <text
@@ -991,7 +995,9 @@ class MapChart extends React.Component {
                 }
               }
 		      if(that.state.ppmmode && population[name]) {
-                size = 10000000 * size / population[name];
+		        if(size > 0) {
+                  size = 10000000 * size / population[name];
+                }
               }
 		      if(that.state.logmode && that.state.ppmmode) {
                 size = size / 20
@@ -1028,7 +1034,9 @@ class MapChart extends React.Component {
                 }
               }
               if(that.state.ppmmode && population[name]) {
-                size = 10000000 * size / population[name];
+                if(size > 0) {
+                  size = 10000000 * size / population[name];
+                }
               }
               if(that.state.logmode && that.state.ppmmode) {
                 size = size / 20
@@ -1061,7 +1069,9 @@ class MapChart extends React.Component {
                 }
               }
               if(that.state.ppmmode && population[name]) {
-                size = 10000000 * size / population[name];
+                if(size > 0) {
+                  size = 10000000 * size / population[name];
+                }
               }
               if(that.state.logmode && that.state.ppmmode) {
                 size = size / 20
