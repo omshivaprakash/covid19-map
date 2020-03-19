@@ -755,7 +755,8 @@ class MapChart extends React.Component {
       logmode: true,
       momentum: "none",
       ppmmode: false,
-      minimized: false
+      minimized: false,
+      testmode: false
     }
   }
 
@@ -998,7 +999,9 @@ class MapChart extends React.Component {
           <Form.Check inline className="small" checked={that.state.logmode} label={<span>logarithmically</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
                       onChange={() => {that.setState({logmode: !that.state.logmode});}} />
           <Form.Check inline className="small" checked={that.state.ppmmode} label={<span>by population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
-                      onChange={() => {that.setState({ppmmode: !that.state.ppmmode});}} /><br />
+                      onChange={() => {that.setState({ppmmode: !that.state.ppmmode});}} />
+                      <Form.Check inline className="small" checked={that.state.testmode} label={<span>by testing</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-4`}
+                      onChange={() => {that.setState({testmode: !that.state.testmode});}} /><br />
           <span className="small text-muted mr-2">Representation:</span><br/>
           <Form.Check inline className="small" checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onChange={() => {that.setState({chart: "pie"});}}/>
           <Form.Check inline className="small hideInMomentum" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onChange={() => {that.setState({chart: "bar"});}} disabled={that.state.momentum!=="none" ? true : false}/>
