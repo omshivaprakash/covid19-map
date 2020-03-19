@@ -145,7 +145,7 @@ let testing = {
   "Utah, US": 912,
   "Virginia, US": 1278,
   "Vermont, US": 611,
-  "Washginton, US": 15918,
+  "Washington, US": 15918,
   "Wisconsin, US": 1683,
   "West Virginia, US": 148,
   "Wyoming": 196,
