@@ -24,6 +24,7 @@ const deathsAbsByRowId = {};
 const confirmed = [];
 const recovered = [];
 const deaths = [];
+const unconfirmed = []; /* this will be local_confirmed_rate * avg_test_rate / local_test_rate */
 const MAX_SIZE = 67799;
 
 let totConf = 0;
@@ -106,15 +107,15 @@ let testing = {
   "Connecticut, US": 700,
   "DC": 203,              /* unkown */
   "Delarware, US": 62,
-  "Florida": 2800,
-  "Georgia": 1508,
+  "Florida, US": 2800,
+  "Georgia, US": 1508,
   "Hawaii, US": 118,
-  "IA": 121,              /* unkown */
+  "Iowa, US": 121,
   "Idaho, US": 468,
   "Illinois, US": 2052,
   "Indiana, US": 193,
   "Kansas, US": 438,
-  "Kentucky": 489,
+  "Kentucky, US": 489,
   "Louisiana, US": 703,
   "Massachusetts, US": 2271,
   "Maryland, US": 179,
@@ -148,7 +149,7 @@ let testing = {
   "Washington, US": 15918,
   "Wisconsin, US": 1683,
   "West Virginia, US": 148,
-  "Wyoming": 196,
+  "Wyoming, US": 196,
 
   "Guam": 65,
   "Puerto Rico": 57,
@@ -765,11 +766,16 @@ class MapChart extends React.Component {
     Papa.parse("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv", {
       download: true,
       complete: function(results) {
+        // confirmed
         that.confirmed = [];
         let skipRow = true;
         let minSize = 0;
         let maxSize = MAX_SIZE;
         let rowId = 0;
+        let avgTested = 0;
+        let avgPopulation = 0;
+        let countTested = 0;
+        let countPopulation = 0;
         for(let data of results.data) {
           if(skipRow) {
             skipRow = false;
@@ -822,8 +828,18 @@ class MapChart extends React.Component {
           };
           totConf += size;
           confirmed.push(marker);
+
+          // compute total tested and total population
+          if(testing[marker.name] && population[marker.name]) {
+            avgTested += testing[marker.name];
+            avgPopulation += population[marker.name];
+            countTested++;
+            countPopulation++;
+          }
           rowId++;
         }
+        avgTested /= countTested;
+        avgPopulation /= countPopulation;
         that.state.setTotConf(totConf);
         console.log(maxSize);
         for(let i = 0; i < confirmed.length; i++) {
@@ -831,6 +847,37 @@ class MapChart extends React.Component {
           confirmed[i].momentumLast1 = confirmed[i].size - (confirmed[i].sizeMin1 - minSize) / (maxSize - minSize);
           confirmed[i].momentumLast3 = confirmed[i].size - (confirmed[i].sizeMin3 - minSize) / (maxSize - minSize);
           confirmed[i].momentumLast7 = confirmed[i].size - (confirmed[i].sizeMin7 - minSize) / (maxSize - minSize);
+        }
+
+        // unconfirmed
+        let globalTestRate = avgTested / avgPopulation;
+        console.log(globalTestRate);
+        that.unconfirmed = [];
+        skipRow = true;
+        rowId = 0;
+        for(let data of results.data) {
+          if(skipRow) {
+            skipRow = false;
+            continue;
+          }
+          let size = confirmed[rowId].size;
+          let val = confirmed[rowId].val;
+          if(testing[confirmed[rowId].name] && population[confirmed[rowId].name]) {
+            let localTestRate = testing[confirmed[rowId].name] / population[confirmed[rowId].name];
+            let inverseTestFactor = globalTestRate / localTestRate;
+            size = size * inverseTestFactor ;
+            val = val * inverseTestFactor;
+          }
+          let marker = {
+            markerOffset: 0,
+            name: confirmed[rowId].name,
+            coordinates: confirmed[rowId].coordinates,
+            size: size,
+            val: val,
+            rowId: confirmed[rowId].rowId,
+          };
+          unconfirmed.push(marker);
+          rowId++;
         }
         that.setState({});
       }
@@ -989,7 +1036,7 @@ class MapChart extends React.Component {
         <a hidden={!that.state.minimized} className={"btn-collapse"} onClick={() => {that.setState({minimized: false})}}><FontAwesomeIcon icon={faWindowRestore}/></a>
         <div hidden={that.state.minimized}>
           <span className="small text-muted">Mode:</span>
-          <Form.Control value={that.state.momentum} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({momentum: e.nativeEvent.target.value, chart: "pie", testmode: false});}}>
+          <Form.Control value={that.state.momentum} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({momentum: e.nativeEvent.target.value, chart: "pie"});}}>
             <option value="none">Live</option>
             <option value="last1">Change since last 24 hours</option>
             <option value="last3">Change since last 3 days</option>
@@ -1000,7 +1047,7 @@ class MapChart extends React.Component {
             onChange={() => {that.setState({logmode: !that.state.logmode});}} />
           <Form.Check inline className="small" checked={that.state.ppmmode} label={<span>by population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
             onChange={() => {that.setState({ppmmode: !that.state.ppmmode});}} />
-          <Form.Check inline disabled={that.state.momentum!=="none"} className="small" checked={that.state.testmode} label={<span>by test rate</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-4`}
+          <Form.Check inline className="small" checked={that.state.testmode} label={<span>by test rate</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-4`}
             onChange={() => {that.setState({testmode: !that.state.testmode});}} /><br />
           <span className="small text-muted mr-2">Representation:</span><br/>
           <Form.Check inline className="small" checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onChange={() => {that.setState({chart: "pie"});}}/>
@@ -1130,6 +1177,52 @@ class MapChart extends React.Component {
           }
           {
             that.state.momentum==="none" &&
+            unconfirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
+              let active = val - recoveredAbsByRowId[rowId] - deathsAbsByRowId[rowId];
+              if(that.state.chart==="pill" || that.state.chart==="bar") {
+                size *= 10;
+              }
+		      if(that.state.logmode) {
+		        if(size > 0) {
+                  size = Math.log(size * 100000) / 100;
+                }
+              }
+		      let color = "#00F";
+		      if(that.state.ppmmode) {
+                if(population[name]) {
+                  if (size > 0) {
+                    size = 10000000 * size / population[name];
+                  }
+                } else {
+                  size = 0;
+                }
+              }
+		      if(that.state.logmode && that.state.ppmmode) {
+                size = size / 20
+              }
+		      let ppms = population[name] && !isNaN(val) ? '(' + Math.round(1000000 * val / population[name]) + ' ppm)'  : '';
+		      let ppms2 = population[name] && !isNaN(active) ? '(' + Math.round(1000000 * active / population[name]) + ' ppm)'  : '';
+              return (<Marker coordinates={coordinates} key={"unconfirmed_" + rowId}>
+                <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} x={isNaN(size)?0:- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={isNaN(size)?0:size * that.state.factor} fill={color+"8"} />
+                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} x={that.state.width * 3 * 0 - that.state.width * 3 * 1.5} y={isNaN(size)?0:-size * that.state.factor} width={that.state.width * 3} height={isNaN(size)?0:size * that.state.factor} fill={color+"8"} />
+                <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill={color+"8"} />
+                <title>
+                  {
+                    `${name} - ${rounded(val)} undersampled potential  compared to global average ${ppms}}`
+                  }
+                </title>
+                <text
+                  textAnchor="middle"
+                  y={markerOffset}
+                  style={{ fontSize: name.endsWith(", US") ? "0.005em" : "2px", fontFamily: "Arial", fill: "#5D5A6D33", pointerEvents: "none" }}
+		      >
+                  {/*name*/}
+                </text>
+              </Marker>
+            )})
+          }
+          {
+            that.state.momentum==="none" &&
             confirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
               let active = val - recoveredAbsByRowId[rowId] - deathsAbsByRowId[rowId];
               if(that.state.chart==="pill" || that.state.chart==="bar") {
@@ -1141,26 +1234,13 @@ class MapChart extends React.Component {
                 }
               }
 		      let color = "#F00";
-		      let test_rate = 0
 		      if(that.state.ppmmode) {
                 if(population[name]) {
                   if (size > 0) {
                     size = 10000000 * size / population[name];
                   }
                 } else {
-                  size = 0.001;
-                  color = "#33F";
-                }
-              }
-		      if(that.state.testmode) {
-                if (population[name] && testing[name]) {
-                  if (size > 0) {
-                    size = size / (testing[name] / population[name]) / 10000;
-                    test_rate = testing[name] / population[name];
-                  }
-                } else {
-                  size = 0.0001;
-                  color = "#33F";
+                  size = 0;
                 }
               }
 		      if(that.state.logmode && that.state.ppmmode) {
@@ -1174,7 +1254,7 @@ class MapChart extends React.Component {
                 <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill={color+"8"} />
                 <title>
                   {
-                    `${name} - ${rounded(val)} confirmed ${ppms}, ${rounded(active)} active ${ppms2}, test rate ${test_rate}`
+                    `${name} - ${rounded(val)} confirmed ${ppms}, ${rounded(active)} active ${ppms2}`
                   }
                 </title>
                 <text
@@ -1205,15 +1285,6 @@ class MapChart extends React.Component {
                 if(population[name]) {
                   if (size > 0) {
                     size = 10000000 * size / population[name];
-                  }
-                } else {
-                  size = 0;
-                }
-              }
-              if(that.state.testmode) {
-                if (population[name] && testing[name]) {
-                  if (size > 0) {
-                    size = size / (testing[name] / population[name]) / 10000;
                   }
                 } else {
                   size = 0;
@@ -1253,15 +1324,6 @@ class MapChart extends React.Component {
                 if(population[name]) {
                   if (size > 0) {
                     size = 10000000 * size / population[name];
-                  }
-                } else {
-                  size = 0;
-                }
-              }
-              if(that.state.testmode) {
-                if (population[name] && testing[name]) {
-                  if (size > 0) {
-                    size = size / (testing[name] / population[name]) / 10000;
                   }
                 } else {
                   size = 0;
