@@ -867,6 +867,8 @@ class MapChart extends React.Component {
             let inverseTestFactor = globalTestRate / localTestRate;
             size = size * inverseTestFactor ;
             val = val * inverseTestFactor;
+          } else {
+            size = 0;
           }
           let marker = {
             markerOffset: 0,
