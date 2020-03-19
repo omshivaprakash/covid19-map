@@ -989,7 +989,7 @@ class MapChart extends React.Component {
         <a hidden={!that.state.minimized} className={"btn-collapse"} onClick={() => {that.setState({minimized: false})}}><FontAwesomeIcon icon={faWindowRestore}/></a>
         <div hidden={that.state.minimized}>
           <span className="small text-muted">Mode:</span>
-          <Form.Control value={that.state.momentum} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({momentum: e.nativeEvent.target.value, chart: "pie"});}}>
+          <Form.Control value={that.state.momentum} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({momentum: e.nativeEvent.target.value, chart: "pie", testmode: false});}}>
             <option value="none">Live</option>
             <option value="last1">Change since last 24 hours</option>
             <option value="last3">Change since last 3 days</option>
@@ -997,11 +997,11 @@ class MapChart extends React.Component {
           </Form.Control>
           <span className="small text-muted mr-2">Normalization:</span><br />
           <Form.Check inline className="small" checked={that.state.logmode} label={<span>logarithmically</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
-                      onChange={() => {that.setState({logmode: !that.state.logmode});}} />
+            onChange={() => {that.setState({logmode: !that.state.logmode});}} />
           <Form.Check inline className="small" checked={that.state.ppmmode} label={<span>by population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
-                      onChange={() => {that.setState({ppmmode: !that.state.ppmmode});}} />
-                      <Form.Check inline className="small" checked={that.state.testmode} label={<span>by test rate</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-4`}
-                      onChange={() => {that.setState({testmode: !that.state.testmode});}} /><br />
+            onChange={() => {that.setState({ppmmode: !that.state.ppmmode});}} />
+          <Form.Check inline disabled={that.state.momentum!=="none"} className="small" checked={that.state.testmode} label={<span>by test rate</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-4`}
+            onChange={() => {that.setState({testmode: !that.state.testmode});}} /><br />
           <span className="small text-muted mr-2">Representation:</span><br/>
           <Form.Check inline className="small" checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onChange={() => {that.setState({chart: "pie"});}}/>
           <Form.Check inline className="small hideInMomentum" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onChange={() => {that.setState({chart: "bar"});}} disabled={that.state.momentum!=="none" ? true : false}/>
