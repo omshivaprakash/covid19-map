@@ -1108,15 +1108,6 @@ class MapChart extends React.Component {
                     size = 0;
                   }
                 }
-                if(that.state.testmode) {
-                  if (population[name] && testing[name]) {
-                    if (size > 0) {
-                      size = size / (testing[name] / population[name]) / 10000;
-                    }
-                  } else {
-                    size = 0;
-                  }
-                }
                 if(that.state.logmode && that.state.ppmmode) {
                   size = size / 20
                 }
@@ -1124,7 +1115,9 @@ class MapChart extends React.Component {
                   <circle r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill={pos ? "#F008" : "#0F08"} />
                   <title>
                     {`
-                      ${name} - ${Math.abs(val)} ${pos ? "INCREASE" : "DECREASE"} in active(= confirmed-recovered) cases (excl. deceased) (${Math.round(1000000*val/population[name])} ppm)`}</title>
+                      ${name} - ${Math.abs(val)} ${pos ? "INCREASE" : "DECREASE"} in active(= confirmed-recovered) cases (excl. deceased) (${Math.round(1000000*val/population[name])} ppm)`
+                    }
+                  </title>
                   <text
                     textAnchor="middle"
                     y={markerOffset}
@@ -1156,13 +1149,17 @@ class MapChart extends React.Component {
                   size = 0;
                 }
               }
+		      let color = "#F00";
+		      let test_rate = 0
 		      if(that.state.testmode) {
                 if (population[name] && testing[name]) {
                   if (size > 0) {
                     size = size / (testing[name] / population[name]) / 10000;
+                    test_rate = testing[name] / population[name];
                   }
                 } else {
-                  size = 0;
+                  size = 0.001;
+                  color = "#00F";
                 }
               }
 		      if(that.state.logmode && that.state.ppmmode) {
@@ -1171,10 +1168,14 @@ class MapChart extends React.Component {
 		      let ppms = population[name] && !isNaN(val) ? '(' + Math.round(1000000 * val / population[name]) + ' ppm)'  : '';
 		      let ppms2 = population[name] && !isNaN(active) ? '(' + Math.round(1000000 * active / population[name]) + ' ppm)'  : '';
               return (<Marker coordinates={coordinates} key={"confirmed_" + rowId}>
-                <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} x={isNaN(size)?0:- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={isNaN(size)?0:size * that.state.factor} fill="#F008" />
-                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} x={that.state.width * 3 * 0 - that.state.width * 3 * 1.5} y={isNaN(size)?0:-size * that.state.factor} width={that.state.width * 3} height={isNaN(size)?0:size * that.state.factor} fill="#F008" />
-                <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#F00"}} : {display: "none", hover: {fill: "#F00"}}} r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill="#F008" />
-                <title>{`${name} - ${rounded(val)} confirmed ${ppms}, ${rounded(active)} active ${ppms2}`}</title>
+                <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} x={isNaN(size)?0:- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={isNaN(size)?0:size * that.state.factor} fill={color+"8"} />
+                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} x={that.state.width * 3 * 0 - that.state.width * 3 * 1.5} y={isNaN(size)?0:-size * that.state.factor} width={that.state.width * 3} height={isNaN(size)?0:size * that.state.factor} fill={color+"8"} />
+                <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill={color+"8"} />
+                <title>
+                  {
+                    `${name} - ${rounded(val)} confirmed ${ppms}, ${rounded(active)} active ${ppms2}, test rate ${test_rate}`
+                  }
+                </title>
                 <text
                   textAnchor="middle"
                   y={markerOffset}
