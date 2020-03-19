@@ -64,7 +64,7 @@ function App() {
         <span className="text-danger hideInMomentum">Red: confirmed</span><br className="hideInMomentum"/>
         <span className="text-success hideInJh hideInMomentum">Green: recovered</span><br className="hideInJh hideInMomentum" />
         <span className="text-dark hideInJh hideInMomentum">Black: deceased</span><br className="hideInJh hideInMomentum" />
-        <span className="text-info hideInJh hideInMomentum">Blue: undersampling potential</span><br className="hideInJh hideInMomentum" />
+        <span className="text-primary hideInJh hideInMomentum">Blue: confirmed w/ testing</span><br className="hideInJh hideInMomentum" />
         <sub className={"lightInJh"}>
           Using live data from <br /><a target="_blank" rel="noopener noreferrer" href={"https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series"}><FontAwesomeIcon icon={faDatabase} /> Johns Hopkins repository</a><br/>Last synchronized on {date.toLocaleDateString()} at {date.toLocaleTimeString()}<br/>
             <a target="_blank" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map"}><FontAwesomeIcon icon={faCode} /> Who made this?</a>
