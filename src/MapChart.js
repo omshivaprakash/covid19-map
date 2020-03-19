@@ -118,7 +118,7 @@ let testing = {
   "Louisiana, US": 703,
   "Massachusetts, US": 2271,
   "Maryland, US": 179,
-  "Maine": 1,713,
+  "Maine": 1713,
   "Michigan": 352,
   "Minnesota": 2762,
   "Missouri": 332,
@@ -1000,7 +1000,7 @@ class MapChart extends React.Component {
                       onChange={() => {that.setState({logmode: !that.state.logmode});}} />
           <Form.Check inline className="small" checked={that.state.ppmmode} label={<span>by population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
                       onChange={() => {that.setState({ppmmode: !that.state.ppmmode});}} />
-                      <Form.Check inline className="small" checked={that.state.testmode} label={<span>by testing</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-4`}
+                      <Form.Check inline className="small" checked={that.state.testmode} label={<span>by test rate</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-4`}
                       onChange={() => {that.setState({testmode: !that.state.testmode});}} /><br />
           <span className="small text-muted mr-2">Representation:</span><br/>
           <Form.Check inline className="small" checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onChange={() => {that.setState({chart: "pie"});}}/>
@@ -1099,9 +1099,22 @@ class MapChart extends React.Component {
                     size = Math.abs(size);
                   }
                 }
-                if(that.state.ppmmode && population[name]) {
-                  if(size > 0) {
-                    size = 10000000 * size / population[name];
+                if(that.state.ppmmode) {
+                  if (population[name]) {
+                    if (size > 0) {
+                      size = 10000000 * size / population[name];
+                    }
+                  } else {
+                    size = 0;
+                  }
+                }
+                if(that.state.testmode) {
+                  if (population[name] && testing[name]) {
+                    if (size > 0) {
+                      size = size / (testing[name] / population[name]) / 10000;
+                    }
+                  } else {
+                    size = 0;
                   }
                 }
                 if(that.state.logmode && that.state.ppmmode) {
@@ -1109,7 +1122,9 @@ class MapChart extends React.Component {
                 }
                 return (<Marker coordinates={coordinates} key={"change_" + rowId}>
                   <circle r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill={pos ? "#F008" : "#0F08"} />
-                  <title>{`${name} - ${Math.abs(val)} ${pos ? "INCREASE" : "DECREASE"} in active(= confirmed-recovered) cases (excl. deceased) (`+Math.round(1000000*val/population[name])+ ` ppm)`}</title>
+                  <title>
+                    {`
+                      ${name} - ${Math.abs(val)} ${pos ? "INCREASE" : "DECREASE"} in active(= confirmed-recovered) cases (excl. deceased) (${Math.round(1000000*val/population[name])} ppm)`}</title>
                   <text
                     textAnchor="middle"
                     y={markerOffset}
@@ -1132,9 +1147,22 @@ class MapChart extends React.Component {
                   size = Math.log(size * 100000) / 100;
                 }
               }
-		      if(that.state.ppmmode && population[name]) {
-		        if(size > 0) {
-                  size = 10000000 * size / population[name];
+		      if(that.state.ppmmode) {
+                if(population[name]) {
+                  if (size > 0) {
+                    size = 10000000 * size / population[name];
+                  }
+                } else {
+                  size = 0;
+                }
+              }
+		      if(that.state.testmode) {
+                if (population[name] && testing[name]) {
+                  if (size > 0) {
+                    size = size / (testing[name] / population[name]) / 10000;
+                  }
+                } else {
+                  size = 0;
                 }
               }
 		      if(that.state.logmode && that.state.ppmmode) {
@@ -1171,9 +1199,22 @@ class MapChart extends React.Component {
                   size = Math.log(size * 100000) / 100;
                 }
               }
-              if(that.state.ppmmode && population[name]) {
-                if(size > 0) {
-                  size = 10000000 * size / population[name];
+              if(that.state.ppmmode) {
+                if(population[name]) {
+                  if (size > 0) {
+                    size = 10000000 * size / population[name];
+                  }
+                } else {
+                  size = 0;
+                }
+              }
+              if(that.state.testmode) {
+                if (population[name] && testing[name]) {
+                  if (size > 0) {
+                    size = size / (testing[name] / population[name]) / 10000;
+                  }
+                } else {
+                  size = 0;
                 }
               }
               if(that.state.logmode && that.state.ppmmode) {
@@ -1206,9 +1247,22 @@ class MapChart extends React.Component {
                   size = Math.log(size * 100000) / 100;
                 }
               }
-              if(that.state.ppmmode && population[name]) {
-                if(size > 0) {
-                  size = 10000000 * size / population[name];
+              if(that.state.ppmmode) {
+                if(population[name]) {
+                  if (size > 0) {
+                    size = 10000000 * size / population[name];
+                  }
+                } else {
+                  size = 0;
+                }
+              }
+              if(that.state.testmode) {
+                if (population[name] && testing[name]) {
+                  if (size > 0) {
+                    size = size / (testing[name] / population[name]) / 10000;
+                  }
+                } else {
+                  size = 0;
                 }
               }
               if(that.state.logmode && that.state.ppmmode) {
