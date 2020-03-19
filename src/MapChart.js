@@ -52,30 +52,30 @@ let testing = {
   "China - Guangdong": 320000,
   "Colombia": 2571,
   "Croatia": 1159,
-  "Czech Republic,CZE,56,6302
-  "Denmark,DNK,56,7620
-  "Estonia,EST,54,1387
-  "Finland,FIN,50,900
-  "France,FRA,49,11071
-  "Hong Kong,HKG,45,5271
-  "Hungary,HUN,56,1587
-  "Iceland,ISL,56,2278
-  "India,IND,52,5900
-  "Ireland,IRL,49,1784
-  "Israel,ISR,48,3872
-  "Italy,ITA,56,148657
-  "Japan,JPN,56,16484
-  "Kuwait,KWT,56,120000
-  "Kyrgyzstan,KGZ,52,1545
-  "Latvia,LVA,55,1147
-  "Lithuania,LTU,56,742
-  "Malaysia,MYS,56,9799
-  "Malta,MLT,52,889
-  "Netherlands,NLD,46,6000
-  "New Zealand,NZL,56,584
-  "Norway,NOR,55,18062
-  "Pakistan,PAK,52,531
-  "Palestine,PSE,55,2519
+  "Czech Republic": 6302,
+  "Denmark": 7620,
+  "Estonia": 1387,
+  "Finland": 900,
+  "France": 11071,
+  "Hong Kong": 5271,
+  "Hungary": 1587,
+  "Iceland": 2278,
+  "India": 5900,
+  "Ireland": 1784,
+  "Israel": 3872,
+  "Italy": 148657,
+  "Japan": 16484,
+  "Kuwait": 120000,
+  "Kyrgyzstan": 1545,
+  "Latvia": 1147,
+  "Lithuania": 742,
+  "Malaysia": 9799,
+  "Malta": 889,
+  "Netherlands": 6000,
+  "New Zealand": 584,
+  "Norway": 18062,
+  "Pakistan": 531,
+  "Palestine": 2519,
   "Panama,PAN,52,756
   "Philippines,PHL,56,1030
   "Poland,POL,56,7899
