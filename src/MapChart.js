@@ -76,25 +76,25 @@ let testing = {
   "Norway": 18062,
   "Pakistan": 531,
   "Palestine": 2519,
-  "Panama,PAN,52,756
-  "Philippines,PHL,56,1030
-  "Poland,POL,56,7899
-  "Romania,ROU,55,3708
-  "Russia,RUS,56,116061
-  "Slovakia,SVK,55,1595
-  "Slovenia,SVN,55,6712
-  "South Africa,ZAF,50,645
-  "South Korea,KOR,56,286716
-  "Sweden,SWE,56,14300
-  "Switzerland,CHE,46,4000
-  "Taiwan,TWN,56,18812
-  "Thailand,THA,56,7084
-  "Ukraine,UKR,56,500
-  "United Arab Emirates,ARE,55,125000
-  "United Kingdom,GBR,56,50442
-  "United States,USA,55,41552
-  "United States - CDC samples tested,,55,21105
-  "Vietnam,VNM,56,9696
+  "Panama": 756,
+  "Philippines": 1030,
+  "Poland": 7899,
+  "Romania": 3708,
+  "Russia": 116061,
+  "Slovakia": 1595,
+  "Slovenia": 6712,
+  "South Africa": 645,
+  "South Korea": 286716,
+  "Sweden": 14300,
+  "Switzerland": 4000,
+  "Taiwan": 18812,
+  "Thailand": 7084,
+  "Ukraine": 500,
+  "United Arab Emirates": 125000,
+  "United Kingdom": 50442,
+  "United States": 41552,
+  "United States - CDC samples tested": 21105,
+  "Vietnam": 9696
 };
 
 
