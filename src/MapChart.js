@@ -32,6 +32,10 @@ let totRec = 0;
 let totDead = 0;
 
 let testing = {
+
+  // https://en.wikipedia.org/wiki/COVID-19_testing
+  "Spain": 30000,
+
   // world in data
   "Armenia": 694,
   "Australia": 1391,
