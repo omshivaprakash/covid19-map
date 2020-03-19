@@ -1140,17 +1140,18 @@ class MapChart extends React.Component {
                   size = Math.log(size * 100000) / 100;
                 }
               }
+		      let color = "#F00";
+		      let test_rate = 0
 		      if(that.state.ppmmode) {
                 if(population[name]) {
                   if (size > 0) {
                     size = 10000000 * size / population[name];
                   }
                 } else {
-                  size = 0;
+                  size = 0.0001;
+                  color = "#33F";
                 }
               }
-		      let color = "#F00";
-		      let test_rate = 0
 		      if(that.state.testmode) {
                 if (population[name] && testing[name]) {
                   if (size > 0) {
