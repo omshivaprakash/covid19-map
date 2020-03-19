@@ -1158,8 +1158,8 @@ class MapChart extends React.Component {
                     test_rate = testing[name] / population[name];
                   }
                 } else {
-                  size = 0.001;
-                  color = "#00F";
+                  size = 0.0001;
+                  color = "#33F";
                 }
               }
 		      if(that.state.logmode && that.state.ppmmode) {
