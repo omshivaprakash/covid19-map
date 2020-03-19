@@ -32,6 +32,7 @@ let totRec = 0;
 let totDead = 0;
 
 let testing = {
+  // world in data
   "Armenia": 694,
   "Australia": 1391,
   "Australia - New South Wales": 30244,
@@ -53,11 +54,11 @@ let testing = {
   "China - Guangdong": 320000,
   "Colombia": 2571,
   "Croatia": 1159,
-  "Czech Republic": 6302,
+  "Czechia": 9402,
   "Denmark": 7620,
   "Estonia": 1387,
   "Finland": 900,
-  "France": 11071,
+  "France, France": 11071,
   "Hong Kong": 5271,
   "Hungary": 1587,
   "Iceland": 2278,
@@ -72,7 +73,7 @@ let testing = {
   "Lithuania": 742,
   "Malaysia": 9799,
   "Malta": 889,
-  "Netherlands": 6000,
+  "Netherlands, Netherlands": 6000,
   "New Zealand": 584,
   "Norway": 18062,
   "Pakistan": 531,
