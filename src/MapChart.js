@@ -1148,7 +1148,7 @@ class MapChart extends React.Component {
                     size = 10000000 * size / population[name];
                   }
                 } else {
-                  size = 0.0001;
+                  size = 0.001;
                   color = "#33F";
                 }
               }
