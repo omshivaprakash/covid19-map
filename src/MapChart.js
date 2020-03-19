@@ -104,26 +104,25 @@ let testing = {
   "California, US": 8592,
   "Colorado, US": 2328,
   "Connecticut, US": 700,
-  "DC": 203,
+  "DC": 203,              /* unkown */
   "Delarware, US": 62,
   "Florida": 2800,
   "Georgia": 1508,
-  "GU": 65,
   "Hawaii, US": 118,
-  "IA": 121,
+  "IA": 121,              /* unkown */
   "Idaho, US": 468,
   "Illinois, US": 2052,
   "Indiana, US": 193,
   "Kansas, US": 438,
   "Kentucky": 489,
   "Louisiana, US": 703,
-  "Massachusetts, US": 2,271,
+  "Massachusetts, US": 2271,
   "Maryland, US": 179,
   "Maine": 1,713,
   "Michigan": 352,
   "Minnesota": 2762,
   "Missouri": 332,
-  "MP": 0,
+  "MP": 0,               /* unkown */
   "Mississippi, US": 513,
   "Montana, US": 773,
   "North Carolina, US": 1850,
@@ -133,25 +132,27 @@ let testing = {
   "New Jersey, US": 638,
   "New Mexico, US": 2354,
   "Nevada, US": 253,
-NY	2,382	12,215		12	14,597	3/18 15:05	3/18 22:28
-OH	88	140			228	3/18 15:00	3/18 22:25
-OK	29	378	110		517	3/18 08:00	3/18 22:22
-OR	75	1,118	361	3	1,554	3/17 12:00	3/18 22:14
-PA	133	1,187			1,320	3/18 16:45	3/18 22:44
-PR	5	31	21		57	3/17 22:00	3/18 23:09
-RI	33	540	334		907	3/17 00:00	3/18 22:07
-SC	60	583		1	643	3/18 16:00	3/18 22:05
-SD	11	551	350	1	912	3/18 00:00	3/18 22:04
-TN	98	349			447	3/17 15:00	3/18 22:48
-TX	83	1,824		2	1,907	3/18 13:00	3/18 21:56
-UT	63	849		0	912	3/18 14:45	3/19 00:26
-VA	77	1,201		2	1,278	3/18 12:00	3/19 01:07
-VI	3			0	3	3/18 07:30	3/18 23:02
-VT	19	592			611	3/17 14:00	3/18 21:43
-WA	1,187	15,918		66	17,105	3/18 18:25	3/18 22:50
-WI	106	1,577			1,683	3/18 15:00	3/18 21:39
-WV	2	143	3	0	148	3/18 00:00	3/18 22:58
-WY	18	178			196	3/18 03:00	3/18 23:11
+  "New York, US": 14597,
+  "Ohio, US": 228,
+  "Oklahoma, US": 517,
+  "Oregon, US": 1554,
+  "Pennsylvania, US": 1320,
+  "Rhode Island, US": 907,
+  "South Carolina, US": 643,
+  "South Dakota, US": 912,
+  "Tennessee, US": 447,
+  "Texas, US": 1907,
+  "Utah, US": 912,
+  "Virginia, US": 1278,
+  "Vermont, US": 611,
+  "Washginton, US": 15918,
+  "Wisconsin, US": 1683,
+  "West Virginia, US": 148,
+  "Wyoming": 196,
+
+  "Guam": 65,
+  "Puerto Rico": 57,
+  "Virgin Islands": 3
 };
 
 
