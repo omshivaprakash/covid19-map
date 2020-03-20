@@ -33,4 +33,4 @@ npm run deploy      # Please do not forget to include link to license and mentio
 
 # Contributors
 - Daniel Karl
-- Michael Baentsch (normalization by population)
+- Michael Baentsch
