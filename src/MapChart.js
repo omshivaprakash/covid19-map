@@ -774,7 +774,7 @@ class MapChart extends React.Component {
       chart: "pie",
       factor: 50,
       width: 2,
-      logmode: false,
+      logmode: true,
       momentum: "none",
       ppmmode: false,
       minimized: false,
