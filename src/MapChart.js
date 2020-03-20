@@ -774,7 +774,7 @@ class MapChart extends React.Component {
       chart: "pie",
       factor: 50,
       width: 2,
-      logmode: true,
+      logmode: false,
       momentum: "none",
       ppmmode: false,
       minimized: false,
@@ -1211,7 +1211,7 @@ class MapChart extends React.Component {
                   size = Math.log(size * 100000) / 100;
                 }
               }
-		      let color = "#E00";
+		      let color = "#00F";
 		      if(that.state.ppmmode) {
                 if(population[name]) {
                   if (size > 0) {
