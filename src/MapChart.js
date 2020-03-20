@@ -46,15 +46,15 @@ let testing = {
   "Belgium": 4225,
   "Brazil": 2927,
   "Canada": 38482,
-  "Canada - Alberta": 10598,
-  "Canada - British Columbia": 6326,
-  "Canada - National lab": 1008,
-  "Canada - New Brunswick": 204,
-  "Canada - Northwest Territories": 143,
-  "Canada - Nova Scotia": 941,
-  "Canada - Ontario": 11167,
-  "Canada - Quebec": 7299,
-  "Canada - Saskatchewan": 796,
+  "Alberta, Canada": 10598,
+  "British Columbia, Canada": 6326,
+  "National lab, Canada": 1008,
+  "New Brunswick, Canada": 204,
+  "Northwest Territories, Canada": 143,
+  "Nova Scotia, Canada": 941,
+  "Ontario, Canada": 11167,
+  "Quebec, Canada": 7299,
+  "Saskatchewan, Canada": 796,
   "China - Guangdong": 320000,
   "Colombia": 2571,
   "Croatia": 1159,
@@ -732,7 +732,16 @@ let population = {
 	"South Australia, Australia": 1044353,
 	"Tasmania, Australia": 534281,
 	"Victoria, Australia": 6594804,
-	"Westerna Australia, Australia": 2621680
+	"Westerna Australia, Australia": 2621680,
+  "Alberta, Canada": 4335768,
+  "British Columbia, Canada": 5031893,
+  "New Brunswick, Canada": 772790,
+  "Northwest Territories, Canada": 45047,
+  "Nova Scotia, Canada": 965249,
+  "Ontario, Canada": 14441694,
+  "Quebec, Canada": 8429241,
+  "Saskatchewan, Canada": 1170028,
+  "Manitoba, Canada": 1361997
 };
 
 const rounded = num => {
@@ -868,7 +877,7 @@ class MapChart extends React.Component {
           if(testing[confirmed[rowId].name] && population[confirmed[rowId].name]) {
             let localTestRate = testing[confirmed[rowId].name] / population[confirmed[rowId].name];
             let inverseTestFactor = globalTestRate / localTestRate;
-            size = size * inverseTestFactor ;
+            size = size * (1+inverseTestFactor) ;
             val = val * inverseTestFactor;
           } else {
             size = 0;
@@ -1195,11 +1204,11 @@ class MapChart extends React.Component {
                   size = Math.log(size * 100000) / 100;
                 }
               }
-		      let color = "#00F";
+		      let color = "#E00";
 		      if(that.state.ppmmode) {
                 if(population[name]) {
                   if (size > 0) {
-                    size = 10000000 * size / population[name];
+                    size = 1000000 * size / population[name];
                   }
                 } else {
                   size = 0;
