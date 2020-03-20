@@ -1052,9 +1052,9 @@ class MapChart extends React.Component {
           <Form.Check inline disabled={that.state.momentum !== "none"} className="small" checked={that.state.testmode} label={<span>Show lack of testing</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-4`}
             onChange={() => {that.setState({testmode: !that.state.testmode});}} /><br />
           <span className="small text-muted mr-2">Normalization:</span><br />
-          <Form.Check inline className="small" checked={that.state.logmode} label={<span>logarithmic</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
+          <Form.Check inline className="small" checked={that.state.logmode} label={<span>Log</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
             onChange={() => {that.setState({logmode: !that.state.logmode});}} />
-          <Form.Check inline className="small" checked={that.state.ppmmode} label={<span>by population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
+          <Form.Check inline className="small" checked={that.state.ppmmode} label={<span>By population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
             onChange={() => {that.setState({ppmmode: !that.state.ppmmode});}} /><br />
           <span className="small text-muted mr-2">Representation:</span><br/>
           <Form.Check inline className="small" checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onChange={() => {that.setState({chart: "pie"});}}/>
