@@ -26,6 +26,11 @@ npm install         # first time only
 npm start
 ```
 
+### Deploy to GitHub pages
+```
+npm run deploy      # Please do not forget to include link to license and mention the original author(s) as given below
+```
+
 # Contributors
 - Daniel Karl
 - Michael Baentsch (normalization by population)
