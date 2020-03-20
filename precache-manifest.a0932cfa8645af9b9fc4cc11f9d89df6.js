@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "75d422d601051e17414c8043594a0c85",
+    "revision": "68b3b1d1424653f3bdde2aebff5d5efe",
     "url": "/covid19-map/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/covid19-map/static/css/2.a080b623.chunk.css"
   },
   {
-    "revision": "9591a2afe6a49827d010",
+    "revision": "bccfc9889c402a35b424",
     "url": "/covid19-map/static/css/main.89a01ff0.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/covid19-map/static/js/2.f55d9645.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "9591a2afe6a49827d010",
-    "url": "/covid19-map/static/js/main.0736a9b4.chunk.js"
+    "revision": "bccfc9889c402a35b424",
+    "url": "/covid19-map/static/js/main.b54c51ba.chunk.js"
   },
   {
     "revision": "ceae7fc2cae46046a9e7",
