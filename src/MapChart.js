@@ -1215,7 +1215,7 @@ class MapChart extends React.Component {
                 <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill={color+"8"} />
                 <title>
                   {
-                    `${name} - ${rounded(val)} undersampled potential  compared to global average ${ppms}}`
+                    `${name} - could be ${rounded(val)} or more if more people got tested ${ppms}}`
                   }
                 </title>
                 <text
