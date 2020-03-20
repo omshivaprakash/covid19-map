@@ -1042,26 +1042,29 @@ class MapChart extends React.Component {
         <a hidden={that.state.minimized} className={"btn-collapse"} onClick={() => {that.setState({minimized: true})}}>minimize <FontAwesomeIcon icon={faWindowMinimize}/></a>
         <a hidden={!that.state.minimized} className={"btn-collapse"} onClick={() => {that.setState({minimized: false})}}><FontAwesomeIcon icon={faWindowRestore}/></a>
         <div hidden={that.state.minimized}>
+          <span className="small text-danger">Hover to see explanations.</span><br />
           <span className="small text-muted">Mode:</span>
-          <Form.Control value={that.state.momentum} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({momentum: e.nativeEvent.target.value, chart: "pie", testmode: false});}}>
+          <Form.Control title={"Live mode: Show live data (updated daily). Change: Show increase/decrease in numbers since last 1, 3 or 7 days.  "} value={that.state.momentum} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({momentum: e.nativeEvent.target.value, chart: "pie", testmode: false});}}>
             <option value="none">Live</option>
             <option value="last1">Change since last 24 hours</option>
             <option value="last3">Change since last 3 days</option>
             <option value="last7">Change since last 7 days</option>
           </Form.Control>
-          <Form.Check inline disabled={that.state.momentum !== "none"} className="small" checked={that.state.testmode} label={<span>Project lack of testing</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-4`}
+          <Form.Check inline disabled={that.state.momentum !== "none"} className="small" checked={that.state.testmode} label={<span title={"Displays a projection of how many confirmed cases there could be if testing rate was as high as global average (shown on the map as blue halos)."}>Project lack of testing</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-4`}
             onChange={() => {that.setState({testmode: !that.state.testmode});}} /><br />
           <span className="small text-muted mr-2">Normalization:</span><br />
-          <Form.Check inline className="small" checked={that.state.logmode} label={<span>Log</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
+          <Form.Check inline className="small" checked={that.state.logmode} label={<span title={"Scales the glyphs on the map logarithmically."}>Log</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
             onChange={() => {that.setState({logmode: !that.state.logmode});}} />
-          <Form.Check inline className="small" checked={that.state.ppmmode} label={<span>Population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
+          <Form.Check inline className="small" checked={that.state.ppmmode} label={<span title={"Scales the glyphs on the map according to the number of people in each country/region."}>Population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
             onChange={() => {that.setState({ppmmode: !that.state.ppmmode});}} /><br />
-          <span className="small text-muted mr-2">Representation:</span><br/>
-          <Form.Check inline className="small" checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onChange={() => {that.setState({chart: "pie"});}}/>
-          <Form.Check inline className="small hideInMomentum" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onChange={() => {that.setState({chart: "bar"});}} disabled={that.state.momentum!=="none" ? true : false}/>
-          <Form.Check inline className="small hideInMomentum" checked={that.state.chart==="pill" } label="Progress" type={"radio"} name={"a"} id={`inline-radio-3`} onChange={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/><br />
-          <span className="small text-muted">Scaling:</span>
-          <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1}></ReactBootstrapSlider>
+          <span className="small text-muted mr-2">Glyph style:</span><br/>
+          <Form.Check inline title="Represent data as circles. Hover circles on map to see more details." className="small" checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onChange={() => {that.setState({chart: "pie"});}}/>
+          <Form.Check inline title="Represent data as vertical bars. Hover bars on map to see more details." className="small hideInMomentum" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onChange={() => {that.setState({chart: "bar"});}} disabled={that.state.momentum!=="none" ? true : false}/>
+          <Form.Check inline title="Represent data as horizontal progress bars. Hover bars on map to see more details." className="small hideInMomentum" checked={that.state.chart==="pill" } label="Progress" type={"radio"} name={"a"} id={`inline-radio-3`} onChange={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/><br />
+          <span className="small text-muted">Scale glyphs:</span>
+          <ReactBootstrapSlider title="Scale glyps" value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1}></ReactBootstrapSlider><br />
+          <span className="small text-danger">Hold &lt;CTRL&gt; + scroll to zoom map.</span><br />
+          <span className="small text-danger">Hover glyphs on map to see details.</span>
         </div>
       </div>
       <div className="small timeline">
