@@ -846,7 +846,6 @@ class MapChart extends React.Component {
         avgTested /= countTested;
         avgPopulation /= countPopulation;
         that.state.setTotConf(totConf);
-        console.log(maxSize);
         for(let i = 0; i < confirmed.length; i++) {
           confirmed[i].size = (confirmed[i].size - minSize) / (maxSize - minSize);
           confirmed[i].momentumLast1 = confirmed[i].size - (confirmed[i].sizeMin1 - minSize) / (maxSize - minSize);
@@ -856,7 +855,6 @@ class MapChart extends React.Component {
 
         // unconfirmed
         let globalTestRate = avgTested / avgPopulation;
-        console.log(globalTestRate);
         that.unconfirmed = [];
         skipRow = true;
         rowId = 0;
@@ -1232,6 +1230,29 @@ class MapChart extends React.Component {
             )})
           }
           {
+            confirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
+              if (size > 0) {
+                return (<Marker coordinates={coordinates} key={"label_" + rowId}>
+                  <text
+                      textAnchor="middle"
+                      y={markerOffset}
+                      style={{
+                        fontSize: name.endsWith(", US") ? "1.5px" : "2px",
+                        fontFamily: "Arial",
+                        fill: "#5D5A6D33",
+                        pointerEvents: "none"
+                      }}
+                  >
+                    {name}
+                  </text>
+                </Marker>)
+              }
+              else {
+                return ("");
+              }
+            })
+          }
+          {
             that.state.momentum==="none" &&
             confirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
               let active = val - recoveredAbsByRowId[rowId] - deathsAbsByRowId[rowId];
@@ -1267,13 +1288,6 @@ class MapChart extends React.Component {
                     `${name} - ${rounded(val)} confirmed ${ppms}, ${rounded(active)} active ${ppms2}`
                   }
                 </title>
-                <text
-                  textAnchor="middle"
-                  y={markerOffset}
-                  style={{ fontSize: name.endsWith(", US") ? "0.005em" : "2px", fontFamily: "Arial", fill: "#5D5A6D33", pointerEvents: "none" }}
-		      >
-                  {name}
-                </text>
               </Marker>
             )})
           }
