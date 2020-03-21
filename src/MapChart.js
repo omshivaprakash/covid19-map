@@ -650,17 +650,21 @@ class MapChart extends React.Component {
           size = this.scaleLog(size);
           size = this.scalePpm(size, pop);
           size = this.scaleLogAndPpm(size);
-          return (
-            <CircleMarker
-              key={"change_" + rowId}
-              style={this.state.chart === "pie" ? {display: "block"} : {display: "none"}}
-              center={[coordinates[1], coordinates[0]]}
-              fillColor={pos ? "#FF0000" : "#00FF00"}
-              radius={isNaN(size)?0:Math.sqrt(size) * this.state.factor}
-              opacity={0}
-              fillOpacity={0.5}
-            />
-        )})
+          if(size > 0) {
+            return (
+              <CircleMarker
+                key={"change_" + rowId}
+                style={this.state.chart === "pie" ? {display: "block"} : {display: "none"}}
+                center={[coordinates[1], coordinates[0]]}
+                fillColor={pos ? "#FF0000" : "#00FF00"}
+                radius={isNaN(size)?0:Math.sqrt(size) * this.state.factor}
+                opacity={0}
+                fillOpacity={0.5}
+              />
+            );
+          }
+          return "";
+        })
     )
   };
 
@@ -770,43 +774,46 @@ class MapChart extends React.Component {
 
   marker = (coordinates, rowId, color, text, size, val, name, markerOffset, type, transparency) => {
     let that = this;
-    return (
-      // bubble
-      <CircleMarker
-        key={type + "_" + rowId}
-        style={this.state.chart === "pie" ? {display: "block"} : {display: "none"}}
-        center={[coordinates[1], coordinates[0]]}
-        fillColor={color}
-        radius={size && size > 0 ? Math.sqrt(size) * this.state.factor : 0}
-        opacity={0}
-        fillOpacity={transparency}
-        onMouseOver={() => {
-            if (rowId < 0) {
-              this.state.setTooltipContent(`Could not retrieve data for ${name}.`);
-            } else {
-              let active = that.confirmed[rowId].val - that.recoveredAbsByRowId[rowId] - that.deathsAbsByRowId[rowId];
-              this.state.setTooltipContent(
-                  <div>
-                    <b>{name}</b> &nbsp;
-                    <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])}</span><br/>
-                    <span><FontAwesomeIcon
-                        icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
-                    <span><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</span>
-                    &nbsp;<span><FontAwesomeIcon
-                      icon={faHeartbeat}/> {rounded(that.recovered[rowId].val)} recovered</span>
-                    &nbsp;<span><FontAwesomeIcon
-                      icon={faHeartBroken}/> {rounded(that.deaths[rowId].val)} deceased</span>
-                  </div>
-              );
-            }
-          }}
-          onMouseOut={() => {
-            this.state.setTooltipContent("");
-          }}
-      >
-        <Tooltip direction="bottom" offset={[0, 20]} opacity={1}>{text}</Tooltip>
-      </CircleMarker>
-    );
+    if(size > 0) {
+      return (
+          // bubble
+          <CircleMarker
+              key={type + "_" + rowId}
+              style={this.state.chart === "pie" ? {display: "block"} : {display: "none"}}
+              center={[coordinates[1], coordinates[0]]}
+              fillColor={color}
+              radius={size && size > 0 ? Math.sqrt(size) * this.state.factor : 0}
+              opacity={0}
+              fillOpacity={transparency}
+              onMouseOver={() => {
+                if (rowId < 0) {
+                  this.state.setTooltipContent(`Could not retrieve data for ${name}.`);
+                } else {
+                  let active = that.confirmed[rowId].val - that.recoveredAbsByRowId[rowId] - that.deathsAbsByRowId[rowId];
+                  this.state.setTooltipContent(
+                      <div>
+                        <b>{name}</b> &nbsp;
+                        <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])}</span><br/>
+                        <span><FontAwesomeIcon
+                            icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
+                        <span><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</span>
+                        &nbsp;<span><FontAwesomeIcon
+                          icon={faHeartbeat}/> {rounded(that.recovered[rowId].val)} recovered</span>
+                        &nbsp;<span><FontAwesomeIcon
+                          icon={faHeartBroken}/> {rounded(that.deaths[rowId].val)} deceased</span>
+                      </div>
+                  );
+                }
+              }}
+              onMouseOut={() => {
+                this.state.setTooltipContent("");
+              }}
+          >
+            <Tooltip direction="bottom" offset={[0, 20]} opacity={1}>{text}</Tooltip>
+          </CircleMarker>
+      );
+    }
+    return "";
   }
       /*
 
