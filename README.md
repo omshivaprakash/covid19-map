@@ -42,7 +42,7 @@ npm run deploy      # Please do not forget to include link to license and mentio
 
 ### Data sources
 - [Johns Hopkins COVID-19 data set](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series)
-- Testing rates
+- Testing rates:
   - [Countries](https://en.wikipedia.org/wiki/COVID-19_testing)
   - [US States](https://docs.google.com/spreadsheets/u/2/d/e/2PACX-1vRwAqp96T9sYYq2-i7Tj0pvTf6XVHjDSMIKBdZHXiCGGdNC0ypEU9NbngS8mxea55JuCFuua1MUeOj5/pubhtml)
 - Population data:
