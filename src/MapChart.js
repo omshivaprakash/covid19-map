@@ -582,7 +582,7 @@ let population = {
   "Saint Pierre and Miquelon": 5795,
   "Saint Vincent and the Grenadines": 110947,
   "Samoa": 198410,
-  "San Marino, Republic of": 33938,
+  "San Marino": 33938,
   "Sao Tome and Principe": 219161,
   "Saudi Arabia": 34813867,
   "Senegal": 16743930,
@@ -886,7 +886,7 @@ class MapChart extends React.Component {
           if(testing[confirmed[rowId].name] && population[confirmed[rowId].name]) {
             let localTestRate = testing[confirmed[rowId].name] / population[confirmed[rowId].name];
             let inverseTestFactor = globalTestRate / localTestRate;
-            size = size * (1+inverseTestFactor) ;
+            size = size * inverseTestFactor;
             val = val * inverseTestFactor;
           } else {
             size = 0;
@@ -1166,24 +1166,9 @@ class MapChart extends React.Component {
                 }
                 let pos = size >= 0;
                 size = Math.abs(size);
-                if(that.state.logmode) {
-                  if(size > 0) {
-                    size = Math.log(size * 100000) / 100;
-                    size = Math.abs(size);
-                  }
-                }
-                if(that.state.ppmmode) {
-                  if (population[name]) {
-                    if (size > 0) {
-                      size = ONE_M * size / population[name];
-                    }
-                  } else {
-                    size = 0;
-                  }
-                }
-                if(that.state.logmode && that.state.ppmmode) {
-                  size = size / 20
-                }
+                size = this.scaleLog(size);
+                size = this.scalePpm(size, population[name]);
+                size = this.scaleLogAndPpm(size);
                 return (<Marker coordinates={coordinates} key={"change_" + rowId}>
                   <circle r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill={pos ? "#F008" : "#0F08"} />
                   <title>
@@ -1204,28 +1189,14 @@ class MapChart extends React.Component {
           {
             that.state.momentum==="none" && that.state.testmode &&
             unconfirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
+              let color = "#00F";
               let active = val - recoveredAbsByRowId[rowId] - deathsAbsByRowId[rowId];
               if(that.state.chart==="pill" || that.state.chart==="bar") {
                 size *= 10;
               }
-		      if(that.state.logmode) {
-		        if(size > 0) {
-                  size = Math.log(size * 100000) / 100;
-                }
-              }
-		      let color = "#00F";
-		      if(that.state.ppmmode) {
-                if(population[name]) {
-                  if (size > 0) {
-                    size = ONE_M * size / population[name];
-                  }
-                } else {
-                  size = 0;
-                }
-              }
-		      if(that.state.logmode && that.state.ppmmode) {
-                size = size / 20
-              }
+              size = this.scaleLog(size);
+              size = this.scalePpm(size, population[name]);
+		      size = this.scaleLogAndPpm(size);
 		      let ppms = population[name] && !isNaN(val) ? '(' + Math.round(ONE_M * val / population[name]) + ' ppm)'  : '';
 		      let ppms2 = population[name] && !isNaN(active) ? '(' + Math.round(ONE_M * active / population[name]) + ' ppm)'  : '';
               return (<Marker coordinates={coordinates} key={"unconfirmed_" + rowId}>
@@ -1234,7 +1205,7 @@ class MapChart extends React.Component {
                 <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill={color+"8"} />
                 <title>
                   {
-                    `${name} - could be ${rounded(val)} confirmed ${ppms} or more if local test rate was like global average test rate`
+                    `${name} - could be >${rounded(val)} confirmed ${ppms}, >${rounded(active)} active ${ppms2} if local test rate was like global average test rate`
                   }
                 </title>
                 <text
@@ -1273,28 +1244,12 @@ class MapChart extends React.Component {
           {
             that.state.momentum==="none" &&
             confirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
+              let color = "#F00";
               let active = val - recoveredAbsByRowId[rowId] - deathsAbsByRowId[rowId];
               if(that.state.chart==="pill" || that.state.chart==="bar") {
                 size *= 10;
               }
-		      if(that.state.logmode) {
-		        if(size > 0) {
-                  size = Math.log(size * 100000) / 100;
-                }
-              }
-		      let color = "#F00";
-		      if(that.state.ppmmode) {
-                if(population[name]) {
-                  if (size > 0) {
-                    size = ONE_M * size / population[name];
-                  }
-                } else {
-                  size = 0;
-                }
-              }
-		      if(that.state.logmode && that.state.ppmmode) {
-                size = size / 20
-              }
+              size = this.scale(size, population[name]);
 		      let ppms = population[name] && !isNaN(val) ? '(' + Math.round(ONE_M * val / population[name]) + ' ppm)'  : '';
 		      let ppms2 = population[name] && !isNaN(active) ? '(' + Math.round(ONE_M * active / population[name]) + ' ppm)'  : '';
               return (<Marker coordinates={coordinates} key={"confirmed_" + rowId}>
@@ -1312,34 +1267,19 @@ class MapChart extends React.Component {
           {
             that.state.momentum==="none" && !that.state.jhmode &&
             recovered.map(({rowId, name, coordinates, markerOffset, size, val }) => {
+              let color = "#0F0";
               if(that.state.chart==="pie" || that.state.chart==="pill") {
                 size += deathsByRowId[rowId];
               }
               if(that.state.chart==="pill" || that.state.chart==="bar") {
                 size *= 10;
               }
-              if(that.state.logmode) {
-                if(size > 0) {
-                  size = Math.log(size * 100000) / 100;
-                }
-              }
-              if(that.state.ppmmode) {
-                if(population[name]) {
-                  if (size > 0) {
-                    size = ONE_M * size / population[name];
-                  }
-                } else {
-                  size = 0;
-                }
-              }
-              if(that.state.logmode && that.state.ppmmode) {
-                size = size / 20
-              }
+              size = this.scale(size, population[name]);
               let ppms = population[name] && !isNaN(val) ? '(' + Math.round(ONE_M * val / population[name]) + ' ppm)'  : '';
               return (<Marker coordinates={coordinates} key={"recovered_" + rowId}>
-                <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} x={isNaN(size)?0:- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={isNaN(size)?0:size * that.state.factor} fill="#0F08" />
-                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} x={that.state.width * 3 * 1 - that.state.width * 3 * 1.5} y={isNaN(size)?0:-size * that.state.factor} width={that.state.width * 3} height={isNaN(size)?0:size * that.state.factor} fill="#0F08" />
-                <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#0F0"}} : {display: "none", hover: {fill: "#0F0"}}} r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill="#0F08" />
+                <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} x={isNaN(size)?0:- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={isNaN(size)?0:size * that.state.factor} fill={color + "8"} />
+                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} x={that.state.width * 3 * 1 - that.state.width * 3 * 1.5} y={isNaN(size)?0:-size * that.state.factor} width={that.state.width * 3} height={isNaN(size)?0:size * that.state.factor} fill={color+"8"} />
+                <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill={color + "8"} />
                 <title>{name + " - " + rounded(val) + " recovered " + ppms}</title>
                 <text
                   textAnchor="middle"
@@ -1354,31 +1294,16 @@ class MapChart extends React.Component {
           {
             that.state.momentum==="none" && !that.state.jhmode &&
             deaths.map(({rowId, name, coordinates, markerOffset, size, val }) => {
+              let color = "#000";
               if(that.state.chart==="pill" || that.state.chart==="bar") {
                 size *= 10;
               }
-              if(that.state.logmode) {
-                if(size > 0) {
-                  size = Math.log(size * 100000) / 100;
-                }
-              }
-              if(that.state.ppmmode) {
-                if(population[name]) {
-                  if (size > 0) {
-                    size = ONE_M * size / population[name];
-                  }
-                } else {
-                  size = 0;
-                }
-              }
-              if(that.state.logmode && that.state.ppmmode) {
-                size = size / 20
-              }
+              size = this.scale(size, population[name]);
               let ppms = population[name] && !isNaN(val) ? '(' + Math.round(ONE_M * val / population[name]) + ' ppm)'  : '';
               return (<Marker coordinates={coordinates} key={"deceased_" + rowId}>
-                <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} x={isNaN(size)?0:- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={isNaN(size)?0:size * that.state.factor} fill="#000a" />
-                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000"}}} x={that.state.width * 3 * 2 - that.state.width * 3 * 1.5} y={isNaN(size)?0:-size * that.state.factor} width={that.state.width * 3} height={isNaN(size)?0:size * that.state.factor} fill="#000a" />
-                <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: "#000"}} : {display: "none", hover: {fill: "#000a"}}} r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill="#000a" />
+                <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} x={isNaN(size)?0:- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={isNaN(size)?0:size * that.state.factor} fill={color + "a"} />
+                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} x={that.state.width * 3 * 2 - that.state.width * 3 * 1.5} y={isNaN(size)?0:-size * that.state.factor} width={that.state.width * 3} height={isNaN(size)?0:size * that.state.factor} fill={color + "a"} />
+                <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill={color + "a"} />
                 <title>{name + " - " + rounded(val) + " deceased " + ppms}</title>
                 <text
                   textAnchor="middle"
@@ -1395,6 +1320,43 @@ class MapChart extends React.Component {
     </>
     );
   }
+
+  scale = (value, population) => {
+    value = this.scaleLog(value);
+    value = this.scalePpm(value, population);
+    value = this.scaleLogAndPpm(value);
+    return value;
+  };
+
+  scaleLog = (value) => {
+    if(!this.state.logmode) {
+      return value;
+    }
+    if(value > 0) {
+      return Math.log(value * 10000) / 100;
+    }
+    return 0;
+  };
+
+  scalePpm = (value, population) => {
+    if(!this.state.ppmmode) {
+      return value;
+    }
+    if(population) {
+      if(value > 0) {
+        return ONE_M * value / population * 10;
+      }
+    }
+    return 0;
+  };
+
+  scaleLogAndPpm = (value) => {
+    if(this.state.logmode && this.state.ppmmode) {
+      return value / 10;
+    }
+    return value;
+  };
+
 }
 
 export default memo(MapChart);
