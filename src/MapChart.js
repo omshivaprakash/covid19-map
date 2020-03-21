@@ -410,8 +410,6 @@ class MapChart extends React.Component {
             className={"btn btn-sm btn-success play"}
             style={{height: "30px", lineHeight: "20px"}}
             onClick={()=>{
-              document.getElementsByClassName("info")[0].style.display = "none";
-              document.getElementsByClassName("controls")[0].style.display = "none";
               document.getElementsByClassName("todayTime")[0].style.display = "none";
               document.getElementsByClassName("play")[0].style.display = "none";
               document.getElementsByClassName("leftTime")[0].style.display = "none";
@@ -444,8 +442,6 @@ class MapChart extends React.Component {
             className={"btn btn-sm btn-danger stop"}
             style={this.state.playmode ? {height: "30px", lineHeight: "20px"} : {display : "none"}}
             onClick={()=>{
-              document.getElementsByClassName("info")[0].style.display = "inline";
-              document.getElementsByClassName("controls")[0].style.display = "inline";
               document.getElementsByClassName("todayTime")[0].style.display = "inline";
               document.getElementsByClassName("play")[0].style.display = "inline";
               document.getElementsByClassName("leftTime")[0].style.display = "inline";
