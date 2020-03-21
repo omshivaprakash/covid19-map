@@ -366,9 +366,10 @@ class MapChart extends React.Component {
         </div>
       </div>
       <div className="small timeline">
-        Showing data from: <b>{shownDate.toLocaleDateString()}</b>
+        <button disabled style={{color: "black", opacity: 1, pointerEvents: "none"}} className={"btn btn-sm"}><b>{shownDate.toLocaleDateString()}</b></button>
         <button
-            className={"leftTime"}
+            className={this.state.dayOffset < 0 ? "btn btn-sm btn-dark leftTime" : "btn btn-sm btn-outline-dark leftTime"}
+            style={{height: "30px", lineHeight: "20px"}}
             onClick={() => {
               this.state.dayOffset = this.state.dayOffset - 1;
               this.state.testmode = false;
@@ -377,7 +378,8 @@ class MapChart extends React.Component {
         >Back</button>
 
         <button
-            className={"midTime"}
+            className={"btn btn-sm btn-secondary midTime"}
+            style={this.state.dayOffset < 0 ? {height: "30px", lineHeight: "20px"} : {display: "none"}}
             onClick={() => {
               this.state.dayOffset = Math.min(0, this.state.dayOffset + 1);
               if(this.state.dayOffset === 0) {
@@ -392,7 +394,8 @@ class MapChart extends React.Component {
         >Forward</button>
 
         <button
-            className={"todayTime"}
+            className={this.state.dayOffset < 0 ? "btn btn-sm btn-outline-danger todayTime" : "btn btn-sm btn-danger todayTime"}
+            style={{height: "30px", lineHeight: "20px"}}
             onClick={()=>{
               this.state.dayOffset = 0;
               if(this.state.momentum === "none") {
