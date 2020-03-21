@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 import { Map, TileLayer, Marker, Tooltip,
     CircleMarker, LayerGroup } from "react-leaflet";
 
+import * as L from "leaflet";
+
 import * as Testing from "./TestingRates";
 import * as Population from "./Population";
 
@@ -30,7 +32,7 @@ const rounded = num => {
   }
 };
 
-class MapChart extends React.Component {
+class MapChart extends Map {
   constructor(props) {
     super(props);
     this.state = {
@@ -55,6 +57,9 @@ class MapChart extends React.Component {
       zoom: 2
     };
 
+    this.map = null;
+    this.deceasedCircles = [];
+
     this.deathsByRowId = {};
     this.recoveredAbsByRowId = {};
     this.deathsAbsByRowId = {};
@@ -73,6 +78,48 @@ class MapChart extends React.Component {
 
   componentDidMount() {
     this.reload();
+  }
+
+  componentDidUpdate (prevProps) {
+      this.updateLeafletElement(prevProps, this.props);
+      const layers = this.map.leafletElement._layers;
+
+      // bring to front one by one
+      Object.values(layers).map((layer) => {
+        if(layer.options.className ==="projected") {
+          layer.bringToFront();
+        }
+      });
+
+      Object.values(layers).map((layer) => {
+        if(layer.options.className ==="confirmed") {
+          layer.bringToFront();
+        }
+      });
+
+      Object.values(layers).map((layer) => {
+        if(layer.options.className ==="recovered") {
+          layer.bringToFront();
+        }
+      });
+
+      Object.values(layers).map((layer) => {
+        if(layer.options.className ==="deceased") {
+          layer.bringToFront();
+        }
+      });
+
+    /*
+    Object.values(layers)
+      .filter((layer) => {
+        return typeof layer.options.priority !== "undefined";
+      })
+      .sort((layerA, layerB) => {
+        return layerA.options.priority - layerB.options.priority;
+      })
+      .forEach((layer) => {
+        layer.bringToFront();
+      });*/
   }
 
   get_sums(NAME, extension) {
@@ -450,7 +497,7 @@ class MapChart extends React.Component {
               document.getElementsByClassName("midTime")[0].style.display = "none";
 
               var now = new Date();
-              var startDate = new Date("January 23, 2020 00:00:00");
+              var startDate = new Date("January 23, 2020 23:59:59");
               const oneDay = 24 * 60 * 60 * 1000;
               this.state.dayOffset = - Math.round(Math.abs((now - startDate) / oneDay));
 
@@ -505,7 +552,7 @@ class MapChart extends React.Component {
   leafletMap = () => {
     const position = [this.state.lat, this.state.lng];
     return (
-      <Map center={position} zoom={this.state.zoom} zoomControl={false}>
+      <Map ref={(ref) => { this.map = ref}} center={position} zoom={this.state.zoom} zoomControl={false}>
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           // url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
@@ -514,7 +561,7 @@ class MapChart extends React.Component {
 
         { /* this.mapLabels() */ }
 
-        <LayerGroup key={4}>
+        <LayerGroup key={5}>
           { this.momentumMarkers()  }
         </LayerGroup>
 
@@ -527,7 +574,7 @@ class MapChart extends React.Component {
         </LayerGroup>
 
         <LayerGroup key={2} className={"deceasedLayer"}>
-          { /*this.recoveredMarkers() */}
+          { this.recoveredMarkers() }
         </LayerGroup>
 
         <LayerGroup key={1} className={"deceasedLayer"}>
@@ -794,6 +841,7 @@ class MapChart extends React.Component {
       return (
           // bubble
           <CircleMarker
+              ref={(ref) => { this.deceasedCircles.push(ref)}}
               className={type}
               key={type + "_" + rowId}
               style={this.state.chart === "pie" ? {display: "block"} : {display: "none"}}
