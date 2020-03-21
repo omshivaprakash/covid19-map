@@ -67,7 +67,6 @@ function App() {
         <span className="text-dark hideInJh hideInMomentum">Black: deceased</span><br className="hideInJh hideInMomentum" />
         <span className="text-primary hideInJh hideInMomentum">Blue: confirmed projected at world average test rate</span><br className="hideInJh hideInMomentum" />
         <sub className={"lightInJh"}>
-            Last synchronized at {date.toLocaleTimeString()}<br/>
             <a target="_blank" className="text-secondary" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map#contributors"}><FontAwesomeIcon icon={faCode} /> Credits</a>
             &nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" className="text-secondary" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map/issues"}><FontAwesomeIcon icon={faBug} /> Issues</a>
             &nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" className="text-secondary" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map"}><FontAwesomeIcon icon={faBalanceScale} /> MIT</a>
