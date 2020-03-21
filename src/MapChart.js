@@ -416,7 +416,7 @@ let population = {
   "French Guiana": 298682,
   "French Polynesia": 280904,
   "Gabon": 2225728,
-  "Gambia": 2416664,
+  "Gambia, The": 2416664,
   "Georgia": 3989175,
   "Germany": 83783945,
   "Ghana": 31072945,
@@ -1199,6 +1199,18 @@ class MapChart extends React.Component {
             })
           }
           {
+            that.state.momentum==="none" &&
+            confirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
+              let color = "#F00";
+              let active = val - recoveredAbsByRowId[rowId] - deathsAbsByRowId[rowId];
+              size = this.scale(size, population[name]);
+		      let ppms = population[name] && !isNaN(val) ? '(' + Math.round(ONE_M * val / population[name]) + ' ppm)'  : '';
+		      let ppms2 = population[name] && !isNaN(active) ? '(' + Math.round(ONE_M * active / population[name]) + ' ppm)'  : '';
+		      let text = `${name} - ${rounded(val)} confirmed ${ppms}, ${rounded(active)} active ${ppms2}`;
+              return this.marker(coordinates, rowId, color, text, size, val, name, markerOffset, "confirmed", "8");
+            })
+          }
+          {
             confirmed.map(({ rowId, name, coordinates, markerOffset, size }) => {
               if (size > 0) {
                 return (<Marker coordinates={coordinates} key={"label_" + rowId}>
@@ -1219,18 +1231,6 @@ class MapChart extends React.Component {
               else {
                 return ("");
               }
-            })
-          }
-          {
-            that.state.momentum==="none" &&
-            confirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
-              let color = "#F00";
-              let active = val - recoveredAbsByRowId[rowId] - deathsAbsByRowId[rowId];
-              size = this.scale(size, population[name]);
-		      let ppms = population[name] && !isNaN(val) ? '(' + Math.round(ONE_M * val / population[name]) + ' ppm)'  : '';
-		      let ppms2 = population[name] && !isNaN(active) ? '(' + Math.round(ONE_M * active / population[name]) + ' ppm)'  : '';
-		      let text = `${name} - ${rounded(val)} confirmed ${ppms}, ${rounded(active)} active ${ppms2}`;
-              return this.marker(coordinates, rowId, color, text, size, val, name, markerOffset, "confirmed", "8");
             })
           }
           {
