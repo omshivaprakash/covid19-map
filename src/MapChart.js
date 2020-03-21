@@ -461,8 +461,7 @@ class MapChart extends React.Component {
                 return (<Marker coordinates={coordinates} key={"change_" + rowId}>
                   <circle r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill={pos ? "#F008" : "#0F08"} />
                   <title>
-                    {`
-                      ${name} - ${Math.abs(val)} ${pos ? "INCREASE" : "DECREASE"} in active(= confirmed-recovered) cases (excl. deceased) (${Math.round(ONE_M*val/pop)} ppm)`
+                    {`${name} - ${Math.abs(val)} ${pos ? "INCREASE" : "DECREASE"} in active(= confirmed-recovered) cases (excl. deceased) (${Math.round(ONE_M*val/pop)} ppm)`
                     }
                   </title>
                   <text
@@ -566,6 +565,24 @@ class MapChart extends React.Component {
               y={-this.state.width/2*3}
               height={this.state.width*3}
               width={isNaN(size)?0:size * this.state.factor}
+              onMouseOver={() => {
+                if(rowId < 0) {
+                  this.state.setTooltipContent(`Could not retrieve data for ${name}.`);
+                } else {
+                  this.state.setTooltipContent(
+                      <div>
+                        <b>{name}</b> &nbsp;
+                        <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])}</span><br />
+                        <span><FontAwesomeIcon icon={faProcedures}/> {rounded(confirmed[rowId].val)} confirmed (>{rounded(unconfirmed[rowId].val)} at avg. test rate)</span><br/>
+                        <span><FontAwesomeIcon icon={faHeartbeat}/> {rounded(recovered[rowId].val)} recovered</span>
+                        &nbsp;<span><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths[rowId].val)} deceased</span>
+                      </div>
+                  );
+                }
+              }}
+              onMouseOut={() => {
+                this.state.setTooltipContent("");
+              }}
           />
 
           /* bar */
@@ -576,6 +593,24 @@ class MapChart extends React.Component {
               y={isNaN(size)?0:-size * this.state.factor}
               height={isNaN(size)?0:size * this.state.factor}
               width={this.state.width * 3}
+              onMouseOver={() => {
+                if(rowId < 0) {
+                  this.state.setTooltipContent(`Could not retrieve data for ${name}.`);
+                } else {
+                  this.state.setTooltipContent(
+                      <div>
+                        <b>{name}</b> &nbsp;
+                        <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])}</span><br />
+                        <span><FontAwesomeIcon icon={faProcedures}/> {rounded(confirmed[rowId].val)} confirmed (>{rounded(unconfirmed[rowId].val)} at avg. test rate)</span><br/>
+                        <span><FontAwesomeIcon icon={faHeartbeat}/> {rounded(recovered[rowId].val)} recovered</span>
+                        &nbsp;<span><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths[rowId].val)} deceased</span>
+                      </div>
+                  );
+                }
+              }}
+              onMouseOut={() => {
+                this.state.setTooltipContent("");
+              }}
           />
 
           /* bubble */
