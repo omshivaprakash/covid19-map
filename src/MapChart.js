@@ -513,7 +513,7 @@ class MapChart extends React.Component {
   leafletMap = () => {
     const position = [this.state.lat, this.state.lng];
     return (
-      <Map center={position} zoom={this.state.zoom}>
+      <Map center={position} zoom={this.state.zoom} zoomControl={false}>
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           // url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
