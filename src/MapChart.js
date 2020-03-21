@@ -410,7 +410,6 @@ class MapChart extends React.Component {
             className={"btn btn-sm btn-success play"}
             style={{height: "30px", lineHeight: "20px"}}
             onClick={()=>{
-              document.body.style.background = "#000";
               document.getElementsByClassName("info")[0].style.display = "none";
               document.getElementsByClassName("controls")[0].style.display = "none";
               document.getElementsByClassName("todayTime")[0].style.display = "none";
@@ -482,15 +481,15 @@ class MapChart extends React.Component {
                     }}
                     style={{
                       default: {
-                        fill: `${that.state.playmode ? "#333" : "#ddd"}`,
+                        fill: `#ddd`,
                         outline: "none"
                       },
                       hover: {
-                        fill: `${that.state.playmode ? "#000" : "#999"}` ,
+                        fill: `#999` ,
                         outline: "none"
                       },
                       pressed: {
-                        fill: `${that.state.playmode ? "#333" : "#ddd"}`,
+                        fill: `#ddd`,
                         outline: "none"
                       }
                     }}
