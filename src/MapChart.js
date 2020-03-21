@@ -541,7 +541,6 @@ class MapChart extends React.Component {
 			      else { this.state.setTooltipContent(`Could not retrieve data for ${NAME}.`); }
                       } else {
                         let active = that.confirmed[rowId].val - that.recoveredAbsByRowId[rowId] - that.deathsAbsByRowId[rowId];
-			      console.log("active in " + NAME + ":" + active);
                         this.state.setTooltipContent(
                           <div>
                             <b>{NAME}</b> &nbsp;
