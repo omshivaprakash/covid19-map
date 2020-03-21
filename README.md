@@ -35,7 +35,8 @@ npm run deploy      # Please do not forget to include link to license and mentio
 - Daniel Karl
 - Michael Baentsch
 
-#### License Notes
-React Simple Maps: https://www.react-simple-maps.io/
-Link to license (MIT): https://github.com/zcreativelabs/react-simple-maps/blob/master/LICENSE
+#### Attributions
+- [React Simple Maps (MIT license)](https://github.com/zcreativelabs/react-simple-maps/blob/master/LICENSE)
+- [Johns Hopkins COVID-19 Data set](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series)
+- [COVID-19 Testing rates](https://en.wikipedia.org/wiki/COVID-19_testing)
 
