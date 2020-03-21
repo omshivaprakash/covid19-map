@@ -74,6 +74,39 @@ class MapChart extends React.Component {
     this.reload();
   }
 
+  get_sums(NAME, extension) {
+	  let that = this;
+			  let population_sum = 0;
+			  let confirmed_sum = 0;
+			  let unconfirmed_sum = 0;
+			  let active_sum = 0;
+			  let recovered_sum = 0;
+			  let deaths_sum = 0;
+		          for(let c of that.confirmed){ 
+			     if(c.name.endsWith(extension)){ 
+				     if (!isNaN(Population.ABSOLUTE[c.name])) {
+				        population_sum += Population.ABSOLUTE[c.name];
+			  		confirmed_sum += that.confirmed[c.rowId].val;
+			  		unconfirmed_sum += that.unconfirmed[c.rowId].val;
+                                        active_sum += that.confirmed[c.rowId].val - that.recoveredAbsByRowId[c.rowId] - that.deathsAbsByRowId[c.rowId];
+			  		recovered_sum += that.recovered[c.rowId].val;
+			  		deaths_sum += that.deaths[c.rowId].val;
+				     }
+			     } 
+			  }
+                          this.state.setTooltipContent(
+                          <div>
+                            <b>{NAME}</b> &nbsp;
+                            <span><FontAwesomeIcon icon={faUsers}/> {rounded(population_sum)}</span><br />
+                            <span><FontAwesomeIcon icon={faBiohazard}/> {rounded(confirmed_sum)} confirmed (>{rounded(unconfirmed_sum)} at avg. test rate)</span><br/>
+                            <span><FontAwesomeIcon icon={faProcedures}/> {rounded(active_sum)} active</span>
+                            &nbsp;<span><FontAwesomeIcon icon={faHeartbeat}/> {rounded(recovered_sum)} recovered</span>
+                            &nbsp;<span><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths_sum)} deceased</span>
+                          </div>
+                          );
+	  return [population_sum, confirmed_sum, unconfirmed_sum, active_sum, recovered_sum, deaths_sum];
+  }
+
   reload = () => {
     let that = this;
     that.totConf = 0;
@@ -489,7 +522,23 @@ class MapChart extends React.Component {
                         }
                       }
                       if(rowId < 0) {
-                        this.state.setTooltipContent(`Could not retrieve data for ${NAME}.`);
+			if (NAME === "United States of America") { 
+		          this.get_sums(NAME, ", US");	
+		        }
+			      else if (NAME === "China") { 
+		          this.get_sums(NAME, ", China");	
+		        }
+			      else if (NAME === "Australia") { 
+		          this.get_sums(NAME, ", Australia");	
+		        }
+			      else if (NAME === "Canada") { 
+		          this.get_sums(NAME, ", Canada");	
+		        }
+			      else if (NAME === "France") { 
+		          this.get_sums(NAME, ", France");	
+		        }
+
+			      else { this.state.setTooltipContent(`Could not retrieve data for ${NAME}.`); }
                       } else {
                         let active = that.confirmed[rowId].val - that.recoveredAbsByRowId[rowId] - that.deathsAbsByRowId[rowId];
                         this.state.setTooltipContent(
@@ -660,8 +709,8 @@ class MapChart extends React.Component {
               style={this.state.chart==="pill" ? {display: "block"} : {display: "none"}}
               x={isNaN(size)?0:- size * this.state.factor / 2}
               y={-this.state.width/2*3}
-              height={this.state.width*3}
-              width={isNaN(size)?0:size * this.state.factor}
+              height={(this.state.width<0)?0:this.state.width*3}
+              width={isNaN(size)?0:(size * this.state.factor > 0)?size*this.state.factor:0}
               onMouseOver={() => {
                 if(rowId < 0) {
                   this.state.setTooltipContent(`Could not retrieve data for ${name}.`);
@@ -690,8 +739,8 @@ class MapChart extends React.Component {
               style={this.state.chart==="bar" ? {display: "block"} : {display: "none"}}
               x={this.state.width * 3 * 2 - this.state.width * 3 * 1.5}
               y={isNaN(size)?0:-size * this.state.factor}
-              height={isNaN(size)?0:size * this.state.factor}
-              width={this.state.width * 3}
+              height={isNaN(size)?0:(size * this.state.factor<0)?0:size*this.state.factor}
+              width={(this.state.width<0)?0:this.state.width * 3}
               onMouseOver={() => {
                 if(rowId < 0) {
                   this.state.setTooltipContent(`Could not retrieve data for ${name}.`);
