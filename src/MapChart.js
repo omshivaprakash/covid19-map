@@ -1,7 +1,7 @@
 import React, {memo} from "react";
 import ReactDOM from "react-dom";
 import { Map, TileLayer, Marker, Tooltip,
-    CircleMarker } from "react-leaflet";
+    CircleMarker, LayerGroup } from "react-leaflet";
 
 import * as Testing from "./TestingRates";
 import * as Population from "./Population";
@@ -511,12 +511,28 @@ class MapChart extends React.Component {
           // url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
           url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'
         />
-        { this.momentumMarkers() }
-        { this.projectedMarkers() }
-        { this.confirmedMarkers() }
+
         { /* this.mapLabels() */ }
-        { this.recoveredMarkers() }
-        { this.deceasedMarkers() }
+
+        <LayerGroup key={4}>
+          { this.momentumMarkers()  }
+        </LayerGroup>
+
+        <LayerGroup key={4} className={"deceasedLayer"}>
+          { this.projectedMarkers() }
+        </LayerGroup>
+
+        <LayerGroup key={3} className={"deceasedLayer"}>
+          { this.confirmedMarkers() }
+        </LayerGroup>
+
+        <LayerGroup key={2} className={"deceasedLayer"}>
+          { /*this.recoveredMarkers() */}
+        </LayerGroup>
+
+        <LayerGroup key={1} className={"deceasedLayer"}>
+          { this.deceasedMarkers() }
+        </LayerGroup>
       </Map>
     );
   };
@@ -622,49 +638,49 @@ class MapChart extends React.Component {
 
   momentumMarkers = () => {
     return (
-      this.state.momentum!=="none" &&
-        this.confirmed.map(({ rowId, name, coordinates, markerOffset, momentumLast1, momentumLast3, momentumLast7, valMin1, valMin3, valMin7 }) => {
-          let pop = Population.ABSOLUTE[name];
-          let size;
-          let val;
-          switch(this.state.momentum) {
-            case "last1":
-              size = momentumLast1 - this.recovered[rowId].momentumLast1;
-              val = valMin1 - this.recovered[rowId].valMin1;
-              break;
-            case "last3":
-              size = momentumLast3 - this.recovered[rowId].momentumLast3;
-              val = valMin3 - this.recovered[rowId].valMin3;
-              break;
-            case "last7":
-              size = momentumLast7 - this.recovered[rowId].momentumLast7;
-              val = valMin7 - this.recovered[rowId].valMin7;
-              break;
-            default:
-              alert("something went wrong");
-              console.log("something went wrong");
-              break;
-          }
-          let pos = size >= 0;
-          size = Math.abs(size);
-          size = this.scaleLog(size);
-          size = this.scalePpm(size, pop);
-          size = this.scaleLogAndPpm(size);
-          if(size > 0) {
-            return (
+      this.state.momentum !== "none" &&
+      this.confirmed.map(({rowId, name, coordinates, markerOffset, momentumLast1, momentumLast3, momentumLast7, valMin1, valMin3, valMin7}) => {
+        let pop = Population.ABSOLUTE[name];
+        let size;
+        let val;
+        switch (this.state.momentum) {
+          case "last1":
+            size = momentumLast1 - this.recovered[rowId].momentumLast1;
+            val = valMin1 - this.recovered[rowId].valMin1;
+            break;
+          case "last3":
+            size = momentumLast3 - this.recovered[rowId].momentumLast3;
+            val = valMin3 - this.recovered[rowId].valMin3;
+            break;
+          case "last7":
+            size = momentumLast7 - this.recovered[rowId].momentumLast7;
+            val = valMin7 - this.recovered[rowId].valMin7;
+            break;
+          default:
+            alert("something went wrong");
+            console.log("something went wrong");
+            break;
+        }
+        let pos = size >= 0;
+        size = Math.abs(size);
+        size = this.scaleLog(size);
+        size = this.scalePpm(size, pop);
+        size = this.scaleLogAndPpm(size);
+        if (size > 0) {
+          return (
               <CircleMarker
-                key={"change_" + rowId}
-                style={this.state.chart === "pie" ? {display: "block"} : {display: "none"}}
-                center={[coordinates[1], coordinates[0]]}
-                fillColor={pos ? "#FF0000" : "#00FF00"}
-                radius={isNaN(size)?0:Math.sqrt(size) * this.state.factor}
-                opacity={0}
-                fillOpacity={0.5}
+                  key={"change_" + rowId}
+                  style={this.state.chart === "pie" ? {display: "block"} : {display: "none"}}
+                  center={[coordinates[1], coordinates[0]]}
+                  fillColor={pos ? "#FF0000" : "#00FF00"}
+                  radius={isNaN(size) ? 0 : Math.sqrt(size) * this.state.factor}
+                  opacity={0}
+                  fillOpacity={0.5}
               />
-            );
-          }
-          return "";
-        })
+          );
+        }
+        return "";
+      })
     )
   };
 
@@ -772,19 +788,20 @@ class MapChart extends React.Component {
     )
   };
 
-  marker = (coordinates, rowId, color, text, size, val, name, markerOffset, type, transparency) => {
+  marker = (coordinates, rowId, color, text, size, val, name, markerOffset, type, opacity) => {
     let that = this;
     if(size > 0) {
       return (
           // bubble
           <CircleMarker
+              className={type}
               key={type + "_" + rowId}
               style={this.state.chart === "pie" ? {display: "block"} : {display: "none"}}
               center={[coordinates[1], coordinates[0]]}
               fillColor={color}
               radius={size && size > 0 ? Math.sqrt(size) * this.state.factor : 0}
               opacity={0}
-              fillOpacity={transparency}
+              fillOpacity={opacity}
               onMouseOver={() => {
                 if (rowId < 0) {
                   this.state.setTooltipContent(`Could not retrieve data for ${name}.`);

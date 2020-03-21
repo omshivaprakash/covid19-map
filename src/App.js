@@ -63,7 +63,7 @@ function App() {
         <span className="text-success showInMomentum">Green: decrease active</span>
         <span className="text-dark showInMomentum">where "active" is newly confirmed minus newly recovered (excluding deceased)</span>
         <span className="text-danger hideInMomentum">Red: confirmed</span><br className="hideInMomentum"/>
-        <span className="text-success hideInJh hideInMomentum">Green: recovered</span><br className="hideInJh hideInMomentum" />
+          {/*<span className="text-success hideInJh hideInMomentum">Green: recovered</span><br className="hideInJh hideInMomentum" />*/}
         <span className="text-dark hideInJh hideInMomentum">Black: deceased</span><br className="hideInJh hideInMomentum" />
         <span className="text-primary hideInJh hideInMomentum">Blue: confirmed projected at world average test rate</span><br className="hideInJh hideInMomentum" />
         <sub className={"lightInJh"}>
