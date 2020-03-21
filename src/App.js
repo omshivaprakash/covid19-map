@@ -68,7 +68,7 @@ function App() {
         <span className="text-primary hideInJh hideInMomentum">Blue: confirmed projected at world average test rate</span><br className="hideInJh hideInMomentum" />
         <sub className={"lightInJh"}>
           Using live data from <br /><a target="_blank" rel="noopener noreferrer" href={"https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series"}><FontAwesomeIcon icon={faDatabase} /> Johns Hopkins repository</a><br/>Last synchronized on {date.toLocaleDateString()} at {date.toLocaleTimeString()}<br/>
-            <a target="_blank" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map"}><FontAwesomeIcon icon={faCode} /> Original author(s) &amp; license</a>
+            <a target="_blank" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map"}><FontAwesomeIcon icon={faCode} /> Credits &amp; license</a>
         </sub>
       </div>
     ]
