@@ -553,8 +553,8 @@ class MapChart extends Map {
       <Map ref={(ref) => { this.map = ref}} center={position} zoom={this.state.zoom} zoomControl={false}>
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
-          // url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'
+          // url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
+          url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'
         />
 
         { /* this.mapLabels() */ }
