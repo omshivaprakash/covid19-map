@@ -1074,9 +1074,9 @@ class MapChart extends React.Component {
           <Form.Check inline className="small" checked={that.state.ppmmode} label={<span title={"Scales the glyphs on the map according to the number of people in each country/region."}>Population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
             onChange={() => {that.setState({ppmmode: !that.state.ppmmode});}} /><br />
           <span className="small text-muted mr-2">Glyph style:</span><br/>
-          <Form.Check inline title="Represent data as circles. Hover circles on map to see more details." className="small" checked={that.state.chart==="pie" } label="Circles" type={"radio"} name={"a"} id={`inline-radio-1`} onChange={() => {that.setState({chart: "pie"});}}/>
+          <Form.Check inline title="Represent data as bubbles. Hover bubbles on map to see more details." className="small" checked={that.state.chart==="pie" } label="Bubbles" type={"radio"} name={"a"} id={`inline-radio-1`} onChange={() => {that.setState({chart: "pie"});}}/>
           <Form.Check inline title="Represent data as vertical bars. Hover bars on map to see more details." className="small hideInMomentum" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onChange={() => {that.setState({chart: "bar"});}} disabled={that.state.momentum!=="none" ? true : false}/>
-          <Form.Check inline title="Represent data as horizontal progress bars. Hover bars on map to see more details." className="small hideInMomentum" checked={that.state.chart==="pill" } label="Progress" type={"radio"} name={"a"} id={`inline-radio-3`} onChange={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/><br />
+          <Form.Check inline title="Represent data as horizontal pill. Hover pill on map to see more details." className="small hideInMomentum" checked={that.state.chart==="pill" } label="Pills" type={"radio"} name={"a"} id={`inline-radio-3`} onChange={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/><br />
           <span className="small text-muted">Scale glyphs:</span>
           <ReactBootstrapSlider title="Scale glyps" value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1}></ReactBootstrapSlider><br />
           <span className="small text-danger">Hold &lt;CTRL&gt; + scroll to zoom map.</span><br />
@@ -1191,35 +1191,15 @@ class MapChart extends React.Component {
             unconfirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
               let color = "#00F";
               let active = val - recoveredAbsByRowId[rowId] - deathsAbsByRowId[rowId];
-              if(that.state.chart==="pill" || that.state.chart==="bar") {
-                size *= 10;
-              }
-              size = this.scaleLog(size);
-              size = this.scalePpm(size, population[name]);
-		      size = this.scaleLogAndPpm(size);
+              size = this.scale(size, population[name]);
 		      let ppms = population[name] && !isNaN(val) ? '(' + Math.round(ONE_M * val / population[name]) + ' ppm)'  : '';
 		      let ppms2 = population[name] && !isNaN(active) ? '(' + Math.round(ONE_M * active / population[name]) + ' ppm)'  : '';
-              return (<Marker coordinates={coordinates} key={"unconfirmed_" + rowId}>
-                <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} x={isNaN(size)?0:- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={isNaN(size)?0:size * that.state.factor} fill={color+"8"} />
-                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} x={that.state.width * 3 * 0 - that.state.width * 3 * 1.5} y={isNaN(size)?0:-size * that.state.factor} width={that.state.width * 3} height={isNaN(size)?0:size * that.state.factor} fill={color+"8"} />
-                <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill={color+"8"} />
-                <title>
-                  {
-                    `${name} - could be >${rounded(val)} confirmed ${ppms}, >${rounded(active)} active ${ppms2} if local test rate was like global average test rate`
-                  }
-                </title>
-                <text
-                  textAnchor="middle"
-                  y={markerOffset}
-                  style={{ fontSize: name.endsWith(", US") ? "0.005em" : "2px", fontFamily: "Arial", fill: "#5D5A6D33", pointerEvents: "none" }}
-		      >
-                  {/*name*/}
-                </text>
-              </Marker>
-            )})
+		      let text = `${name} - could be >${rounded(val)} confirmed ${ppms}, >${rounded(active)} active ${ppms2} if local test rate was like global average test rate`;
+              return this.marker(coordinates, rowId, color, text, size, val, name, markerOffset, "projected", "8");
+            })
           }
           {
-            confirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
+            confirmed.map(({ rowId, name, coordinates, markerOffset, size }) => {
               if (size > 0) {
                 return (<Marker coordinates={coordinates} key={"label_" + rowId}>
                   <text
@@ -1246,74 +1226,35 @@ class MapChart extends React.Component {
             confirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
               let color = "#F00";
               let active = val - recoveredAbsByRowId[rowId] - deathsAbsByRowId[rowId];
-              if(that.state.chart==="pill" || that.state.chart==="bar") {
-                size *= 10;
-              }
               size = this.scale(size, population[name]);
 		      let ppms = population[name] && !isNaN(val) ? '(' + Math.round(ONE_M * val / population[name]) + ' ppm)'  : '';
 		      let ppms2 = population[name] && !isNaN(active) ? '(' + Math.round(ONE_M * active / population[name]) + ' ppm)'  : '';
-              return (<Marker coordinates={coordinates} key={"confirmed_" + rowId}>
-                <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} x={isNaN(size)?0:- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={isNaN(size)?0:size * that.state.factor} fill={color+"8"} />
-                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} x={that.state.width * 3 * 0 - that.state.width * 3 * 1.5} y={isNaN(size)?0:-size * that.state.factor} width={that.state.width * 3} height={isNaN(size)?0:size * that.state.factor} fill={color+"8"} />
-                <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill={color+"8"} />
-                <title>
-                  {
-                    `${name} - ${rounded(val)} confirmed ${ppms}, ${rounded(active)} active ${ppms2}`
-                  }
-                </title>
-              </Marker>
-            )})
+		      let text = `${name} - ${rounded(val)} confirmed ${ppms}, ${rounded(active)} active ${ppms2}`;
+              return this.marker(coordinates, rowId, color, text, size, val, name, markerOffset, "confirmed", "8");
+            })
           }
           {
             that.state.momentum==="none" && !that.state.jhmode &&
             recovered.map(({rowId, name, coordinates, markerOffset, size, val }) => {
               let color = "#0F0";
-              if(that.state.chart==="pie" || that.state.chart==="pill") {
+              if (that.state.chart === "pie" || that.state.chart === "pill") {
                 size += deathsByRowId[rowId];
               }
-              if(that.state.chart==="pill" || that.state.chart==="bar") {
-                size *= 10;
-              }
               size = this.scale(size, population[name]);
-              let ppms = population[name] && !isNaN(val) ? '(' + Math.round(ONE_M * val / population[name]) + ' ppm)'  : '';
-              return (<Marker coordinates={coordinates} key={"recovered_" + rowId}>
-                <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} x={isNaN(size)?0:- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={isNaN(size)?0:size * that.state.factor} fill={color + "8"} />
-                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} x={that.state.width * 3 * 1 - that.state.width * 3 * 1.5} y={isNaN(size)?0:-size * that.state.factor} width={that.state.width * 3} height={isNaN(size)?0:size * that.state.factor} fill={color+"8"} />
-                <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill={color + "8"} />
-                <title>{name + " - " + rounded(val) + " recovered " + ppms}</title>
-                <text
-                  textAnchor="middle"
-                  y={markerOffset}
-                  style={{ fontSize: "1px", fontFamily: "system-ui", fill: "#5D5A6D", pointerEvents: "none" }}
-                >
-                  {/*name*/}
-                </text>
-              </Marker>
-            )})
+              let ppms = population[name] && !isNaN(val) ? '(' + Math.round(ONE_M * val / population[name]) + ' ppm)' : '';
+              let text = name + " - " + rounded(val) + " recovered " + ppms;
+              return this.marker(coordinates, rowId, color, text, size, val, name, markerOffset, "recovered", "8");
+            })
           }
           {
             that.state.momentum==="none" && !that.state.jhmode &&
             deaths.map(({rowId, name, coordinates, markerOffset, size, val }) => {
               let color = "#000";
-              if(that.state.chart==="pill" || that.state.chart==="bar") {
-                size *= 10;
-              }
               size = this.scale(size, population[name]);
               let ppms = population[name] && !isNaN(val) ? '(' + Math.round(ONE_M * val / population[name]) + ' ppm)'  : '';
-              return (<Marker coordinates={coordinates} key={"deceased_" + rowId}>
-                <rect style={that.state.chart==="pill" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} x={isNaN(size)?0:- size * that.state.factor / 2} y={-that.state.width/2*3} height={that.state.width*3} width={isNaN(size)?0:size * that.state.factor} fill={color + "a"} />
-                <rect style={that.state.chart==="bar" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} x={that.state.width * 3 * 2 - that.state.width * 3 * 1.5} y={isNaN(size)?0:-size * that.state.factor} width={that.state.width * 3} height={isNaN(size)?0:size * that.state.factor} fill={color + "a"} />
-                <circle style={that.state.chart==="pie" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill={color + "a"} />
-                <title>{name + " - " + rounded(val) + " deceased " + ppms}</title>
-                <text
-                  textAnchor="middle"
-                  y={markerOffset}
-                  style={{ fontSize: "1px", fontFamily: "system-ui", fill: "#5D5A6D33", pointerEvents: "none" }}
-                >
-                  {/*name*/}
-                </text>
-              </Marker>
-            )})
+              let text = name + " - " + rounded(val) + " deceased " + ppms;
+              return this.marker(coordinates, rowId, color, text, size, val, name, markerOffset, "deceased", "a");
+            })
           }
         </ZoomableGroup>
       </ComposableMap>
@@ -1321,10 +1262,29 @@ class MapChart extends React.Component {
     );
   }
 
+  marker = (coordinates, rowId, color, text, size, val, name, markerOffset, type, transparency) => {
+    return (
+        <Marker coordinates={coordinates} key={type + "_" + rowId}>
+          <rect style={this.state.chart==="pill" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} x={isNaN(size)?0:- size * this.state.factor / 2} y={-this.state.width/2*3} height={this.state.width*3} width={isNaN(size)?0:size * this.state.factor} fill={color + transparency} />
+          <rect style={this.state.chart==="bar" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} x={this.state.width * 3 * 2 - this.state.width * 3 * 1.5} y={isNaN(size)?0:-size * this.state.factor} width={this.state.width * 3} height={isNaN(size)?0:size * this.state.factor} fill={color + transparency} />
+          <circle style={this.state.chart==="pie" ? {display: "block", hover: {fill: color}} : {display: "none", hover: {fill: color}}} r={isNaN(size)?0:Math.sqrt(size) * this.state.factor} fill={color + transparency} />
+          <title>{text}</title>
+        </Marker>
+    )
+  };
+
   scale = (value, population) => {
+    value = this.scaleIfPillOrBar(value);
     value = this.scaleLog(value);
     value = this.scalePpm(value, population);
     value = this.scaleLogAndPpm(value);
+    return value;
+  };
+
+  scaleIfPillOrBar = (value) => {
+    if(this.state.chart==="pill" || this.state.chart==="bar") {
+      return value * 10;
+    }
     return value;
   };
 
