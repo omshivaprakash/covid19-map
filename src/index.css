@@ -24,10 +24,12 @@ body {
   position: absolute;
   top: 255px;
   right: 10px;
-  background: #ccc8;
+  background: #fff8;
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 5px;
   width: 200px;
+  z-index: 1000;
+  box-shadow: 0px 0px 10px #333;
 }
 
 .ttip {
@@ -38,16 +40,19 @@ body {
   padding: 10px;
   width: 100%;
   pointer-events: none;
+  z-index: 1000;
 }
 
 .controls {
   position: absolute;
-  left: 10px;
+  left: 50px;
   top:10px;
-  background: #ccc8;
+  background: #fff8;
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 5px;
   width: 230px;
+  z-index: 1000;
+  box-shadow: 0px 0px 10px #333;
 }
 
 .controls.minimized {
@@ -56,6 +61,7 @@ body {
   background: white;
   border: 1px solid #337ab7;
   border-radius: 50%;
+  z-index: 1000;
 }
 
 .controls.minimized .btn-collapse{
@@ -67,10 +73,12 @@ body {
   position: absolute;
   bottom: 10px;
   left: 10px;
-  width: calc(100% - 20px);
-  background: #ccc8;
+  background: #fff8;
   padding: 4px;
-  border-radius: 10px;
+  padding-right: 10px;
+  border-radius: 5px;
+  z-index: 1000;
+  box-shadow: 0px 0px 10px #333;
 }
 
 .showInMomentum {
@@ -97,4 +105,9 @@ body {
 
 .leftTime, .midTime, .todayTime, .play, .stop {
   margin-left: 5px;
+}
+
+#leaflet-map, .leaflet-container {
+  width: 100%!important;
+  height: 100%!important;
 }

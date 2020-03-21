@@ -4,8 +4,12 @@ import {
   Geographies,
   Geography,
   ZoomableGroup,
-  Marker
+  // Marker
 } from "react-simple-maps";
+
+import ReactDOM from "react-dom";
+import { Map, TileLayer, Marker, Popup, Circle,
+    CircleMarker } from "react-leaflet";
 
 import * as Testing from "./TestingRates";
 import * as Population from "./Population";
@@ -51,7 +55,12 @@ class MapChart extends React.Component {
       minimized: false,
       testmode: true,
       dayOffset: 0,
-      playmode: false
+      playmode: false,
+
+      // leaflet map
+      lat: 0,
+      lng: 0,
+      zoom: 2
     };
 
     this.deathsByRowId = {};
@@ -389,9 +398,9 @@ class MapChart extends React.Component {
           <Form.Check inline className="small" checked={that.state.ppmmode} label={<span title={"Scales the glyphs on the map according to the number of people in each country/region."}>Population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
             onChange={() => {that.setState({ppmmode: !that.state.ppmmode});}} /><br />
           <span className="small text-muted mr-2">Glyph style:</span><br/>
-          <Form.Check inline title="Represent data as bubbles. Hover bubbles on map to see more details." className="small" checked={that.state.chart==="pie" } label="Bubbles" type={"radio"} name={"a"} id={`inline-radio-1`} onChange={() => {that.setState({chart: "pie"});}}/>
-          <Form.Check inline title="Represent data as vertical bars. Hover bars on map to see more details." className="small hideInMomentum" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onChange={() => {that.setState({chart: "bar"});}} disabled={that.state.momentum!=="none" ? true : false}/>
-          <Form.Check inline title="Represent data as horizontal pill. Hover pill on map to see more details." className="small hideInMomentum" checked={that.state.chart==="pill" } label="Pills" type={"radio"} name={"a"} id={`inline-radio-3`} onChange={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/><br />
+          <Form.Check inline title="Represent data as bubbles. Hover bubbles on map to see more details." className="small" checked={that.state.chart==="pie" } label="Bubbles" type={"radio"} name={"a"} id={`inline-radio-1`} onChange={() => {that.setState({chart: "pie"});}}/><br />
+          {/*<Form.Check inline title="Represent data as vertical bars. Hover bars on map to see more details." className="small hideInMomentum" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onChange={() => {that.setState({chart: "bar"});}} disabled={that.state.momentum!=="none" ? true : false}/>
+          <Form.Check inline title="Represent data as horizontal pill. Hover pill on map to see more details." className="small hideInMomentum" checked={that.state.chart==="pill" } label="Pills" type={"radio"} name={"a"} id={`inline-radio-3`} onChange={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/><br />*/}
           <span className="small text-muted">Scale glyphs:</span>
           <ReactBootstrapSlider title="Scale glyps" value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1}></ReactBootstrapSlider><br />
           <span className="small text-danger">Hold &lt;CTRL&gt; + scroll to zoom map.</span><br />
@@ -494,15 +503,57 @@ class MapChart extends React.Component {
           }
         `}} />
       }
+        { /*that.reactSimpleMap()*/ }
+        { that.leafletMap() }
+
+    </>
+    );
+  }
+
+  leafletMap = () => {
+    const position = [this.state.lat, this.state.lng];
+    return (
+      <Map center={position} zoom={this.state.zoom}>
+        <TileLayer
+          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          // url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
+          url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'
+        />
+        { /* this.momentumMarkers() */ }
+        { this.projectedMarkers() }
+        { this.confirmedMarkers() }
+        { /* this.mapLabels() */ }
+        { this.recoveredMarkers() }
+        { this.deceasedMarkers() }
+      </Map>
+    );
+  };
+
+  reactSimpleMap = () => {
+    return(
       <ComposableMap
-          projection={"geoMercator"}
-          projectionConfig={{scale: 200}}
-          height={window.innerWidth}
-          width={window.innerHeight - 50}
-          style={{width: "100%", height: "100%"}}
+        projection={"geoMercator"}
+        projectionConfig={{scale: 200}}
+        height={window.innerWidth}
+        width={window.innerHeight - 50}
+        style={{width: "100%", height: "100%"}}
       >
         <ZoomableGroup maxZoom={1000}>
-          <Geographies geography={geoUrl}>
+          { this.geographies() }
+          { this.momentumMarkers() }
+          { this.projectedMarkers() }
+          { this.confirmedMarkers() }
+          { this.mapLabels() }
+          { this.recoveredMarkers() }
+          { this.deceasedMarkers() }
+        </ZoomableGroup>
+      </ComposableMap>
+    )
+  };
+
+  geographies = () => {
+    return (
+      <Geographies geography={geoUrl}>
             {
               ({geographies}) =>
                 geographies.map(geo => (
@@ -515,40 +566,40 @@ class MapChart extends React.Component {
                         return;
                       }
                       let rowId = -1;
-                      for(let c of that.confirmed) {
+                      for(let c of this.confirmed) {
                         if(c.name === NAME) {
                           rowId = c.rowId;
                           break;
                         }
                       }
                       if(rowId < 0) {
-			if (NAME === "United States of America") { 
-		          this.get_sums(NAME, ", US");	
+			if (NAME === "United States of America") {
+		          this.get_sums(NAME, ", US");
 		        }
-			      else if (NAME === "China") { 
-		          this.get_sums(NAME, ", China");	
+			      else if (NAME === "China") {
+		          this.get_sums(NAME, ", China");
 		        }
-			      else if (NAME === "Australia") { 
-		          this.get_sums(NAME, ", Australia");	
+			      else if (NAME === "Australia") {
+		          this.get_sums(NAME, ", Australia");
 		        }
-			      else if (NAME === "Canada") { 
-		          this.get_sums(NAME, ", Canada");	
+			      else if (NAME === "Canada") {
+		          this.get_sums(NAME, ", Canada");
 		        }
-			      else if (NAME === "France") { 
-		          this.get_sums(NAME, ", France");	
+			      else if (NAME === "France") {
+		          this.get_sums(NAME, ", France");
 		        }
 
 			      else { this.state.setTooltipContent(`Could not retrieve data for ${NAME}.`); }
                       } else {
-                        let active = that.confirmed[rowId].val - that.recoveredAbsByRowId[rowId] - that.deathsAbsByRowId[rowId];
+                        let active = this.confirmed[rowId].val - this.recoveredAbsByRowId[rowId] - this.deathsAbsByRowId[rowId];
                         this.state.setTooltipContent(
                           <div>
                             <b>{NAME}</b> &nbsp;
                             <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[NAME])}</span><br />
-                            <span><FontAwesomeIcon icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
+                            <span><FontAwesomeIcon icon={faBiohazard}/> {rounded(this.confirmed[rowId].val)} confirmed (>{rounded(this.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
                             <span><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</span>
-                            &nbsp;<span><FontAwesomeIcon icon={faHeartbeat}/> {rounded(that.recovered[rowId].val)} recovered</span>
-                            &nbsp;<span><FontAwesomeIcon icon={faHeartBroken}/> {rounded(that.deaths[rowId].val)} deceased</span>
+                            &nbsp;<span><FontAwesomeIcon icon={faHeartbeat}/> {rounded(this.recovered[rowId].val)} recovered</span>
+                            &nbsp;<span><FontAwesomeIcon icon={faHeartBroken}/> {rounded(this.deaths[rowId].val)} deceased</span>
                           </div>
                         );
                       }
@@ -574,156 +625,213 @@ class MapChart extends React.Component {
                 ))
             }
           </Geographies>
-          {
-            that.state.momentum!=="none" &&
-              that.confirmed.map(({ rowId, name, coordinates, markerOffset, momentumLast1, momentumLast3, momentumLast7, valMin1, valMin3, valMin7 }) => {
-                let pop = Population.ABSOLUTE[name];
-                let size;
-                let val;
-                switch(that.state.momentum) {
-                  case "last1":
-                    size = momentumLast1 - that.recovered[rowId].momentumLast1;
-                    val = valMin1 - that.recovered[rowId].valMin1;
-                    break;
-                  case "last3":
-                    size = momentumLast3 - that.recovered[rowId].momentumLast3;
-                    val = valMin3 - that.recovered[rowId].valMin3;
-                    break;
-                  case "last7":
-                    size = momentumLast7 - that.recovered[rowId].momentumLast7;
-                    val = valMin7 - that.recovered[rowId].valMin7;
-                    break;
-                  default:
-                    alert("something went wrong");
-                    console.log("something went wrong");
-                    break;
+    )
+  };
+
+  momentumMarkers = () => {
+    return (
+      this.state.momentum!=="none" &&
+          this.confirmed.map(({ rowId, name, coordinates, markerOffset, momentumLast1, momentumLast3, momentumLast7, valMin1, valMin3, valMin7 }) => {
+            let pop = Population.ABSOLUTE[name];
+            let size;
+            let val;
+            switch(this.state.momentum) {
+              case "last1":
+                size = momentumLast1 - this.recovered[rowId].momentumLast1;
+                val = valMin1 - this.recovered[rowId].valMin1;
+                break;
+              case "last3":
+                size = momentumLast3 - this.recovered[rowId].momentumLast3;
+                val = valMin3 - this.recovered[rowId].valMin3;
+                break;
+              case "last7":
+                size = momentumLast7 - this.recovered[rowId].momentumLast7;
+                val = valMin7 - this.recovered[rowId].valMin7;
+                break;
+              default:
+                alert("something went wrong");
+                console.log("something went wrong");
+                break;
+            }
+            let pos = size >= 0;
+            size = Math.abs(size);
+            size = this.scaleLog(size);
+            size = this.scalePpm(size, pop);
+            size = this.scaleLogAndPpm(size);
+            return (<Marker coordinates={coordinates} key={"change_" + rowId}>
+              <circle r={isNaN(size)?0:Math.sqrt(size) * this.state.factor} fill={pos ? "#F008" : "#0F08"} />
+              <title>
+                {`${name} - ${Math.abs(val)} ${pos ? "INCREASE" : "DECREASE"} in active(= confirmed-recovered) cases (excl. deceased) (${Math.round(ONE_M*val/pop)} ppm)`
                 }
-                let pos = size >= 0;
-                size = Math.abs(size);
-                size = this.scaleLog(size);
-                size = this.scalePpm(size, pop);
-                size = this.scaleLogAndPpm(size);
-                return (<Marker coordinates={coordinates} key={"change_" + rowId}>
-                  <circle r={isNaN(size)?0:Math.sqrt(size) * that.state.factor} fill={pos ? "#F008" : "#0F08"} />
-                  <title>
-                    {`${name} - ${Math.abs(val)} ${pos ? "INCREASE" : "DECREASE"} in active(= confirmed-recovered) cases (excl. deceased) (${Math.round(ONE_M*val/pop)} ppm)`
-                    }
-                  </title>
-                  <text
-                    textAnchor="middle"
-                    y={markerOffset}
-                    style={{ fontSize: name.endsWith(", US") ? "0.005em" : "2px", fontFamily: "Arial", fill: "#5D5A6D33", pointerEvents: "none" }}
-                  >
-                    {name}
-                  </text>
-                </Marker>
-            )})
+              </title>
+              <text
+                textAnchor="middle"
+                y={markerOffset}
+                style={{ fontSize: name.endsWith(", US") ? "0.005em" : "2px", fontFamily: "Arial", fill: "#5D5A6D33", pointerEvents: "none" }}
+              >
+                {name}
+              </text>
+            </Marker>
+        )})
+    )
+  };
+
+  projectedMarkers = () => {
+    return (
+      this.state.momentum==="none" && this.state.testmode &&
+        this.unconfirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
+          let color = "#00f";
+          let pop = Population.ABSOLUTE[name];
+          let active = val - this.recoveredAbsByRowId[rowId] - this.deathsAbsByRowId[rowId];
+          size = this.scale(size, pop);
+          let ppms = pop && !isNaN(val) ? '(' + Math.round(ONE_M * val / pop) + ' ppm)'  : '';
+          let ppms2 = pop && !isNaN(active) ? '(' + Math.round(ONE_M * active / pop) + ' ppm)'  : '';
+          let text = `${name} - could be >${rounded(val)} confirmed ${ppms}, >${rounded(active)} active ${ppms2} if local test rate was like global average test rate`;
+          return this.marker(coordinates, rowId, color, text, size, val, name, markerOffset, "projected", 0.5);
+        })
+    )
+  };
+
+  confirmedMarkers = () => {
+    return (
+      this.state.momentum==="none" &&
+        this.confirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
+          let color = "#F00";
+          let pop = Population.ABSOLUTE[name];
+          let active = val - this.recoveredAbsByRowId[rowId] - this.deathsAbsByRowId[rowId];
+          size = this.scale(size, pop);
+          let ppms = pop && !isNaN(val) ? '(' + Math.round(ONE_M * val / pop) + ' ppm)'  : '';
+          let ppms2 = pop && !isNaN(active) ? '(' + Math.round(ONE_M * active / pop) + ' ppm)'  : '';
+          let text = `${name} - ${rounded(val)} confirmed ${ppms}, ${rounded(active)} active ${ppms2}`;
+          return this.marker(coordinates, rowId, color, text, size, val, name, markerOffset, "confirmed", 0.5);
+        })
+    )
+  };
+
+  mapLabels = () => {
+    return (
+      this.confirmed.map(({ rowId, name, coordinates, markerOffset, size }) => {
+        if (size > 0) {
+          return (<Marker coordinates={coordinates} key={"label_" + rowId}>
+            <text
+                textAnchor="middle"
+                y={markerOffset}
+                style={{
+                  fontSize: name.endsWith(", US") ? "1.5px" : "2px",
+                  fontFamily: "Arial",
+                  fill: "#5D5A6D33",
+                  pointerEvents: "none"
+                }}
+            >
+              {name}
+            </text>
+          </Marker>)
+        }
+        else {
+          return ("");
+        }
+      })
+    )
+  };
+
+  recoveredMarkers = () => {
+    return (
+      this.state.momentum==="none" &&
+        this.recovered.map(({rowId, name, coordinates, markerOffset, size, val }) => {
+          let color = "#0F0";
+          let pop = Population.ABSOLUTE[name];
+          if (this.state.chart === "pie" || this.state.chart === "pill") {
+            size += this.deathsByRowId[rowId];
           }
-          {
-            that.state.momentum==="none" && that.state.testmode &&
-            that.unconfirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
-              let color = "#00F";
-              let pop = Population.ABSOLUTE[name];
-              let active = val - that.recoveredAbsByRowId[rowId] - that.deathsAbsByRowId[rowId];
-              size = this.scale(size, pop);
-		      let ppms = pop && !isNaN(val) ? '(' + Math.round(ONE_M * val / pop) + ' ppm)'  : '';
-		      let ppms2 = pop && !isNaN(active) ? '(' + Math.round(ONE_M * active / pop) + ' ppm)'  : '';
-		      let text = `${name} - could be >${rounded(val)} confirmed ${ppms}, >${rounded(active)} active ${ppms2} if local test rate was like global average test rate`;
-              return this.marker(coordinates, rowId, color, text, size, val, name, markerOffset, "projected", "8");
-            })
-          }
-          {
-            that.state.momentum==="none" &&
-            that.confirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
-              let color = "#F00";
-              let pop = Population.ABSOLUTE[name];
-              let active = val - that.recoveredAbsByRowId[rowId] - that.deathsAbsByRowId[rowId];
-              size = this.scale(size, pop);
-		      let ppms = pop && !isNaN(val) ? '(' + Math.round(ONE_M * val / pop) + ' ppm)'  : '';
-		      let ppms2 = pop && !isNaN(active) ? '(' + Math.round(ONE_M * active / pop) + ' ppm)'  : '';
-		      let text = `${name} - ${rounded(val)} confirmed ${ppms}, ${rounded(active)} active ${ppms2}`;
-              return this.marker(coordinates, rowId, color, text, size, val, name, markerOffset, "confirmed", "8");
-            })
-          }
-          {
-            that.confirmed.map(({ rowId, name, coordinates, markerOffset, size }) => {
-              if (size > 0) {
-                return (<Marker coordinates={coordinates} key={"label_" + rowId}>
-                  <text
-                      textAnchor="middle"
-                      y={markerOffset}
-                      style={{
-                        fontSize: name.endsWith(", US") ? "1.5px" : "2px",
-                        fontFamily: "Arial",
-                        fill: "#5D5A6D33",
-                        pointerEvents: "none"
-                      }}
-                  >
-                    {name}
-                  </text>
-                </Marker>)
-              }
-              else {
-                return ("");
-              }
-            })
-          }
-          {
-            that.state.momentum==="none" && !that.state.jhmode &&
-            that.recovered.map(({rowId, name, coordinates, markerOffset, size, val }) => {
-              let color = "#0F0";
-              let pop = Population.ABSOLUTE[name];
-              if (that.state.chart === "pie" || that.state.chart === "pill") {
-                size += that.deathsByRowId[rowId];
-              }
-              size = this.scale(size, pop);
-              let ppms = pop && !isNaN(val) ? '(' + Math.round(ONE_M * val / pop) + ' ppm)' : '';
-              let text = name + " - " + rounded(val) + " recovered " + ppms;
-              return this.marker(coordinates, rowId, color, text, size, val, name, markerOffset, "recovered", "8");
-            })
-          }
-          {
-            that.state.momentum==="none" && !that.state.jhmode &&
-            that.deaths.map(({rowId, name, coordinates, markerOffset, size, val }) => {
-              let color = "#000";
-              let pop = Population.ABSOLUTE[name];
-              size = this.scale(size, pop);
-              let ppms = pop && !isNaN(val) ? '(' + Math.round(ONE_M * val / pop) + ' ppm)'  : '';
-              let text = name + " - " + rounded(val) + " deceased " + ppms;
-              return this.marker(coordinates, rowId, color, text, size, val, name, markerOffset, "deceased", "a");
-            })
-          }
-        </ZoomableGroup>
-      </ComposableMap>
-    </>
-    );
-  }
+          size = this.scale(size, pop);
+          let ppms = pop && !isNaN(val) ? '(' + Math.round(ONE_M * val / pop) + ' ppm)' : '';
+          let text = name + " - " + rounded(val) + " recovered " + ppms;
+          return this.marker(coordinates, rowId, color, text, size, val, name, markerOffset, "recovered", 0.5);
+        })
+    )
+  };
+
+  deceasedMarkers = () => {
+    return(
+        this.state.momentum==="none" &&
+          this.deaths.map(({rowId, name, coordinates, markerOffset, size, val }) => {
+            let color = "#000";
+            let pop = Population.ABSOLUTE[name];
+            size = this.scale(size, pop);
+            let ppms = pop && !isNaN(val) ? '(' + Math.round(ONE_M * val / pop) + ' ppm)'  : '';
+            let text = name + " - " + rounded(val) + " deceased " + ppms;
+            return this.marker(coordinates, rowId, color, text, size, val, name, markerOffset, "deceased", 0.8);
+        })
+    )
+  };
 
   marker = (coordinates, rowId, color, text, size, val, name, markerOffset, type, transparency) => {
     let that = this;
     return (
+        // bubble
+        <CircleMarker
+            key={type + "_" + rowId}
+            style={this.state.chart === "pie" ? {display: "block"} : {display: "none"}}
+            center={[coordinates[1], coordinates[0]]}
+            fillColor={color}
+            radius={size && size > 0 ? Math.sqrt(size) * this.state.factor : 0}
+            opacity={0}
+            fillOpacity={transparency}
+            onMouseOver={() => {
+                if (rowId < 0) {
+                  this.state.setTooltipContent(`Could not retrieve data for ${name}.`);
+                } else {
+                  let active = that.confirmed[rowId].val - that.recoveredAbsByRowId[rowId] - that.deathsAbsByRowId[rowId];
+                  this.state.setTooltipContent(
+                      <div>
+                        <b>{name}</b> &nbsp;
+                        <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])}</span><br/>
+                        <span><FontAwesomeIcon
+                            icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
+                        <span><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</span>
+                        &nbsp;<span><FontAwesomeIcon
+                          icon={faHeartbeat}/> {rounded(that.recovered[rowId].val)} recovered</span>
+                        &nbsp;<span><FontAwesomeIcon
+                          icon={faHeartBroken}/> {rounded(that.deaths[rowId].val)} deceased</span>
+                      </div>
+                  );
+                }
+              }}
+              onMouseOut={() => {
+                this.state.setTooltipContent("");
+              }}
+        />
+
+
+    );
+  }
+      /*
+
         <Marker coordinates={coordinates} key={type + "_" + rowId}>
-          {/* pill */}
+          // pill
           <rect
               fill={color + transparency}
-              style={this.state.chart==="pill" ? {display: "block"} : {display: "none"}}
-              x={isNaN(size)?0:- size * this.state.factor / 2}
-              y={-this.state.width/2*3}
-              height={(this.state.width<0)?0:this.state.width*3}
-              width={isNaN(size)?0:(size * this.state.factor > 0)?size*this.state.factor:0}
+              style={this.state.chart === "pill" ? {display: "block"} : {display: "none"}}
+              x={isNaN(size) ? 0 : -size * this.state.factor / 2}
+              y={-this.state.width / 2 * 3}
+              height={(this.state.width < 0) ? 0 : this.state.width * 3}
+              width={isNaN(size) ? 0 : (size * this.state.factor > 0) ? size * this.state.factor : 0}
               onMouseOver={() => {
-                if(rowId < 0) {
+                if (rowId < 0) {
                   this.state.setTooltipContent(`Could not retrieve data for ${name}.`);
                 } else {
                   let active = that.confirmed[rowId].val - that.recoveredAbsByRowId[rowId] - that.deathsAbsByRowId[rowId];
                   this.state.setTooltipContent(
                       <div>
                         <b>{name}</b> &nbsp;
-                        <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])}</span><br />
-                        <span><FontAwesomeIcon icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
+                        <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])}</span><br/>
+                        <span><FontAwesomeIcon
+                            icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
                         <span><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</span>
-                        &nbsp;<span><FontAwesomeIcon icon={faHeartbeat}/> {rounded(that.recovered[rowId].val)} recovered</span>
-                        &nbsp;<span><FontAwesomeIcon icon={faHeartBroken}/> {rounded(that.deaths[rowId].val)} deceased</span>
+                        &nbsp;<span><FontAwesomeIcon
+                          icon={faHeartbeat}/> {rounded(that.recovered[rowId].val)} recovered</span>
+                        &nbsp;<span><FontAwesomeIcon
+                          icon={faHeartBroken}/> {rounded(that.deaths[rowId].val)} deceased</span>
                       </div>
                   );
                 }
@@ -733,27 +841,30 @@ class MapChart extends React.Component {
               }}
           />
 
-          {/* bar */}
+          // bar
           <rect
               fill={color + transparency}
-              style={this.state.chart==="bar" ? {display: "block"} : {display: "none"}}
+              style={this.state.chart === "bar" ? {display: "block"} : {display: "none"}}
               x={this.state.width * 3 * 2 - this.state.width * 3 * 1.5}
-              y={isNaN(size)?0:-size * this.state.factor}
-              height={isNaN(size)?0:(size * this.state.factor<0)?0:size*this.state.factor}
-              width={(this.state.width<0)?0:this.state.width * 3}
+              y={isNaN(size) ? 0 : -size * this.state.factor}
+              height={isNaN(size) ? 0 : (size * this.state.factor < 0) ? 0 : size * this.state.factor}
+              width={(this.state.width < 0) ? 0 : this.state.width * 3}
               onMouseOver={() => {
-                if(rowId < 0) {
+                if (rowId < 0) {
                   this.state.setTooltipContent(`Could not retrieve data for ${name}.`);
                 } else {
                   let active = that.confirmed[rowId].val - that.recoveredAbsByRowId[rowId] - that.deathsAbsByRowId[rowId];
                   this.state.setTooltipContent(
                       <div>
                         <b>{name}</b> &nbsp;
-                        <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])}</span><br />
-                        <span><FontAwesomeIcon icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
+                        <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])}</span><br/>
+                        <span><FontAwesomeIcon
+                            icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
                         <span><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</span>
-                        &nbsp;<span><FontAwesomeIcon icon={faHeartbeat}/> {rounded(that.recovered[rowId].val)} recovered</span>
-                        &nbsp;<span><FontAwesomeIcon icon={faHeartBroken}/> {rounded(that.deaths[rowId].val)} deceased</span>
+                        &nbsp;<span><FontAwesomeIcon
+                          icon={faHeartbeat}/> {rounded(that.recovered[rowId].val)} recovered</span>
+                        &nbsp;<span><FontAwesomeIcon
+                          icon={faHeartBroken}/> {rounded(that.deaths[rowId].val)} deceased</span>
                       </div>
                   );
                 }
@@ -763,24 +874,27 @@ class MapChart extends React.Component {
               }}
           />
 
-          {/* bubble */}
+          // bubble
           <circle
               fill={color + transparency}
-              style={this.state.chart==="pie" ? {display: "block"} : {display: "none"}}
+              style={this.state.chart === "pie" ? {display: "block"} : {display: "none"}}
               r={size && size > 0 ? Math.sqrt(size) * this.state.factor : 0}
               onMouseOver={() => {
-                if(rowId < 0) {
+                if (rowId < 0) {
                   this.state.setTooltipContent(`Could not retrieve data for ${name}.`);
                 } else {
                   let active = that.confirmed[rowId].val - that.recoveredAbsByRowId[rowId] - that.deathsAbsByRowId[rowId];
                   this.state.setTooltipContent(
                       <div>
                         <b>{name}</b> &nbsp;
-                        <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])}</span><br />
-                        <span><FontAwesomeIcon icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
+                        <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])}</span><br/>
+                        <span><FontAwesomeIcon
+                            icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
                         <span><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</span>
-                        &nbsp;<span><FontAwesomeIcon icon={faHeartbeat}/> {rounded(that.recovered[rowId].val)} recovered</span>
-                        &nbsp;<span><FontAwesomeIcon icon={faHeartBroken}/> {rounded(that.deaths[rowId].val)} deceased</span>
+                        &nbsp;<span><FontAwesomeIcon
+                          icon={faHeartbeat}/> {rounded(that.recovered[rowId].val)} recovered</span>
+                        &nbsp;<span><FontAwesomeIcon
+                          icon={faHeartBroken}/> {rounded(that.deaths[rowId].val)} deceased</span>
                       </div>
                   );
                 }
@@ -792,8 +906,7 @@ class MapChart extends React.Component {
 
           <title>{text}</title>
         </Marker>
-    )
-  };
+      */
 
   scale = (value, population) => {
     value = this.scaleIfPillOrBar(value);
