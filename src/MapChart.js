@@ -379,7 +379,7 @@ class MapChart extends React.Component {
 
         <button
             className={"btn btn-sm btn-secondary midTime"}
-            style={this.state.dayOffset < 0 ? {height: "30px", lineHeight: "20px"} : {display: "none"}}
+            style={this.state.dayOffset < 0 && !this.state.playmode ? {height: "30px", lineHeight: "20px"} : {display: "none"}}
             onClick={() => {
               this.state.dayOffset = Math.min(0, this.state.dayOffset + 1);
               if(this.state.dayOffset === 0) {
@@ -415,10 +415,14 @@ class MapChart extends React.Component {
               document.getElementsByClassName("todayTime")[0].style.display = "none";
               document.getElementsByClassName("play")[0].style.display = "none";
               document.getElementsByClassName("leftTime")[0].style.display = "none";
-              document.getElementsByClassName("midTime")[0].classList.add("btn-success");
+              document.getElementsByClassName("midTime")[0].style.display = "none";
               this.state.dayOffset = -58;
               this.state.playmode = true;
               this.reload();
+              setInterval(() => {
+                this.state.dayOffset++;
+                this.reload();
+              }, 1000);
             }}
         ><FontAwesomeIcon icon={faPlayCircle}/> Play</button>
       </div>
