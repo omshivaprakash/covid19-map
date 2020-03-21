@@ -38,5 +38,13 @@ npm run deploy      # Please do not forget to include link to license and mentio
 #### Attributions
 - [React Simple Maps (MIT license)](https://github.com/zcreativelabs/react-simple-maps/blob/master/LICENSE)
 - [Johns Hopkins COVID-19 Data set](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series)
-- [COVID-19 Testing rates](https://en.wikipedia.org/wiki/COVID-19_testing)
+- Testing rates
+  - [Countries](https://en.wikipedia.org/wiki/COVID-19_testing)
+  - [US States](https://docs.google.com/spreadsheets/u/2/d/e/2PACX-1vRwAqp96T9sYYq2-i7Tj0pvTf6XVHjDSMIKBdZHXiCGGdNC0ypEU9NbngS8mxea55JuCFuua1MUeOj5/pubhtml)
+- Population data:
+  - [US States](https://www.census.gov/newsroom/press-kits/2019/national-state-estimates.html)
+  - [Countries](https://population.un.org/wpp/Download/Files/1_Indicators%20(Standard)/CSV_FILES/WPP2019_TotalPopulationBySex.csv)
+  - [China](https://www.worldatlas.com/articles/chinese-provinces-by-population.html)
+  - [Australia](https://en.wikipedia.org/wiki/States_and_territories_of_Australia)
+  - [Diamond Princess](https://www.nytimes.com/2020/03/08/world/asia/coronavirus-cruise-ship.html)
 
