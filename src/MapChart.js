@@ -1,14 +1,6 @@
 import React, {memo} from "react";
-import {
-  ComposableMap,
-  Geographies,
-  Geography,
-  ZoomableGroup,
-  // Marker
-} from "react-simple-maps";
-
 import ReactDOM from "react-dom";
-import { Map, TileLayer, Marker, Popup, Circle,
+import { Map, TileLayer, Marker, Tooltip,
     CircleMarker } from "react-leaflet";
 
 import * as Testing from "./TestingRates";
@@ -529,9 +521,9 @@ class MapChart extends React.Component {
     );
   };
 
-  reactSimpleMap = () => {
+  /*reactSimpleMap = () => {
     return(
-      <ComposableMap
+        <ComposableMap
         projection={"geoMercator"}
         projectionConfig={{scale: 200}}
         height={window.innerWidth}
@@ -549,9 +541,9 @@ class MapChart extends React.Component {
         </ZoomableGroup>
       </ComposableMap>
     )
-  };
+  };*/
 
-  geographies = () => {
+  /*geographies = () => {
     return (
       <Geographies geography={geoUrl}>
             {
@@ -626,7 +618,7 @@ class MapChart extends React.Component {
             }
           </Geographies>
     )
-  };
+  };*/
 
   momentumMarkers = () => {
     return (
@@ -811,7 +803,9 @@ class MapChart extends React.Component {
           onMouseOut={() => {
             this.state.setTooltipContent("");
           }}
-      />
+      >
+        <Tooltip direction="bottom" offset={[0, 20]} opacity={1}>{text}</Tooltip>
+      </CircleMarker>
     );
   }
       /*
