@@ -95,6 +95,6 @@ body {
   color: #000 !important;
 }
 
-.leftTime, .midTime, .todayTime {
+.leftTime, .midTime, .todayTime, .play {
   margin-left: 5px;
 }

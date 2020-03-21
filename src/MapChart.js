@@ -11,7 +11,7 @@ import * as Testing from "./TestingRates";
 import * as Population from "./Population";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faWindowMinimize, faWindowRestore, faUsers, faProcedures, faHeartbeat, faHeartBroken, faBiohazard} from '@fortawesome/free-solid-svg-icons';
+import { faWindowMinimize, faWindowRestore, faUsers, faProcedures, faHeartbeat, faHeartBroken, faBiohazard, faPlayCircle} from '@fortawesome/free-solid-svg-icons';
 
 import Papa from "papaparse";
 import Form from 'react-bootstrap/Form';
@@ -50,7 +50,8 @@ class MapChart extends React.Component {
       ppmmode: false,
       minimized: false,
       testmode: true,
-      dayOffset: 0
+      dayOffset: 0,
+      playmode: false
     };
 
     this.deathsByRowId = {};
@@ -382,6 +383,7 @@ class MapChart extends React.Component {
             onClick={() => {
               this.state.dayOffset = Math.min(0, this.state.dayOffset + 1);
               if(this.state.dayOffset === 0) {
+                this.state.playmode = false;
                 if(this.state.momentum === "none") {
                   this.state.testmode = true;
                 }
@@ -403,6 +405,23 @@ class MapChart extends React.Component {
               this.reload();
             }}
         >Today</button>
+
+        <button
+            className={"btn btn-sm btn-success play"}
+            style={{height: "30px", lineHeight: "20px"}}
+            onClick={()=>{
+              document.body.style.background = "#000";
+              document.getElementsByClassName("info")[0].style.display = "none";
+              document.getElementsByClassName("controls")[0].style.display = "none";
+              document.getElementsByClassName("todayTime")[0].style.display = "none";
+              document.getElementsByClassName("play")[0].style.display = "none";
+              document.getElementsByClassName("leftTime")[0].style.display = "none";
+              document.getElementsByClassName("midTime")[0].classList.add("btn-success");
+              this.state.dayOffset = -58;
+              this.state.playmode = true;
+              this.reload();
+            }}
+        ><FontAwesomeIcon icon={faPlayCircle}/> Play</button>
       </div>
       {
         that.state.momentum !== "none" &&
@@ -463,15 +482,15 @@ class MapChart extends React.Component {
                     }}
                     style={{
                       default: {
-                        fill: "#ddd" ,
+                        fill: `${that.state.playmode ? "#333" : "#ddd"}`,
                         outline: "none"
                       },
                       hover: {
-                        fill: "#999",
+                        fill: `${that.state.playmode ? "#000" : "#999"}` ,
                         outline: "none"
                       },
                       pressed: {
-                        fill: "#ddd",
+                        fill: `${that.state.playmode ? "#333" : "#ddd"}`,
                         outline: "none"
                       }
                     }}
