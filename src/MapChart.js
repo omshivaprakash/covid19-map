@@ -416,7 +416,12 @@ class MapChart extends React.Component {
               document.getElementsByClassName("play")[0].style.display = "none";
               document.getElementsByClassName("leftTime")[0].style.display = "none";
               document.getElementsByClassName("midTime")[0].style.display = "none";
-              this.state.dayOffset = -58;
+
+              var now = new Date();
+              var startDate = new Date("January 23, 2020 00:00:00");
+              const oneDay = 24 * 60 * 60 * 1000;
+              this.state.dayOffset = - Math.round(Math.abs((now - startDate) / oneDay));
+
               this.state.playmode = true;
               this.reload();
               setInterval(() => {
