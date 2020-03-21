@@ -35,8 +35,12 @@ npm run deploy      # Please do not forget to include link to license and mentio
 - Daniel Karl
 - Michael Baentsch
 
-### Attributions
+## Attributions
+### Software dependencies
 - [React Simple Maps (MIT license)](https://github.com/zcreativelabs/react-simple-maps/blob/master/LICENSE)
+- [Other dependencies](https://github.com/daniel-karl/covid19-map/network/dependencies)
+
+### Data sources
 - [Johns Hopkins COVID-19 data set](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series)
 - Testing rates
   - [Countries](https://en.wikipedia.org/wiki/COVID-19_testing)
