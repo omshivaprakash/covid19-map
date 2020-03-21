@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import MapChart from "./MapChart";
-import ReactTooltip from "react-tooltip";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -52,10 +51,12 @@ function App() {
                 setTotRec={setTotRec}
                 setTotDead={setTotDead}
             />
-            <ReactTooltip>{content}</ReactTooltip>
           </Col>
         </Row>
       </Container>,
+      <div class="ttip">
+          {content}
+      </div>,
       <div className="info small text-muted" style={hidden ? {display: "none"} : {display:"block"}}>
         <a className={"btn-collapse"} onClick={() => {setHidden(true)}}>close <FontAwesomeIcon icon={faWindowClose}/></a>
         <span className="text-danger showInMomentum">Red: increase active</span>

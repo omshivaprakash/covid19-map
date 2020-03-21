@@ -30,6 +30,15 @@ body {
   width: 200px;
 }
 
+.ttip {
+  position: absolute;
+  bottom: 50px;
+  left: 0px;
+  text-align: center;
+  padding: 10px;
+  width: 100%;
+}
+
 .controls {
   position: absolute;
   left: 10px;
