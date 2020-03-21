@@ -59,7 +59,7 @@ body {
 }
 
 .controls.minimized .btn-collapse{
-  right: 5px;
+  right: -2px;
   top: 4px;
 }
 
@@ -87,8 +87,14 @@ body {
   outline: none !important;
   cursor: pointer;
   color: #337ab7 !important;
+  background: none;
+  border: none;
 }
 
 .btn-collapse:hover {
   color: #000 !important;
+}
+
+.leftTime, .midTime, .todayTime {
+  margin-left: 5px;
 }

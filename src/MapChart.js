@@ -1,4 +1,4 @@
-import React, {memo, useState} from "react";
+import React, {memo} from "react";
 import {
   ComposableMap,
   Geographies,
@@ -11,7 +11,7 @@ import * as Testing from "./TestingRates";
 import * as Population from "./Population";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faWindowMinimize, faWindowRestore, faUsers, faProcedures, faHeartbeat, faHeartBroken} from '@fortawesome/free-solid-svg-icons';
+import { faWindowMinimize, faWindowRestore, faUsers, faProcedures, faHeartbeat, faHeartBroken, faBiohazard} from '@fortawesome/free-solid-svg-icons';
 
 import Papa from "papaparse";
 import Form from 'react-bootstrap/Form';
@@ -21,22 +21,6 @@ const geoUrl =
   "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-10m.json";
 
 const ONE_M = 1000000;
-
-const deathsByRowId = {};
-const recoveredAbsByRowId = {};
-const deathsAbsByRowId = {};
-
-const confirmed = [];
-const recovered = [];
-const deaths = [];
-const unconfirmed = []; /* this will be local_confirmed_rate * avg_test_rate / local_test_rate */
-const MAX_SIZE = 67799;
-
-let totConf = 0;
-let totRec = 0;
-let totDead = 0;
-
-let dayOffset = -1;
 
 const rounded = num => {
   if (num > 1000000000) {
@@ -65,12 +49,39 @@ class MapChart extends React.Component {
       momentum: "none",
       ppmmode: false,
       minimized: false,
-      testmode: true
-    }
+      testmode: true,
+      dayOffset: 0
+    };
+
+    this.deathsByRowId = {};
+    this.recoveredAbsByRowId = {};
+    this.deathsAbsByRowId = {};
+
+    this.confirmed = [];
+    this.recovered = [];
+    this.deaths = [];
+    this.unconfirmed = []; /* this will be local_confirmed_rate * avg_test_rate / local_test_rate */
+    this.MAX_SIZE = 47021;
+
+    this.totConf = 0;
+    this.totRec = 0;
+    this.totDead = 0;
+
   }
 
   componentDidMount() {
+    this.reload();
+  }
+
+  reload = () => {
     let that = this;
+    that.totConf = 0;
+    that.totRec = 0;
+    that.totDead = 0;
+    that.deathsByRowId = {};
+    that.recoveredAbsByRowId = {};
+    that.deathsAbsByRowId = {};
+
     Papa.parse("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv", {
       download: true,
       complete: function(results) {
@@ -78,7 +89,7 @@ class MapChart extends React.Component {
         that.confirmed = [];
         let skipRow = true;
         let minSize = 0;
-        let maxSize = MAX_SIZE;
+        let maxSize = that.MAX_SIZE;
         let rowId = 0;
         let avgTested = 0;
         let avgPopulation = 0;
@@ -93,7 +104,7 @@ class MapChart extends React.Component {
           let sizeMin1 = "";
           let sizeMin3 = "";
           let sizeMin7 = "";
-          let i = data.length - 1;
+          let i = data.length - 1 + that.state.dayOffset;
           while(size==="" && i > 0) {
             size = data[i];
             sizeMin1 = data[i - 1];
@@ -134,8 +145,8 @@ class MapChart extends React.Component {
             valMin3: size - sizeMin3,
             valMin7: size - sizeMin7
           };
-          totConf += size;
-          confirmed.push(marker);
+          that.totConf += size;
+          that.confirmed.push(marker);
 
           // compute total tested and total population
           if(Testing.RATES[marker.name] && Population.ABSOLUTE[marker.name]) {
@@ -148,12 +159,12 @@ class MapChart extends React.Component {
         }
         avgTested /= countTested;
         avgPopulation /= countPopulation;
-        that.state.setTotConf(totConf);
-        for(let i = 0; i < confirmed.length; i++) {
-          confirmed[i].size = (confirmed[i].size - minSize) / (maxSize - minSize);
-          confirmed[i].momentumLast1 = confirmed[i].size - (confirmed[i].sizeMin1 - minSize) / (maxSize - minSize);
-          confirmed[i].momentumLast3 = confirmed[i].size - (confirmed[i].sizeMin3 - minSize) / (maxSize - minSize);
-          confirmed[i].momentumLast7 = confirmed[i].size - (confirmed[i].sizeMin7 - minSize) / (maxSize - minSize);
+        that.state.setTotConf(that.totConf);
+        for(let i = 0; i < that.confirmed.length; i++) {
+          that.confirmed[i].size = (that.confirmed[i].size - minSize) / (maxSize - minSize);
+          that.confirmed[i].momentumLast1 = that.confirmed[i].size - (that.confirmed[i].sizeMin1 - minSize) / (maxSize - minSize);
+          that.confirmed[i].momentumLast3 = that.confirmed[i].size - (that.confirmed[i].sizeMin3 - minSize) / (maxSize - minSize);
+          that.confirmed[i].momentumLast7 = that.confirmed[i].size - (that.confirmed[i].sizeMin7 - minSize) / (maxSize - minSize);
         }
 
         // unconfirmed
@@ -166,10 +177,10 @@ class MapChart extends React.Component {
             skipRow = false;
             continue;
           }
-          let size = confirmed[rowId].size;
-          let val = confirmed[rowId].val;
-          if(Testing.RATES[confirmed[rowId].name] && Population.ABSOLUTE[confirmed[rowId].name]) {
-            let localTestRate = Testing.RATES[confirmed[rowId].name] / Population.ABSOLUTE[confirmed[rowId].name];
+          let size = that.confirmed[rowId].size;
+          let val = that.confirmed[rowId].val;
+          if(Testing.RATES[that.confirmed[rowId].name] && Population.ABSOLUTE[that.confirmed[rowId].name]) {
+            let localTestRate = Testing.RATES[that.confirmed[rowId].name] / Population.ABSOLUTE[that.confirmed[rowId].name];
             let inverseTestFactor = globalTestRate / localTestRate;
             size = size * inverseTestFactor;
             val = val * inverseTestFactor;
@@ -178,13 +189,13 @@ class MapChart extends React.Component {
           }
           let marker = {
             markerOffset: 0,
-            name: confirmed[rowId].name,
-            coordinates: confirmed[rowId].coordinates,
+            name: that.confirmed[rowId].name,
+            coordinates: that.confirmed[rowId].coordinates,
             size: size,
             val: val,
-            rowId: confirmed[rowId].rowId,
+            rowId: that.confirmed[rowId].rowId,
           };
-          unconfirmed.push(marker);
+          that.unconfirmed.push(marker);
           rowId++;
         }
         that.setState({});
@@ -197,7 +208,7 @@ class MapChart extends React.Component {
         that.recovered = [];
         let skipRow = true;
         let minSize = 0;
-        let maxSize = MAX_SIZE;
+        let maxSize = that.MAX_SIZE;
         let rowId = 0;
         for(let data of results.data) {
           if(skipRow) {
@@ -208,7 +219,7 @@ class MapChart extends React.Component {
           let sizeMin1 = "";
           let sizeMin3 = "";
           let sizeMin7 = "";
-          let i = data.length - 1;
+          let i = data.length - 1 + that.state.dayOffset;
           while(size==="" && i > 0) {
             size = data[i];
             sizeMin1 = data[i - 1];
@@ -249,17 +260,17 @@ class MapChart extends React.Component {
             valMin3: size - sizeMin3,
             valMin7: size - sizeMin7
           };
-          totRec += size;
-          recovered.push(marker);
+          that.totRec += size;
+          that.recovered.push(marker);
           rowId++;
         }
-        that.state.setTotRec(totRec);
-        for(let i = 0; i < recovered.length; i++) {
-          recoveredAbsByRowId[recovered[i].rowId] = recovered[i].size;
-          recovered[i].size = (recovered[i].size - minSize) / (maxSize - minSize);
-          recovered[i].momentumLast1 = recovered[i].size - (recovered[i].sizeMin1 - minSize) / (maxSize - minSize);
-          recovered[i].momentumLast3 = recovered[i].size - (recovered[i].sizeMin3 - minSize) / (maxSize - minSize);
-          recovered[i].momentumLast7 = recovered[i].size - (recovered[i].sizeMin7 - minSize) / (maxSize - minSize);
+        that.state.setTotRec(that.totRec);
+        for(let i = 0; i < that.recovered.length; i++) {
+          that.recoveredAbsByRowId[that.recovered[i].rowId] = that.recovered[i].size;
+          that.recovered[i].size = (that.recovered[i].size - minSize) / (maxSize - minSize);
+          that.recovered[i].momentumLast1 = that.recovered[i].size - (that.recovered[i].sizeMin1 - minSize) / (maxSize - minSize);
+          that.recovered[i].momentumLast3 = that.recovered[i].size - (that.recovered[i].sizeMin3 - minSize) / (maxSize - minSize);
+          that.recovered[i].momentumLast7 = that.recovered[i].size - (that.recovered[i].sizeMin7 - minSize) / (maxSize - minSize);
         }
         that.setState({});
       }
@@ -271,7 +282,7 @@ class MapChart extends React.Component {
         that.deaths = [];
         let skipRow = true;
         let minSize = 0;
-        let maxSize = MAX_SIZE;
+        let maxSize = that.MAX_SIZE;
         let rowId = 0;
         for(let data of results.data) {
           if(skipRow) {
@@ -279,7 +290,7 @@ class MapChart extends React.Component {
             continue;
           }
           let size = "";
-          let i = data.length - 1;
+          let i = data.length - 1 + that.state.dayOffset;
           while(size==="" && i > 0) {
             size = data[i];
             i = i - 1;
@@ -299,24 +310,26 @@ class MapChart extends React.Component {
             val: size,
             rowId: rowId
           };
-          totDead += size;
-          deaths.push(marker);
+          that.totDead += size;
+          that.deaths.push(marker);
           rowId++;
         }
-        that.state.setTotDead(totDead);
-        for(let i = 0; i < deaths.length; i++) {
+        that.state.setTotDead(that.totDead);
+        for(let i = 0; i < that.deaths.length; i++) {
           // console.log(deaths[i].size + ", " + minSize + ", " + maxSize);
-          deathsAbsByRowId[deaths[i].rowId] = deaths[i].size;
-          deaths[i].size = (deaths[i].size - minSize) / (maxSize - minSize);
-          deathsByRowId[deaths[i].rowId] = deaths[i].size;
+          that.deathsAbsByRowId[that.deaths[i].rowId] = that.deaths[i].size;
+          that.deaths[i].size = (that.deaths[i].size - minSize) / (maxSize - minSize);
+          that.deathsByRowId[that.deaths[i].rowId] = that.deaths[i].size;
         }
         that.setState({});
       }
     });
-  }
+  };
 
   render() {
     let that = this;
+    let shownDate = new Date();
+    shownDate.setDate(shownDate.getDate() + this.state.dayOffset);
     return (
       <>
       <div className={"small controls" + (that.state.minimized ? " minimized" : "")}>
@@ -324,8 +337,8 @@ class MapChart extends React.Component {
         <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last1" } label="Momentum last 1 day" type={"radio"} name={"b"} id={`inline-radio-5`} onClick={() => {that.setState({momentum: "last1", chart: "pie"});}} />
         <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last3" } label="Momentum last 3 days" type={"radio"} name={"b"} id={`inline-radio-6`} onClick={() => {that.setState({momentum: "last3", chart: "pie"});}} />
         <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last7" } label="Momentum last 7 days" type={"radio"} name={"b"} id={`inline-radio-7`} onClick={() => {that.setState({momentum: "last7", chart: "pie"});}} />*/}
-        <a hidden={that.state.minimized} className={"btn-collapse"} onClick={() => {that.setState({minimized: true})}}>minimize <FontAwesomeIcon icon={faWindowMinimize}/></a>
-        <a hidden={!that.state.minimized} className={"btn-collapse"} onClick={() => {that.setState({minimized: false})}}><FontAwesomeIcon icon={faWindowRestore}/></a>
+        <button hidden={that.state.minimized} className={"btn-collapse"} onClick={() => {that.setState({minimized: true})}}>minimize <FontAwesomeIcon icon={faWindowMinimize}/></button>
+        <button hidden={!that.state.minimized} className={"btn-collapse"} onClick={() => {that.setState({minimized: false})}}><FontAwesomeIcon icon={faWindowRestore}/></button>
         <div hidden={that.state.minimized}>
           <span className="small text-danger">Hover to see explanations.</span><br />
           <span className="small text-muted">Mode:</span>
@@ -335,7 +348,7 @@ class MapChart extends React.Component {
             <option value="last3">Change since last 3 days</option>
             <option value="last7">Change since last 7 days</option>
           </Form.Control>
-          <Form.Check inline disabled={that.state.momentum !== "none"} className="small" checked={that.state.testmode} label={<span title={"Displays a projection of how many confirmed cases there could be if testing rate was as high as global average (shown on the map as blue halos)."}>Project lack of testing</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-4`}
+          <Form.Check inline disabled={that.state.momentum !== "none" || that.state.dayOffset < 0} className="small" checked={that.state.testmode} label={<span title={"Displays a projection of how many confirmed cases there could be if testing rate was as high as global average (shown on the map as blue halos)."}>Project lack of testing</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-4`}
             onChange={() => {that.setState({testmode: !that.state.testmode});}} /><br />
           <span className="small text-muted mr-2">Normalization:</span><br />
           <Form.Check inline className="small" checked={that.state.logmode} label={<span title={"Scales the glyphs on the map logarithmically."}>Log</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
@@ -353,8 +366,41 @@ class MapChart extends React.Component {
         </div>
       </div>
       <div className="small timeline">
-        Timeline view
-        <span className="small ml-3">Check back soon for more details</span>
+        Showing data from: <b>{shownDate.toLocaleDateString()}</b>
+        <button
+            className={"leftTime"}
+            onClick={() => {
+              this.state.dayOffset = this.state.dayOffset - 1;
+              this.state.testmode = false;
+              this.reload();
+            }}
+        >Back</button>
+
+        <button
+            className={"midTime"}
+            onClick={() => {
+              this.state.dayOffset = Math.min(0, this.state.dayOffset + 1);
+              if(this.state.dayOffset === 0) {
+                if(this.state.momentum === "none") {
+                  this.state.testmode = true;
+                }
+              } else {
+                this.state.testmode = false;
+              }
+              this.reload();
+            }}
+        >Forward</button>
+
+        <button
+            className={"todayTime"}
+            onClick={()=>{
+              this.state.dayOffset = 0;
+              if(this.state.momentum === "none") {
+                this.state.testmode = true;
+              }
+              this.reload();
+            }}
+        >Today</button>
       </div>
       {
         that.state.momentum !== "none" &&
@@ -383,12 +429,12 @@ class MapChart extends React.Component {
                     key={geo.rsmKey}
                     geography={geo}
                     onMouseEnter={() => {
-                      const {NAME, POP_EST} = geo.properties;
+                      const {NAME} = geo.properties;
                       if(NAME === "Antarctica") {
                         return;
                       }
                       let rowId = -1;
-                      for(let c of confirmed) {
+                      for(let c of that.confirmed) {
                         if(c.name === NAME) {
                           rowId = c.rowId;
                           break;
@@ -397,14 +443,16 @@ class MapChart extends React.Component {
                       if(rowId < 0) {
                         this.state.setTooltipContent(`Could not retrieve data for ${NAME}.`);
                       } else {
+                        let active = that.confirmed[rowId].val - that.recoveredAbsByRowId[rowId] - that.deathsAbsByRowId[rowId];
                         this.state.setTooltipContent(
-                            <div>
-                              <b>{NAME}</b> &nbsp;
-                              <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[NAME])}</span><br />
-                              <span><FontAwesomeIcon icon={faProcedures}/> {rounded(confirmed[rowId].val)} confirmed (>{rounded(unconfirmed[rowId].val)} at avg. test rate)</span><br/>
-                              <span><FontAwesomeIcon icon={faHeartbeat}/> {rounded(recovered[rowId].val)} recovered</span>
-                              &nbsp;<span><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths[rowId].val)} deceased</span>
-                            </div>
+                          <div>
+                            <b>{NAME}</b> &nbsp;
+                            <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[NAME])}</span><br />
+                            <span><FontAwesomeIcon icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
+                            <span><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</span>
+                            &nbsp;<span><FontAwesomeIcon icon={faHeartbeat}/> {rounded(that.recovered[rowId].val)} recovered</span>
+                            &nbsp;<span><FontAwesomeIcon icon={faHeartBroken}/> {rounded(that.deaths[rowId].val)} deceased</span>
+                          </div>
                         );
                       }
                     }}
@@ -431,22 +479,22 @@ class MapChart extends React.Component {
           </Geographies>
           {
             that.state.momentum!=="none" &&
-              confirmed.map(({ rowId, name, coordinates, markerOffset, momentumLast1, momentumLast3, momentumLast7, valMin1, valMin3, valMin7 }) => {
+              that.confirmed.map(({ rowId, name, coordinates, markerOffset, momentumLast1, momentumLast3, momentumLast7, valMin1, valMin3, valMin7 }) => {
                 let pop = Population.ABSOLUTE[name];
                 let size;
                 let val;
                 switch(that.state.momentum) {
                   case "last1":
-                    size = momentumLast1 - recovered[rowId].momentumLast1;
-                    val = valMin1 - recovered[rowId].valMin1;
+                    size = momentumLast1 - that.recovered[rowId].momentumLast1;
+                    val = valMin1 - that.recovered[rowId].valMin1;
                     break;
                   case "last3":
-                    size = momentumLast3 - recovered[rowId].momentumLast3;
-                    val = valMin3 - recovered[rowId].valMin3;
+                    size = momentumLast3 - that.recovered[rowId].momentumLast3;
+                    val = valMin3 - that.recovered[rowId].valMin3;
                     break;
                   case "last7":
-                    size = momentumLast7 - recovered[rowId].momentumLast7;
-                    val = valMin7 - recovered[rowId].valMin7;
+                    size = momentumLast7 - that.recovered[rowId].momentumLast7;
+                    val = valMin7 - that.recovered[rowId].valMin7;
                     break;
                   default:
                     alert("something went wrong");
@@ -476,10 +524,10 @@ class MapChart extends React.Component {
           }
           {
             that.state.momentum==="none" && that.state.testmode &&
-            unconfirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
+            that.unconfirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
               let color = "#00F";
               let pop = Population.ABSOLUTE[name];
-              let active = val - recoveredAbsByRowId[rowId] - deathsAbsByRowId[rowId];
+              let active = val - that.recoveredAbsByRowId[rowId] - that.deathsAbsByRowId[rowId];
               size = this.scale(size, pop);
 		      let ppms = pop && !isNaN(val) ? '(' + Math.round(ONE_M * val / pop) + ' ppm)'  : '';
 		      let ppms2 = pop && !isNaN(active) ? '(' + Math.round(ONE_M * active / pop) + ' ppm)'  : '';
@@ -489,10 +537,10 @@ class MapChart extends React.Component {
           }
           {
             that.state.momentum==="none" &&
-            confirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
+            that.confirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
               let color = "#F00";
               let pop = Population.ABSOLUTE[name];
-              let active = val - recoveredAbsByRowId[rowId] - deathsAbsByRowId[rowId];
+              let active = val - that.recoveredAbsByRowId[rowId] - that.deathsAbsByRowId[rowId];
               size = this.scale(size, pop);
 		      let ppms = pop && !isNaN(val) ? '(' + Math.round(ONE_M * val / pop) + ' ppm)'  : '';
 		      let ppms2 = pop && !isNaN(active) ? '(' + Math.round(ONE_M * active / pop) + ' ppm)'  : '';
@@ -501,7 +549,7 @@ class MapChart extends React.Component {
             })
           }
           {
-            confirmed.map(({ rowId, name, coordinates, markerOffset, size }) => {
+            that.confirmed.map(({ rowId, name, coordinates, markerOffset, size }) => {
               if (size > 0) {
                 return (<Marker coordinates={coordinates} key={"label_" + rowId}>
                   <text
@@ -525,11 +573,11 @@ class MapChart extends React.Component {
           }
           {
             that.state.momentum==="none" && !that.state.jhmode &&
-            recovered.map(({rowId, name, coordinates, markerOffset, size, val }) => {
+            that.recovered.map(({rowId, name, coordinates, markerOffset, size, val }) => {
               let color = "#0F0";
               let pop = Population.ABSOLUTE[name];
               if (that.state.chart === "pie" || that.state.chart === "pill") {
-                size += deathsByRowId[rowId];
+                size += that.deathsByRowId[rowId];
               }
               size = this.scale(size, pop);
               let ppms = pop && !isNaN(val) ? '(' + Math.round(ONE_M * val / pop) + ' ppm)' : '';
@@ -539,7 +587,7 @@ class MapChart extends React.Component {
           }
           {
             that.state.momentum==="none" && !that.state.jhmode &&
-            deaths.map(({rowId, name, coordinates, markerOffset, size, val }) => {
+            that.deaths.map(({rowId, name, coordinates, markerOffset, size, val }) => {
               let color = "#000";
               let pop = Population.ABSOLUTE[name];
               size = this.scale(size, pop);
@@ -555,9 +603,10 @@ class MapChart extends React.Component {
   }
 
   marker = (coordinates, rowId, color, text, size, val, name, markerOffset, type, transparency) => {
+    let that = this;
     return (
         <Marker coordinates={coordinates} key={type + "_" + rowId}>
-          /* pill */
+          {/* pill */}
           <rect
               fill={color + transparency}
               style={this.state.chart==="pill" ? {display: "block"} : {display: "none"}}
@@ -569,13 +618,15 @@ class MapChart extends React.Component {
                 if(rowId < 0) {
                   this.state.setTooltipContent(`Could not retrieve data for ${name}.`);
                 } else {
+                  let active = that.confirmed[rowId].val - that.recoveredAbsByRowId[rowId] - that.deathsAbsByRowId[rowId];
                   this.state.setTooltipContent(
                       <div>
                         <b>{name}</b> &nbsp;
                         <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])}</span><br />
-                        <span><FontAwesomeIcon icon={faProcedures}/> {rounded(confirmed[rowId].val)} confirmed (>{rounded(unconfirmed[rowId].val)} at avg. test rate)</span><br/>
-                        <span><FontAwesomeIcon icon={faHeartbeat}/> {rounded(recovered[rowId].val)} recovered</span>
-                        &nbsp;<span><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths[rowId].val)} deceased</span>
+                        <span><FontAwesomeIcon icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
+                        <span><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</span>
+                        &nbsp;<span><FontAwesomeIcon icon={faHeartbeat}/> {rounded(that.recovered[rowId].val)} recovered</span>
+                        &nbsp;<span><FontAwesomeIcon icon={faHeartBroken}/> {rounded(that.deaths[rowId].val)} deceased</span>
                       </div>
                   );
                 }
@@ -585,7 +636,7 @@ class MapChart extends React.Component {
               }}
           />
 
-          /* bar */
+          {/* bar */}
           <rect
               fill={color + transparency}
               style={this.state.chart==="bar" ? {display: "block"} : {display: "none"}}
@@ -597,13 +648,15 @@ class MapChart extends React.Component {
                 if(rowId < 0) {
                   this.state.setTooltipContent(`Could not retrieve data for ${name}.`);
                 } else {
+                  let active = that.confirmed[rowId].val - that.recoveredAbsByRowId[rowId] - that.deathsAbsByRowId[rowId];
                   this.state.setTooltipContent(
                       <div>
                         <b>{name}</b> &nbsp;
                         <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])}</span><br />
-                        <span><FontAwesomeIcon icon={faProcedures}/> {rounded(confirmed[rowId].val)} confirmed (>{rounded(unconfirmed[rowId].val)} at avg. test rate)</span><br/>
-                        <span><FontAwesomeIcon icon={faHeartbeat}/> {rounded(recovered[rowId].val)} recovered</span>
-                        &nbsp;<span><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths[rowId].val)} deceased</span>
+                        <span><FontAwesomeIcon icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
+                        <span><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</span>
+                        &nbsp;<span><FontAwesomeIcon icon={faHeartbeat}/> {rounded(that.recovered[rowId].val)} recovered</span>
+                        &nbsp;<span><FontAwesomeIcon icon={faHeartBroken}/> {rounded(that.deaths[rowId].val)} deceased</span>
                       </div>
                   );
                 }
@@ -613,22 +666,24 @@ class MapChart extends React.Component {
               }}
           />
 
-          /* bubble */
+          {/* bubble */}
           <circle
               fill={color + transparency}
               style={this.state.chart==="pie" ? {display: "block"} : {display: "none"}}
-              r={isNaN(size)?0:Math.sqrt(size) * this.state.factor}
+              r={size && size > 0 ? Math.sqrt(size) * this.state.factor : 0}
               onMouseOver={() => {
                 if(rowId < 0) {
                   this.state.setTooltipContent(`Could not retrieve data for ${name}.`);
                 } else {
+                  let active = that.confirmed[rowId].val - that.recoveredAbsByRowId[rowId] - that.deathsAbsByRowId[rowId];
                   this.state.setTooltipContent(
                       <div>
                         <b>{name}</b> &nbsp;
                         <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])}</span><br />
-                        <span><FontAwesomeIcon icon={faProcedures}/> {rounded(confirmed[rowId].val)} confirmed (>{rounded(unconfirmed[rowId].val)} at avg. test rate)</span><br/>
-                        <span><FontAwesomeIcon icon={faHeartbeat}/> {rounded(recovered[rowId].val)} recovered</span>
-                        &nbsp;<span><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths[rowId].val)} deceased</span>
+                        <span><FontAwesomeIcon icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
+                        <span><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</span>
+                        &nbsp;<span><FontAwesomeIcon icon={faHeartbeat}/> {rounded(that.recovered[rowId].val)} recovered</span>
+                        &nbsp;<span><FontAwesomeIcon icon={faHeartBroken}/> {rounded(that.deaths[rowId].val)} deceased</span>
                       </div>
                   );
                 }

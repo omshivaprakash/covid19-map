@@ -54,11 +54,11 @@ function App() {
           </Col>
         </Row>
       </Container>,
-      <div class="ttip">
+      <div className="ttip">
           {content}
       </div>,
       <div className="info small text-muted" style={hidden ? {display: "none"} : {display:"block"}}>
-        <a className={"btn-collapse"} onClick={() => {setHidden(true)}}>close <FontAwesomeIcon icon={faWindowClose}/></a>
+        <button className={"btn-collapse"} onClick={() => {setHidden(true)}}>close <FontAwesomeIcon icon={faWindowClose}/></button>
         <span className="text-danger showInMomentum">Red: increase active</span>
         <span className="text-success showInMomentum">Green: decrease active</span>
         <span className="text-dark showInMomentum">where "active" is newly confirmed minus newly recovered (excluding deceased)</span>
