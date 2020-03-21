@@ -11,7 +11,7 @@ import * as Testing from "./TestingRates";
 import * as Population from "./Population";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faWindowMinimize, faWindowRestore, faUsers, faProcedures, faHeartbeat, faHeartBroken, faBiohazard, faPlayCircle} from '@fortawesome/free-solid-svg-icons';
+import { faWindowMinimize, faWindowRestore, faUsers, faProcedures, faHeartbeat, faHeartBroken, faBiohazard, faPlayCircle, faStopCircle} from '@fortawesome/free-solid-svg-icons';
 
 import Papa from "papaparse";
 import Form from 'react-bootstrap/Form';
@@ -424,12 +424,35 @@ class MapChart extends React.Component {
 
               this.state.playmode = true;
               this.reload();
-              setInterval(() => {
+              let interval = setInterval(() => {
+                if(!that.state.playmode) {
+                  clearInterval(interval);
+                  this.state.dayOffset = 0;
+                    if(this.state.momentum === "none") {
+                    this.state.testmode = true;
+                  }
+                  this.reload();
+                  return;
+                }
                 this.state.dayOffset++;
                 this.reload();
               }, 1000);
             }}
         ><FontAwesomeIcon icon={faPlayCircle}/> Play</button>
+
+        <button
+            className={"btn btn-sm btn-danger stop"}
+            style={this.state.playmode ? {height: "30px", lineHeight: "20px"} : {display : "none"}}
+            onClick={()=>{
+              document.getElementsByClassName("info")[0].style.display = "inline";
+              document.getElementsByClassName("controls")[0].style.display = "inline";
+              document.getElementsByClassName("todayTime")[0].style.display = "inline";
+              document.getElementsByClassName("play")[0].style.display = "inline";
+              document.getElementsByClassName("leftTime")[0].style.display = "inline";
+              document.getElementsByClassName("midTime")[0].style.display = "none";
+              this.state.playmode = false;
+            }}
+        ><FontAwesomeIcon icon={faStopCircle}/> Stop</button>
       </div>
       {
         that.state.momentum !== "none" &&
