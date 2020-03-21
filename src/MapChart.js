@@ -381,7 +381,7 @@ class MapChart extends React.Component {
             <option value="last3">Change since last 3 days</option>
             <option value="last7">Change since last 7 days</option>
           </Form.Control>
-          <Form.Check inline disabled={that.state.momentum !== "none" || that.state.dayOffset < 0} className="small" checked={that.state.testmode} label={<span title={"Displays a projection of how many confirmed cases there could be if testing rate was as high as global average (shown on the map as blue halos)."}>Project lack of testing</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-4`}
+          <Form.Check inline disabled={that.state.momentum !== "none" || that.state.dayOffset < 0} className="small" checked={that.state.testmode} label={<span title={"Displays a projection of how many confirmed cases there might be if testing rate was as high/low as global average (shown on the map as blue halos)."}>Project global testing rate</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-4`}
             onChange={() => {that.setState({testmode: !that.state.testmode});}} /><br />
           <span className="small text-muted mr-2">Normalization:</span><br />
           <Form.Check inline className="small" checked={that.state.logmode} label={<span title={"Scales the glyphs on the map logarithmically."}>Log</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
