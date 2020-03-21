@@ -500,7 +500,7 @@ class MapChart extends Map {
               var startDate = new Date("January 23, 2020 23:59:59");
               const oneDay = 24 * 60 * 60 * 1000;
               this.state.dayOffset = - Math.round(Math.abs((now - startDate) / oneDay));
-
+              this.state.testmode = false;
               this.state.playmode = true;
               this.reload();
               let interval = setInterval(() => {
