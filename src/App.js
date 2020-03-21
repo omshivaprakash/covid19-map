@@ -6,7 +6,7 @@ import Col from 'react-bootstrap/Col';
 import Navbar from 'react-bootstrap/Navbar';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faDatabase, faCode, faWindowClose} from '@fortawesome/free-solid-svg-icons';
+import {faCode, faBug, faWindowClose, faBalanceScale} from '@fortawesome/free-solid-svg-icons';
 import { faDotCircle} from '@fortawesome/free-regular-svg-icons';
 
 const date = new Date();
@@ -57,7 +57,7 @@ function App() {
       <div className="ttip">
           {content}
       </div>,
-      <div className="info small text-muted" style={hidden ? {display: "none"} : {display:"block"}}>
+      <div className="info small text-muted pt-1" style={hidden ? {display: "none"} : {display:"block"}}>
         <button className={"btn-collapse"} onClick={() => {setHidden(true)}}>close <FontAwesomeIcon icon={faWindowClose}/></button>
         <span className="text-danger showInMomentum">Red: increase active</span>
         <span className="text-success showInMomentum">Green: decrease active</span>
@@ -67,8 +67,10 @@ function App() {
         <span className="text-dark hideInJh hideInMomentum">Black: deceased</span><br className="hideInJh hideInMomentum" />
         <span className="text-primary hideInJh hideInMomentum">Blue: confirmed projected at world average test rate</span><br className="hideInJh hideInMomentum" />
         <sub className={"lightInJh"}>
-          Using live data from <br /><a target="_blank" rel="noopener noreferrer" href={"https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series"}><FontAwesomeIcon icon={faDatabase} /> Johns Hopkins repository</a><br/>Last synchronized on {date.toLocaleDateString()} at {date.toLocaleTimeString()}<br/>
-            <a target="_blank" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map"}><FontAwesomeIcon icon={faCode} /> Credits &amp; license</a>
+            Last synchronized at {date.toLocaleTimeString()}<br/>
+            <a target="_blank" className="text-secondary" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map#contributors"}><FontAwesomeIcon icon={faCode} /> Credits</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" className="text-secondary" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map/issues"}><FontAwesomeIcon icon={faBug} /> Issues</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" className="text-secondary" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map"}><FontAwesomeIcon icon={faBalanceScale} /> MIT</a>
         </sub>
       </div>
     ]
