@@ -34,3 +34,8 @@ npm run deploy      # Please do not forget to include link to license and mentio
 # Contributors
 - Daniel Karl
 - Michael Baentsch
+
+#### License Notes
+React Simple Maps: https://www.react-simple-maps.io/
+Link to license (MIT): https://github.com/zcreativelabs/react-simple-maps/blob/master/LICENSE
+
