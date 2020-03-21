@@ -519,7 +519,7 @@ class MapChart extends React.Component {
           // url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
           url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'
         />
-        { /* this.momentumMarkers() */ }
+        { this.momentumMarkers() }
         { this.projectedMarkers() }
         { this.confirmedMarkers() }
         { /* this.mapLabels() */ }
@@ -631,34 +631,48 @@ class MapChart extends React.Component {
   momentumMarkers = () => {
     return (
       this.state.momentum!=="none" &&
-          this.confirmed.map(({ rowId, name, coordinates, markerOffset, momentumLast1, momentumLast3, momentumLast7, valMin1, valMin3, valMin7 }) => {
-            let pop = Population.ABSOLUTE[name];
-            let size;
-            let val;
-            switch(this.state.momentum) {
-              case "last1":
-                size = momentumLast1 - this.recovered[rowId].momentumLast1;
-                val = valMin1 - this.recovered[rowId].valMin1;
-                break;
-              case "last3":
-                size = momentumLast3 - this.recovered[rowId].momentumLast3;
-                val = valMin3 - this.recovered[rowId].valMin3;
-                break;
-              case "last7":
-                size = momentumLast7 - this.recovered[rowId].momentumLast7;
-                val = valMin7 - this.recovered[rowId].valMin7;
-                break;
-              default:
-                alert("something went wrong");
-                console.log("something went wrong");
-                break;
-            }
-            let pos = size >= 0;
-            size = Math.abs(size);
-            size = this.scaleLog(size);
-            size = this.scalePpm(size, pop);
-            size = this.scaleLogAndPpm(size);
-            return (<Marker coordinates={coordinates} key={"change_" + rowId}>
+        this.confirmed.map(({ rowId, name, coordinates, markerOffset, momentumLast1, momentumLast3, momentumLast7, valMin1, valMin3, valMin7 }) => {
+          let pop = Population.ABSOLUTE[name];
+          let size;
+          let val;
+          switch(this.state.momentum) {
+            case "last1":
+              size = momentumLast1 - this.recovered[rowId].momentumLast1;
+              val = valMin1 - this.recovered[rowId].valMin1;
+              break;
+            case "last3":
+              size = momentumLast3 - this.recovered[rowId].momentumLast3;
+              val = valMin3 - this.recovered[rowId].valMin3;
+              break;
+            case "last7":
+              size = momentumLast7 - this.recovered[rowId].momentumLast7;
+              val = valMin7 - this.recovered[rowId].valMin7;
+              break;
+            default:
+              alert("something went wrong");
+              console.log("something went wrong");
+              break;
+          }
+          let pos = size >= 0;
+          size = Math.abs(size);
+          size = this.scaleLog(size);
+          size = this.scalePpm(size, pop);
+          size = this.scaleLogAndPpm(size);
+          return (
+            <CircleMarker
+              key={"change_" + rowId}
+              style={this.state.chart === "pie" ? {display: "block"} : {display: "none"}}
+              center={[coordinates[1], coordinates[0]]}
+              fillColor={pos ? "#FF0000" : "#00FF00"}
+              radius={isNaN(size)?0:Math.sqrt(size) * this.state.factor}
+              opacity={0}
+              fillOpacity={0.5}
+            />
+        )})
+    )
+  };
+
+  /*<Marker coordinates={coordinates} key={"change_" + rowId}>
               <circle r={isNaN(size)?0:Math.sqrt(size) * this.state.factor} fill={pos ? "#F008" : "#0F08"} />
               <title>
                 {`${name} - ${Math.abs(val)} ${pos ? "INCREASE" : "DECREASE"} in active(= confirmed-recovered) cases (excl. deceased) (${Math.round(ONE_M*val/pop)} ppm)`
@@ -671,10 +685,7 @@ class MapChart extends React.Component {
               >
                 {name}
               </text>
-            </Marker>
-        )})
-    )
-  };
+            </Marker>*/
 
   projectedMarkers = () => {
     return (
@@ -768,41 +779,39 @@ class MapChart extends React.Component {
   marker = (coordinates, rowId, color, text, size, val, name, markerOffset, type, transparency) => {
     let that = this;
     return (
-        // bubble
-        <CircleMarker
-            key={type + "_" + rowId}
-            style={this.state.chart === "pie" ? {display: "block"} : {display: "none"}}
-            center={[coordinates[1], coordinates[0]]}
-            fillColor={color}
-            radius={size && size > 0 ? Math.sqrt(size) * this.state.factor : 0}
-            opacity={0}
-            fillOpacity={transparency}
-            onMouseOver={() => {
-                if (rowId < 0) {
-                  this.state.setTooltipContent(`Could not retrieve data for ${name}.`);
-                } else {
-                  let active = that.confirmed[rowId].val - that.recoveredAbsByRowId[rowId] - that.deathsAbsByRowId[rowId];
-                  this.state.setTooltipContent(
-                      <div>
-                        <b>{name}</b> &nbsp;
-                        <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])}</span><br/>
-                        <span><FontAwesomeIcon
-                            icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
-                        <span><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</span>
-                        &nbsp;<span><FontAwesomeIcon
-                          icon={faHeartbeat}/> {rounded(that.recovered[rowId].val)} recovered</span>
-                        &nbsp;<span><FontAwesomeIcon
-                          icon={faHeartBroken}/> {rounded(that.deaths[rowId].val)} deceased</span>
-                      </div>
-                  );
-                }
-              }}
-              onMouseOut={() => {
-                this.state.setTooltipContent("");
-              }}
-        />
-
-
+      // bubble
+      <CircleMarker
+        key={type + "_" + rowId}
+        style={this.state.chart === "pie" ? {display: "block"} : {display: "none"}}
+        center={[coordinates[1], coordinates[0]]}
+        fillColor={color}
+        radius={size && size > 0 ? Math.sqrt(size) * this.state.factor : 0}
+        opacity={0}
+        fillOpacity={transparency}
+        onMouseOver={() => {
+            if (rowId < 0) {
+              this.state.setTooltipContent(`Could not retrieve data for ${name}.`);
+            } else {
+              let active = that.confirmed[rowId].val - that.recoveredAbsByRowId[rowId] - that.deathsAbsByRowId[rowId];
+              this.state.setTooltipContent(
+                  <div>
+                    <b>{name}</b> &nbsp;
+                    <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])}</span><br/>
+                    <span><FontAwesomeIcon
+                        icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
+                    <span><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</span>
+                    &nbsp;<span><FontAwesomeIcon
+                      icon={faHeartbeat}/> {rounded(that.recovered[rowId].val)} recovered</span>
+                    &nbsp;<span><FontAwesomeIcon
+                      icon={faHeartBroken}/> {rounded(that.deaths[rowId].val)} deceased</span>
+                  </div>
+              );
+            }
+          }}
+          onMouseOut={() => {
+            this.state.setTooltipContent("");
+          }}
+      />
     );
   }
       /*
