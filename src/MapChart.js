@@ -443,8 +443,8 @@ class MapChart extends Map {
           <span className="small text-muted">Map style:</span>
           <Form.Control value={that.state.mapstyle} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({mapstyle: e.nativeEvent.target.value});}}>
             <option value="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png">Light</option>
-            <option value="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png">Dark</option>
             <option value="https://{s}.tile.osm.org/{z}/{x}/{y}.png">Color</option>
+            <option value="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png">Dark</option>
           </Form.Control>
           <div className={"credits"}>
             <Badge><a target="_blank" className="text-secondary" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map/issues"}><FontAwesomeIcon icon={faBug} /> Issues</a></Badge>
