@@ -954,18 +954,13 @@ onRemove(selectedList, removedItem) {
       if(confirmed < 100) {
         stayAtHomeScore = "N/A";
       }
-
-
       return (
         <div>
-          <div className={`stayAtHomeScore stayAtHomeScore${stayAtHomeScore}`}>
-            {stayAtHomeScore}
-          </div>
-          <div style={{display:"inline-block", position: "absolute", left: "45px"}}>
+          <div>
               <b>{name}</b><br />
               <FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])} &middot; <FontAwesomeIcon icon={faBiohazard}/> {rounded(confirmed)}
-          </div><br/>
-          <div style={{display:"block", marginTop: "20px"}}>
+          </div>
+          <div>
             <Badge variant={"danger"}><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</Badge>
             <Badge className="ml-1" variant={"success"}><FontAwesomeIcon icon={faHeartbeat}/> {rounded(recovered)} recovered</Badge>
             <Badge className="ml-1" variant={"dark"}><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths)} deceased</Badge><br />
@@ -978,9 +973,23 @@ onRemove(selectedList, removedItem) {
             {
               [<span className="stayAtHomeAdvice">{this.stayAtHomeAdvice(active)}</span>, <br/>]
             }
-            STAY@HOME Score reflects how well this region contains<br />
-            the spread of COVID-19 in ratio to their local threat level.<br/>
-            Follow the advice of the WHO and your local administration.<br />
+            <table>
+              <tr>
+                <td valign={"top"}>
+                  <div className={`stayAtHomeScore stayAtHomeScore${stayAtHomeScore}`}>
+                    {stayAtHomeScore}
+                  </div>
+                </td>
+                <td>
+                  <div>
+                    <i>STAYING@HOME Score</i> reflects how well this region<br/>
+                    responds to the spread of COVID-19 in relation to their<br/>
+                    local threat level. Continue to follow the advice of the<br/>
+                    WHO and your local administration.
+                  </div>
+                </td>
+              </tr>
+            </table>
           </div>
         </div>
       )
