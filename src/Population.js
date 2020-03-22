@@ -240,7 +240,7 @@ export const ABSOLUTE = {
   "Finland": 5540718,
   "France, France": 65273512,
   "France (and dependencies)": 68147687,
-  "French Guiana": 298682,
+  "French Guiana, France": 298682,
   "French Polynesia, France": 280904,
   "Gabon": 2225728,
   "Gambia, The": 2416664,
