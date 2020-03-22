@@ -999,11 +999,8 @@ onRemove(selectedList, removedItem) {
   };
 
   stayAtHomeAdvice = (active) => {
-    if(active > 1000) {
+    if(active > 150) {
       return "You save lives by staying at home today!"
-    }
-    if(active > 500) {
-      return "Only leave the house if absolutely necessary!";
     }
     if (active > 0) {
       return "Avoid crowds! Keep social distance!";
