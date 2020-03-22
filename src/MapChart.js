@@ -6,6 +6,10 @@ import { Map, TileLayer, Marker, Tooltip,
 import * as Testing from "./TestingRates";
 import * as Population from "./Population";
 
+import { CSSTransitionGroup } from 'react-transition-group'
+import {Multiselect} from "multiselect-react-dropdown";
+
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faWindowMinimize,
@@ -60,6 +64,9 @@ class MapChart extends Map {
       dayOffset: 0,
       playmode: false,
       mapstyle: "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+      selectedData: ["projected", "confirmed", "recovered", "deceased"],
+
+      maxSize: 67021,
 
       // leaflet map
       lat: 0,
@@ -77,7 +84,6 @@ class MapChart extends Map {
     this.recovered = [];
     this.deaths = [];
     this.unconfirmed = []; /* this will be local_confirmed_rate * avg_test_rate / local_test_rate */
-    this.MAX_SIZE = 47021;
 
     this.totConf = 0;
     this.totRec = 0;
@@ -170,7 +176,6 @@ class MapChart extends Map {
         that.confirmed = [];
         let skipRow = true;
         let minSize = 0;
-        let maxSize = that.MAX_SIZE;
         let rowId = 0;
         let avgTested = 0;
         let avgPopulation = 0;
@@ -209,8 +214,8 @@ class MapChart extends Map {
           sizeMin1 = Number(sizeMin1);
           sizeMin3 = Number(sizeMin3);
           sizeMin7 = Number(sizeMin7);
-          if(size > maxSize) {
-            maxSize = size;
+          if(size > that.state.maxSize) {
+            that.state.maxSize = size;
           }
           let marker = {
             markerOffset: 0,
@@ -242,10 +247,10 @@ class MapChart extends Map {
         avgPopulation /= countPopulation;
         that.state.setTotConf(that.totConf);
         for(let i = 0; i < that.confirmed.length; i++) {
-          that.confirmed[i].size = (that.confirmed[i].size - minSize) / (maxSize - minSize);
-          that.confirmed[i].momentumLast1 = that.confirmed[i].size - (that.confirmed[i].sizeMin1 - minSize) / (maxSize - minSize);
-          that.confirmed[i].momentumLast3 = that.confirmed[i].size - (that.confirmed[i].sizeMin3 - minSize) / (maxSize - minSize);
-          that.confirmed[i].momentumLast7 = that.confirmed[i].size - (that.confirmed[i].sizeMin7 - minSize) / (maxSize - minSize);
+          that.confirmed[i].size = (that.confirmed[i].size - minSize) / (that.state.maxSize - minSize);
+          that.confirmed[i].momentumLast1 = that.confirmed[i].size - (that.confirmed[i].sizeMin1 - minSize) / (that.state.maxSize - minSize);
+          that.confirmed[i].momentumLast3 = that.confirmed[i].size - (that.confirmed[i].sizeMin3 - minSize) / (that.state.maxSize - minSize);
+          that.confirmed[i].momentumLast7 = that.confirmed[i].size - (that.confirmed[i].sizeMin7 - minSize) / (that.state.maxSize - minSize);
         }
 
         // unconfirmed
@@ -289,7 +294,6 @@ class MapChart extends Map {
         that.recovered = [];
         let skipRow = true;
         let minSize = 0;
-        let maxSize = that.MAX_SIZE;
         let rowId = 0;
         for(let data of results.data) {
           if(skipRow) {
@@ -324,8 +328,8 @@ class MapChart extends Map {
           sizeMin1 = Number(sizeMin1);
           sizeMin3 = Number(sizeMin3);
           sizeMin7 = Number(sizeMin7);
-          if(size > maxSize) {
-            maxSize = size;
+          if(size > that.state.maxSize) {
+            that.state.maxSize = size;
           }
           let marker = {
             markerOffset: 0,
@@ -348,10 +352,10 @@ class MapChart extends Map {
         that.state.setTotRec(that.totRec);
         for(let i = 0; i < that.recovered.length; i++) {
           that.recoveredAbsByRowId[that.recovered[i].rowId] = that.recovered[i].size;
-          that.recovered[i].size = (that.recovered[i].size - minSize) / (maxSize - minSize);
-          that.recovered[i].momentumLast1 = that.recovered[i].size - (that.recovered[i].sizeMin1 - minSize) / (maxSize - minSize);
-          that.recovered[i].momentumLast3 = that.recovered[i].size - (that.recovered[i].sizeMin3 - minSize) / (maxSize - minSize);
-          that.recovered[i].momentumLast7 = that.recovered[i].size - (that.recovered[i].sizeMin7 - minSize) / (maxSize - minSize);
+          that.recovered[i].size = (that.recovered[i].size - minSize) / (that.state.maxSize - minSize);
+          that.recovered[i].momentumLast1 = that.recovered[i].size - (that.recovered[i].sizeMin1 - minSize) / (that.state.maxSize - minSize);
+          that.recovered[i].momentumLast3 = that.recovered[i].size - (that.recovered[i].sizeMin3 - minSize) / (that.state.maxSize - minSize);
+          that.recovered[i].momentumLast7 = that.recovered[i].size - (that.recovered[i].sizeMin7 - minSize) / (that.state.maxSize - minSize);
         }
         that.setState({});
       }
@@ -363,7 +367,6 @@ class MapChart extends Map {
         that.deaths = [];
         let skipRow = true;
         let minSize = 0;
-        let maxSize = that.MAX_SIZE;
         let rowId = 0;
         for(let data of results.data) {
           if(skipRow) {
@@ -380,8 +383,8 @@ class MapChart extends Map {
             size = 0;
           }
           size = Number(size);
-          if(size > maxSize) {
-            maxSize = size;
+          if(size > that.state.maxSize) {
+            that.state.maxSize = size;
           }
           let marker = {
             markerOffset: 0,
@@ -399,7 +402,7 @@ class MapChart extends Map {
         for(let i = 0; i < that.deaths.length; i++) {
           // console.log(deaths[i].size + ", " + minSize + ", " + maxSize);
           that.deathsAbsByRowId[that.deaths[i].rowId] = that.deaths[i].size;
-          that.deaths[i].size = (that.deaths[i].size - minSize) / (maxSize - minSize);
+          that.deaths[i].size = (that.deaths[i].size - minSize) / (that.state.maxSize - minSize);
           that.deathsByRowId[that.deaths[i].rowId] = that.deaths[i].size;
         }
         that.setState({});
@@ -407,10 +410,21 @@ class MapChart extends Map {
     });
   };
 
+  onSelect(selectedList, selectedItem) {
+
+}
+
+onRemove(selectedList, removedItem) {
+
+}
+
   render() {
     let that = this;
     let shownDate = new Date();
     shownDate.setDate(shownDate.getDate() + this.state.dayOffset);
+
+    let dataOptions = [{name: 'Srigar', id: 1},{name: 'Sam', id: 2}];
+
     return (
       <>
       <div className={"small controls" + (that.state.minimized ? " minimized" : "")}>
@@ -428,6 +442,13 @@ class MapChart extends Map {
             <option value="last3">Change since last 3 days</option>
             <option value="last7">Change since last 7 days</option>
           </Form.Control>
+          {/*<Multiselect
+            selectedValues={this.state.selectedData}
+            options={["projected", "confirmed", "recovered", "deceased"]}
+            isObject={false}
+            placeholder={"toggle data"}
+            showCheckbox={true}
+          />*/}
           <Form.Check inline disabled={that.state.momentum !== "none" || that.state.dayOffset < 0} className="small" checked={that.state.testmode} label={<span title={"Displays a projection of how many confirmed cases there might be if testing rate was as high/low as global average (shown on the map as blue halos)."}>Project global testing rate</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-4`}
             onChange={() => {that.setState({testmode: !that.state.testmode});}} /><br />
           <span className="small text-muted mr-2">Normalization:</span><br />
@@ -447,6 +468,7 @@ class MapChart extends Map {
             <option value="https://{s}.tile.osm.org/{z}/{x}/{y}.png">Color</option>
             <option value="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png">Dark</option>
           </Form.Control>
+
           <div className={"credits"}>
             <Badge><a target="_blank" className="text-secondary" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map/issues"}><FontAwesomeIcon icon={faBug} /> Issues</a></Badge>
             <Badge><a target="_blank" className="text-secondary" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map#contributors"}><FontAwesomeIcon icon={faCode} /> Credits</a></Badge>
@@ -902,19 +924,28 @@ class MapChart extends Map {
       let unconfirmed = this.unconfirmed[rowId].val;
       let recovered = this.recovered[rowId].val;
       let deaths = this.deaths[rowId].val;
-
       let active = this.confirmed[rowId].val - this.recoveredAbsByRowId[rowId] - this.deathsAbsByRowId[rowId];
+      let g1 = 0.5 * this.confirmed[rowId].momentumLast7 / this.confirmed[rowId].size; // growth factor
+      let g3 = 0.3 * this.confirmed[rowId].momentumLast7 / this.confirmed[rowId].size; // growth factor
+      let g7 = 0.2 * this.confirmed[rowId].momentumLast7 / this.confirmed[rowId].size; // growth factor
+      let stayAtHomeScore = Math.round((1 - (g1 + g3 + g7)) * 10);
       return (
         <div>
-          <b>{name}</b> &middot; <FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])} &middot; <FontAwesomeIcon icon={faBiohazard}/> {rounded(confirmed)}<br/>
-          <Badge variant={"danger"}><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</Badge>
-          <Badge className="ml-1" variant={"success"}><FontAwesomeIcon icon={faHeartbeat}/> {rounded(recovered)} recovered</Badge>
-          <Badge className="ml-1" variant={"dark"}><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths)} deceased</Badge><br />
-          {
-            unconfirmed > confirmed &&
-            <Badge variant={"primary"}><FontAwesomeIcon icon={faBiohazard}/> &gt;{rounded(unconfirmed)} at avg. test rate</Badge>
-          }
+          <div className={`stayAtHomeScore stayAtHomeScore${stayAtHomeScore}`}>{stayAtHomeScore}</div>
+          <div style={{display:"inline-block", position: "absolute", left: "45px"}}>
+              <b>{name}</b><br />
+              <FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])} &middot; <FontAwesomeIcon icon={faBiohazard}/> {rounded(confirmed)}
+          </div><br/>
+          <div style={{display:"block", marginTop: "20px"}}>
+            <Badge variant={"danger"}><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</Badge>
+            <Badge className="ml-1" variant={"success"}><FontAwesomeIcon icon={faHeartbeat}/> {rounded(recovered)} recovered</Badge>
+            <Badge className="ml-1" variant={"dark"}><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths)} deceased</Badge><br />
+            {
+              unconfirmed > confirmed &&
+              <Badge variant={"primary"}><FontAwesomeIcon icon={faBiohazard}/> &gt;{rounded(unconfirmed)} at avg. test rate</Badge>
+            }
           </div>
+        </div>
       )
     } catch(e) {
       return "Could not load tooltip data.";

@@ -27,7 +27,7 @@ body {
   background: #eeee;
   padding: 10px;
   border-bottom-right-radius: 5px;
-  width: 230px;
+  width: 240px;
   z-index: 1001;
   box-shadow: 0px 0px 10px #333;
   overflow: scroll;
@@ -106,4 +106,69 @@ body {
 .credits .badge {
   font-size: 10px;
   font-weight: 300 !important;
+}
+
+.stayAtHomeScore {
+  position: absolute;
+  margin-top:3px;
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+  border-radius: 50%;
+  background: black;
+  color: white;
+  text-align: center;
+  line-height: 30px;
+  font-weight: bold;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.stayAtHomeScore0 {
+  background: #a50026;
+}
+
+.stayAtHomeScore1 {
+  background: #d73027;
+}
+
+.stayAtHomeScore2 {
+  background: #f46d43;
+}
+
+.stayAtHomeScore3 {
+  background: #fdae61;
+  color: black;
+}
+
+.stayAtHomeScore4 {
+  background: #fee08b;
+  color: black;
+}
+
+.stayAtHomeScore5 {
+  background: #ffffbf;
+  color: black;
+}
+
+.stayAtHomeScore6 {
+  background: #d9ef8b;
+  color: black;
+}
+
+.stayAtHomeScore7 {
+  background: #a6d96a;
+  color: black;
+}
+
+.stayAtHomeScore8 {
+  background: #66bd63;
+}
+
+.stayAtHomeScore9 {
+  background: #1a9850;
+}
+
+.stayAtHomeScore10 {
+  background: #006837;
 }

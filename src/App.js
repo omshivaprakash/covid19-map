@@ -40,6 +40,7 @@ function App() {
         <Row noGutters={"true"} className={"h-100"}>
           <Col className={"h-100"}>
             <MapChart
+                key={"mapChart"}
                 style={{marginTop: "50px"}}
                 setTotConf={setTotConf}
                 setTotRec={setTotRec}
