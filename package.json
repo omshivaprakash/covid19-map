@@ -1,8 +1,8 @@
 {
   "name": "covid19-map",
   "version": "0.1.0",
-  "author": "Daniel Karl, IBM",
-  "homepage": "https://daniel-karl.github.io/covid19-map",
+  "author": "Daniel Karl",
+  "homepage": "https://covid19map.io",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.27",
