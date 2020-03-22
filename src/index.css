@@ -175,5 +175,6 @@ body {
 
 .stayAtHomeScoreLabel {
   font-size: 10px;
+  margin-top: 3px;
   font-stretch: ultra-condensed;
 }

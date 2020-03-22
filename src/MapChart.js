@@ -931,7 +931,6 @@ onRemove(selectedList, removedItem) {
       let stayAtHomeScore = Math.round((1 - (g1 + g3 + g7)) * 10);
       return (
         <div>
-          <div class="stayAtHomeScoreLabel">STAY@HOME Score</div>
           <div className={`stayAtHomeScore stayAtHomeScore${stayAtHomeScore}`}>
             {stayAtHomeScore}
           </div>
@@ -947,6 +946,11 @@ onRemove(selectedList, removedItem) {
               unconfirmed > confirmed &&
               <Badge variant={"primary"}><FontAwesomeIcon icon={faBiohazard}/> &gt;{rounded(unconfirmed)} at avg. test rate</Badge>
             }
+          </div>
+          <div className="stayAtHomeScoreLabel">
+            STAY@HOME Score reflects the effectiveness<br/>
+            of this region within the last 7 days in<br />
+            ratio with their local threat.
           </div>
         </div>
       )
