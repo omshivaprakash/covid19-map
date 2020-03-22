@@ -505,7 +505,7 @@ class MapChart extends Map {
               document.getElementsByClassName("midTime")[0].style.display = "none";
 
               var now = new Date();
-              var startDate = new Date("January 23, 2020 23:59:59");
+              var startDate = new Date("January 22, 2020 00:00:00");
               const oneDay = 24 * 60 * 60 * 1000;
               this.state.dayOffset = - Math.round(Math.abs((now - startDate) / oneDay));
               this.state.testmode = false;
@@ -513,8 +513,7 @@ class MapChart extends Map {
               this.state.playpause = false;
               this.state.lat = 30.5928;
               this.state.lng = 114.3055;
-              this.state.zoom = 2;
-              this.reload();
+              this.state.zoom = 4;
               let interval = setInterval(() => {
                 if(!that.state.playmode) {
                   clearInterval(interval);
@@ -529,7 +528,7 @@ class MapChart extends Map {
                   this.state.dayOffset++;
                   this.reload();
                 }
-              }, 1000);
+              }, 500);
             }}
         ><FontAwesomeIcon icon={faPlayCircle}/> Play</button>
 
@@ -560,6 +559,11 @@ class MapChart extends Map {
               document.getElementsByClassName("leftTime")[0].style.display = "inline";
               document.getElementsByClassName("midTime")[0].style.display = "none";
               this.state.playmode = false;
+              this.setState({
+                lat: 0,
+                lng: 0,
+                zoom: 2
+              });
             }}
         ><FontAwesomeIcon icon={faStopCircle}/> Stop</button>
       </div>
