@@ -984,7 +984,7 @@ onRemove(selectedList, removedItem) {
                   <div>
                     <i>STAYING@HOME Score</i> reflects how well this region<br/>
                     responded to the spread of COVID-19 in relation to their<br/>
-                    local threat level over the last 14 days. Continue to follow<br />
+                    local threat level over the past 14 days. Continue to follow<br />
                     the advice of the WHO and your local administration.
                   </div>
                 </td>
