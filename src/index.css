@@ -172,3 +172,8 @@ body {
 .stayAtHomeScore10 {
   background: #006837;
 }
+
+.stayAtHomeScoreLabel {
+  font-size: 10px;
+  font-stretch: ultra-condensed;
+}

@@ -931,7 +931,10 @@ onRemove(selectedList, removedItem) {
       let stayAtHomeScore = Math.round((1 - (g1 + g3 + g7)) * 10);
       return (
         <div>
-          <div className={`stayAtHomeScore stayAtHomeScore${stayAtHomeScore}`}>{stayAtHomeScore}</div>
+          <div class="stayAtHomeScoreLabel">STAY@HOME Score</div>
+          <div className={`stayAtHomeScore stayAtHomeScore${stayAtHomeScore}`}>
+            {stayAtHomeScore}
+          </div>
           <div style={{display:"inline-block", position: "absolute", left: "45px"}}>
               <b>{name}</b><br />
               <FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])} &middot; <FontAwesomeIcon icon={faBiohazard}/> {rounded(confirmed)}
