@@ -977,7 +977,7 @@ onRemove(selectedList, removedItem) {
               <tr>
                 <td valign={"top"}>
                   <div className={`stayAtHomeScore stayAtHomeScore${stayAtHomeScore}`}>
-                    {stayAtHomeScore}
+                    {stayAtHomeScore}{stayAtHomeScore !== "N/A" ? "/10" : ""}
                   </div>
                 </td>
                 <td>
