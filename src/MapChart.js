@@ -974,8 +974,7 @@ onRemove(selectedList, removedItem) {
           </div>
           <div className="stayAtHomeScoreLabel">
             {
-              confirmed > 100 &&
-              [<span className="stayAtHomeAdvice">{this.stayAtHomeAdvice(stayAtHomeScore)}</span>, <br/>]
+              [<span className="stayAtHomeAdvice">{this.stayAtHomeAdvice(active)}</span>, <br/>]
             }
             STAY@HOME Score reflects how well this region contains<br />
             the spread of COVID-19 in ratio to their local threat level.<br/>
@@ -988,41 +987,18 @@ onRemove(selectedList, removedItem) {
     }
   };
 
-  stayAtHomeAdvice = (score) => {
-    if(score === 10 ) {
-      return "Avoid crowds! Keep social distance!"
-    }
-    if(score === 9 ) {
-      return "Avoid crowds! Keep social distance!"
-    }
-    if(score === 8 ) {
-      return "Only leave the house if absolutely necessary!"
-    }
-    if(score === 7 ) {
-      return "Only leave the house if absolutely necessary!"
-    }
-    if(score === 6 ) {
-      return "Only leave the house if absolutely necessary!"
-    }
-    if(score === 5 ) {
+  stayAtHomeAdvice = (active) => {
+    if(active > 1000) {
       return "You save lives by staying at home today!"
     }
-    if(score === 4 ) {
-      return "You save lives by staying at home today!"
+    if(active > 500) {
+      return "Only leave the house if absolutely necessary!";
     }
-    if(score === 3 ) {
-      return "You save lives by staying at home today!"
+    if (active > 0) {
+      return "Avoid crowds! Keep social distance!";
     }
-    if(score === 2 ) {
-      return "You save lives by staying at home today!"
-    }
-    if(score === 1 ) {
-      return "You save lives by staying at home today!"
-    }
-    if(score === 0 ) {
-      return "You save lives by staying at home today!"
-    }
-  } ;
+    return "No active cases detected in this region.";
+  };
 
       /*
 
