@@ -16,6 +16,7 @@ import {
   faBiohazard,
   faPlayCircle,
   faStopCircle,
+  faPauseCircle,
   faCode, faBug, faBalanceScale
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -509,6 +510,7 @@ class MapChart extends Map {
               this.state.dayOffset = - Math.round(Math.abs((now - startDate) / oneDay));
               this.state.testmode = false;
               this.state.playmode = true;
+              this.state.playpause = false;
               this.reload();
               let interval = setInterval(() => {
                 if(!that.state.playmode) {
@@ -520,11 +522,31 @@ class MapChart extends Map {
                   this.reload();
                   return;
                 }
-                this.state.dayOffset++;
-                this.reload();
+                if(!this.state.playpause) {
+                  this.state.dayOffset++;
+                  this.reload();
+                }
               }, 1000);
             }}
         ><FontAwesomeIcon icon={faPlayCircle}/> Play</button>
+
+        <button
+            className={"btn btn-sm btn-dark pause"}
+            style={this.state.playmode ? {height: "30px", lineHeight: "20px"} : {display : "none"}}
+            onClick={()=>{
+              this.state.playpause = !this.state.playpause;
+              this.reload();
+            }}
+        >
+          {
+            !this.state.playpause &&
+            [<FontAwesomeIcon icon={faPauseCircle}/>, " Pause"]
+          }
+          {
+            this.state.playpause &&
+            [<FontAwesomeIcon icon={faPlayCircle}/>, " Continue"]
+          }
+        </button>
 
         <button
             className={"btn btn-sm btn-danger stop"}

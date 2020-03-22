@@ -89,7 +89,7 @@ body {
   color: #000 !important;
 }
 
-.leftTime, .midTime, .todayTime, .play, .stop {
+.leftTime, .midTime, .todayTime, .play, .stop, .pause {
   margin-left: 5px;
 }
 
