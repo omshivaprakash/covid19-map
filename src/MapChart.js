@@ -374,6 +374,9 @@ class MapChart extends Map {
             continue;
           }
           let size = "";
+          let sizeMin1 = "";
+          let sizeMin3 = "";
+          let sizeMin7 = "";
           let i = data.length - 1 + that.state.dayOffset;
           while(size==="" && i > 0) {
             size = data[i];
@@ -383,6 +386,9 @@ class MapChart extends Map {
             size = 0;
           }
           size = Number(size);
+          sizeMin1 = Number(sizeMin1);
+          sizeMin3 = Number(sizeMin3);
+          sizeMin7 = Number(sizeMin7);
           if(size > that.state.maxSize) {
             that.state.maxSize = size;
           }
@@ -391,8 +397,14 @@ class MapChart extends Map {
             name: data[0] ? data[0] + ", " + data[1] : data[1],
             coordinates: [data[3], data[2]],
             size: size,
+            sizeMin1: sizeMin1,
+            sizeMin3: sizeMin3,
+            sizeMin7: sizeMin7,
             val: size,
-            rowId: rowId
+            rowId: rowId,
+            valMin1: size - sizeMin1,
+            valMin3: size - sizeMin3,
+            valMin7: size - sizeMin7
           };
           that.totDead += size;
           that.deaths.push(marker);
@@ -404,6 +416,9 @@ class MapChart extends Map {
           that.deathsAbsByRowId[that.deaths[i].rowId] = that.deaths[i].size;
           that.deaths[i].size = (that.deaths[i].size - minSize) / (that.state.maxSize - minSize);
           that.deathsByRowId[that.deaths[i].rowId] = that.deaths[i].size;
+          that.deaths[i].momentumLast1 = that.deaths[i].size - (that.deaths[i].sizeMin1 - minSize) / (that.state.maxSize - minSize);
+          that.deaths[i].momentumLast3 = that.deaths[i].size - (that.deaths[i].sizeMin3 - minSize) / (that.state.maxSize - minSize);
+          that.deaths[i].momentumLast7 = that.deaths[i].size - (that.deaths[i].sizeMin7 - minSize) / (that.state.maxSize - minSize);
         }
         that.setState({});
       }
@@ -925,10 +940,20 @@ onRemove(selectedList, removedItem) {
       let recovered = this.recovered[rowId].val;
       let deaths = this.deaths[rowId].val;
       let active = this.confirmed[rowId].val - this.recoveredAbsByRowId[rowId] - this.deathsAbsByRowId[rowId];
+
       let g1 = 0.5 * this.confirmed[rowId].momentumLast7 / this.confirmed[rowId].size; // growth factor
       let g3 = 0.3 * this.confirmed[rowId].momentumLast7 / this.confirmed[rowId].size; // growth factor
       let g7 = 0.2 * this.confirmed[rowId].momentumLast7 / this.confirmed[rowId].size; // growth factor
-      let stayAtHomeScore = Math.round((1 - (g1 + g3 + g7)) * 10);
+      let g = 1 - (g1 + g3 + g7);
+
+      let d1 = 0.5 * this.deaths[rowId].momentumLast7 / this.deaths[rowId].size; // death factor
+      let d3 = 0.3 * this.deaths[rowId].momentumLast7 / this.deaths[rowId].size; // death factor
+      let d7 = 0.2 * this.deaths[rowId].momentumLast7 / this.deaths[rowId].size; // death factor
+      let d = 1 - (d1 + d3 + d7);
+
+      let stayAtHomeScore = Math.round(g * 10);
+
+
       return (
         <div>
           <div className={`stayAtHomeScore stayAtHomeScore${stayAtHomeScore}`}>
@@ -948,9 +973,10 @@ onRemove(selectedList, removedItem) {
             }
           </div>
           <div className="stayAtHomeScoreLabel">
-            STAY@HOME Score reflects the effectiveness<br />
-            of this region within the last 7 days scaled to<br/>
-            their local threat level.
+            <span className="stayAtHomeAdvice">{this.stayAtHomeAdvice(stayAtHomeScore)}</span><br/>
+            STAY@HOME Score reflects how well this region contains<br />
+            the spread of COVID-19 in ratio to their local threat level.<br/>
+            Follow the advice of the WHO and your local administration.<br />
           </div>
         </div>
       )
@@ -958,6 +984,42 @@ onRemove(selectedList, removedItem) {
       return "Could not load tooltip data.";
     }
   };
+
+  stayAtHomeAdvice = (score) => {
+    if(score === 10 ) {
+      return "Avoid crowds! Keep social distance!"
+    }
+    if(score === 9 ) {
+      return "Avoid crowds! Keep social distance!"
+    }
+    if(score === 8 ) {
+      return "Only leave the house if absolutely necessary!"
+    }
+    if(score === 7 ) {
+      return "Only leave the house if absolutely necessary!"
+    }
+    if(score === 6 ) {
+      return "Only leave the house if absolutely necessary!"
+    }
+    if(score === 5 ) {
+      return "You will save lives by staying at home today!"
+    }
+    if(score === 4 ) {
+      return "You will save lives by staying at home today!"
+    }
+    if(score === 3 ) {
+      return "You will save lives by staying at home today!"
+    }
+    if(score === 2 ) {
+      return "You will save lives by staying at home today!"
+    }
+    if(score === 1 ) {
+      return "You will save lives by staying at home today!"
+    }
+    if(score === 0 ) {
+      return "You will save lives by staying at home today!"
+    }
+  } ;
 
       /*
 
