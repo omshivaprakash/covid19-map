@@ -13,6 +13,7 @@ import { faWindowMinimize, faWindowRestore, faUsers, faProcedures, faHeartbeat, 
 
 import Papa from "papaparse";
 import Form from 'react-bootstrap/Form';
+import Badge from 'react-bootstrap/Badge';
 import ReactBootstrapSlider from "react-bootstrap-slider";
 
 const geoUrl =
@@ -36,7 +37,6 @@ class MapChart extends Map {
   constructor(props) {
     super(props);
     this.state = {
-      setTooltipContent: props.setTooltipContent,
       setTotConf: props.setTotConf,
       setTotRec: props.setTotRec,
       setTotDead: props.setTotDead,
@@ -58,7 +58,6 @@ class MapChart extends Map {
     };
 
     this.map = null;
-    this.deceasedCircles = [];
 
     this.deathsByRowId = {};
     this.recoveredAbsByRowId = {};
@@ -130,28 +129,18 @@ class MapChart extends Map {
 			  let active_sum = 0;
 			  let recovered_sum = 0;
 			  let deaths_sum = 0;
-		          for(let c of that.confirmed){ 
-			     if(c.name.endsWith(extension)){ 
-				     if (!isNaN(Population.ABSOLUTE[c.name])) {
-				        population_sum += Population.ABSOLUTE[c.name];
-			  		confirmed_sum += that.confirmed[c.rowId].val;
-			  		unconfirmed_sum += that.unconfirmed[c.rowId].val;
-                                        active_sum += that.confirmed[c.rowId].val - that.recoveredAbsByRowId[c.rowId] - that.deathsAbsByRowId[c.rowId];
-			  		recovered_sum += that.recovered[c.rowId].val;
-			  		deaths_sum += that.deaths[c.rowId].val;
-				     }
-			     } 
-			  }
-                          this.state.setTooltipContent(
-                          <div>
-                            <b>{NAME}</b> &nbsp;
-                            <span><FontAwesomeIcon icon={faUsers}/> {rounded(population_sum)}</span><br />
-                            <span><FontAwesomeIcon icon={faBiohazard}/> {rounded(confirmed_sum)} confirmed (>{rounded(unconfirmed_sum)} at avg. test rate)</span><br/>
-                            <span><FontAwesomeIcon icon={faProcedures}/> {rounded(active_sum)} active</span>
-                            &nbsp;<span><FontAwesomeIcon icon={faHeartbeat}/> {rounded(recovered_sum)} recovered</span>
-                            &nbsp;<span><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths_sum)} deceased</span>
-                          </div>
-                          );
+		          for(let c of that.confirmed) {
+                    if (c.name.endsWith(extension)) {
+                      if (!isNaN(Population.ABSOLUTE[c.name])) {
+                        population_sum += Population.ABSOLUTE[c.name];
+                        confirmed_sum += that.confirmed[c.rowId].val;
+                        unconfirmed_sum += that.unconfirmed[c.rowId].val;
+                        active_sum += that.confirmed[c.rowId].val - that.recoveredAbsByRowId[c.rowId] - that.deathsAbsByRowId[c.rowId];
+                        recovered_sum += that.recovered[c.rowId].val;
+                        deaths_sum += that.deaths[c.rowId].val;
+                      }
+                    }
+                  }
 	  return [population_sum, confirmed_sum, unconfirmed_sum, active_sum, recovered_sum, deaths_sum];
   }
 
@@ -834,50 +823,54 @@ class MapChart extends Map {
   };
 
   marker = (coordinates, rowId, color, text, size, val, name, markerOffset, type, opacity) => {
-    let that = this;
     if(size > 0) {
       return (
-          // bubble
-          <CircleMarker
-              ref={(ref) => { this.deceasedCircles.push(ref)}}
-              className={type}
-              key={type + "_" + rowId}
-              style={this.state.chart === "pie" ? {display: "block"} : {display: "none"}}
-              center={[coordinates[1], coordinates[0]]}
-              fillColor={color}
-              radius={size && size > 0 ? Math.sqrt(size) * this.state.factor : 0}
-              opacity={0}
-              fillOpacity={opacity}
-              onMouseOver={() => {
-                if (rowId < 0) {
-                  this.state.setTooltipContent(`Could not retrieve data for ${name}.`);
-                } else {
-                  let active = that.confirmed[rowId].val - that.recoveredAbsByRowId[rowId] - that.deathsAbsByRowId[rowId];
-                  this.state.setTooltipContent(
-                      <div>
-                        <b>{name}</b> &nbsp;
-                        <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])}</span><br/>
-                        <span><FontAwesomeIcon
-                            icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
-                        <span><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</span>
-                        &nbsp;<span><FontAwesomeIcon
-                          icon={faHeartbeat}/> {rounded(that.recovered[rowId].val)} recovered</span>
-                        &nbsp;<span><FontAwesomeIcon
-                          icon={faHeartBroken}/> {rounded(that.deaths[rowId].val)} deceased</span>
-                      </div>
-                  );
-                }
-              }}
-              onMouseOut={() => {
-                this.state.setTooltipContent("");
-              }}
-          >
-            <Tooltip direction="bottom" offset={[0, 20]} opacity={1}>{text}</Tooltip>
-          </CircleMarker>
+        // bubble
+        <CircleMarker
+          className={type}
+          key={type + "_" + rowId}
+          style={this.state.chart === "pie" ? {display: "block"} : {display: "none"}}
+          center={[coordinates[1], coordinates[0]]}
+          fillColor={color}
+          radius={size && size > 0 ? Math.sqrt(size) * this.state.factor : 0}
+          opacity={0}
+          fillOpacity={opacity}
+        >
+          <Tooltip direction="bottom" offset={[0, 20]} opacity={1}>
+            {this.tooltip(name, rowId)}
+          </Tooltip>
+        </CircleMarker>
       );
     }
     return "";
-  }
+  };
+
+
+  tooltip = (name, rowId) => {
+    try {
+      let confirmed = this.confirmed[rowId].val;
+      let unconfirmed = this.unconfirmed[rowId].val;
+      let recovered = this.recovered[rowId].val;
+      let deaths = this.deaths[rowId].val;
+
+      let active = this.confirmed[rowId].val - this.recoveredAbsByRowId[rowId] - this.deathsAbsByRowId[rowId];
+      return (
+        <div>
+          <b>{name}</b> &middot; <FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])} &middot; <FontAwesomeIcon icon={faBiohazard}/> {rounded(confirmed)}<br/>
+          <Badge variant={"danger"}><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</Badge>
+          <Badge className="ml-1" variant={"success"}><FontAwesomeIcon icon={faHeartbeat}/> {rounded(recovered)} recovered</Badge>
+          <Badge className="ml-1" variant={"dark"}><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths)} deceased</Badge><br />
+          {
+            unconfirmed > confirmed &&
+            <Badge variant={"primary"}><FontAwesomeIcon icon={faBiohazard}/> &gt;{rounded(unconfirmed)} at avg. test rate</Badge>
+          }
+          </div>
+      )
+    } catch(e) {
+      return "Could not load tooltip data.";
+    }
+  };
+
       /*
 
         <Marker coordinates={coordinates} key={type + "_" + rowId}>

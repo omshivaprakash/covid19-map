@@ -22,7 +22,6 @@ const rounded = (num) => {
 };
 
 function App() {
-  const [content, setContent] = useState("");
   const [hidden, setHidden] = useState(false);
   const [totConf, setTotConf] = useState(0);
   const [totRec, setTotRec] = useState(0);
@@ -45,7 +44,6 @@ function App() {
         <Row noGutters={"true"} className={"h-100"}>
           <Col className={"h-100"}>
             <MapChart
-                setTooltipContent={setContent}
                 style={{marginTop: "50px"}}
                 setTotConf={setTotConf}
                 setTotRec={setTotRec}
@@ -54,9 +52,6 @@ function App() {
           </Col>
         </Row>
       </Container>,
-      <div className="ttip">
-          {content}
-      </div>,
       <div className="info small text-muted pt-1" style={hidden ? {display: "none"} : {display:"block"}}>
         <button className={"btn-collapse"} onClick={() => {setHidden(true)}}>close <FontAwesomeIcon icon={faWindowClose}/></button>
         <span className="text-danger showInMomentum">Red: increase active</span>
