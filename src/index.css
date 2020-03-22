@@ -29,8 +29,17 @@ body {
   border-bottom-right-radius: 5px;
   border-top:1px solid #ccc;
   width: 230px;
-  z-index: 1000;
+  z-index: 1001;
   box-shadow: 0px 0px 10px #333;
+  overflow: scroll;
+  max-height: 400px;
+}
+
+@media only screen and (max-height: 500px) {
+  .controls {
+    overflow: scroll;
+    height: 200px;
+  }
 }
 
 .controls.minimized {
