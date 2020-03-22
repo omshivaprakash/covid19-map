@@ -531,7 +531,7 @@ class MapChart extends Map {
         ><FontAwesomeIcon icon={faPlayCircle}/> Play</button>
 
         <button
-            className={"btn btn-sm btn-dark pause"}
+            className={"btn btn-sm pause " + (this.state.playpause ? "btn-success" : "btn-outline-dark")}
             style={this.state.playmode ? {height: "30px", lineHeight: "20px"} : {display : "none"}}
             onClick={()=>{
               this.state.playpause = !this.state.playpause;
