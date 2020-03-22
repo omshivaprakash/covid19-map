@@ -20,18 +20,6 @@ body {
   outline: none !important;
 }
 
-.info {
-  position: absolute;
-  top: 255px;
-  right: 10px;
-  background: #fff8;
-  padding: 10px;
-  border-radius: 5px;
-  width: 200px;
-  z-index: 1000;
-  box-shadow: 0px 0px 10px #333;
-}
-
 .controls {
   position: absolute;
   left: 10px;
@@ -45,17 +33,17 @@ body {
 }
 
 .controls.minimized {
-  width: 20px;
+  width: 66px;
   height: 20px;
   background: white;
   border: 1px solid #337ab7;
-  border-radius: 50%;
+  border-radius: 5px;
   z-index: 1000;
 }
 
 .controls.minimized .btn-collapse{
-  right: -2px;
   top: 4px;
+  left: 0px;
 }
 
 .timeline {
@@ -101,6 +89,12 @@ body {
   height: 100%!important;
 }
 
-.deceased {
-  z-index: 10000;
+.credits {
+  margin-top: 10px;
+  text-align: right;
+}
+
+.credits .badge {
+  font-size: 10px;
+  font-weight: 300 !important;
 }

@@ -9,7 +9,18 @@ import * as Testing from "./TestingRates";
 import * as Population from "./Population";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faWindowMinimize, faWindowRestore, faUsers, faProcedures, faHeartbeat, faHeartBroken, faBiohazard, faPlayCircle, faStopCircle} from '@fortawesome/free-solid-svg-icons';
+import {
+  faWindowMinimize,
+  faWindowRestore,
+  faUsers,
+  faProcedures,
+  faHeartbeat,
+  faHeartBroken,
+  faBiohazard,
+  faPlayCircle,
+  faStopCircle,
+  faCode, faBug, faBalanceScale
+} from '@fortawesome/free-solid-svg-icons';
 
 import Papa from "papaparse";
 import Form from 'react-bootstrap/Form';
@@ -409,7 +420,7 @@ class MapChart extends Map {
         <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last3" } label="Momentum last 3 days" type={"radio"} name={"b"} id={`inline-radio-6`} onClick={() => {that.setState({momentum: "last3", chart: "pie"});}} />
         <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last7" } label="Momentum last 7 days" type={"radio"} name={"b"} id={`inline-radio-7`} onClick={() => {that.setState({momentum: "last7", chart: "pie"});}} />*/}
         <button hidden={that.state.minimized} className={"btn-collapse"} onClick={() => {that.setState({minimized: true})}}>minimize <FontAwesomeIcon icon={faWindowMinimize}/></button>
-        <button hidden={!that.state.minimized} className={"btn-collapse"} onClick={() => {that.setState({minimized: false})}}><FontAwesomeIcon icon={faWindowRestore}/></button>
+        <button hidden={!that.state.minimized} className={"btn-collapse"} onClick={() => {that.setState({minimized: false})}}>settings <FontAwesomeIcon icon={faWindowRestore}/></button>
         <div hidden={that.state.minimized}>
           <span className="small text-muted">Mode:</span>
           <Form.Control title={"Live mode: Show live data (updated daily). Change: Show increase/decrease in numbers since last 1, 3 or 7 days.  "} value={that.state.momentum} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({momentum: e.nativeEvent.target.value, chart: "pie", testmode: false});}}>
@@ -431,6 +442,11 @@ class MapChart extends Map {
           <Form.Check inline title="Represent data as horizontal pill. Hover pill on map to see more details." className="small hideInMomentum" checked={that.state.chart==="pill" } label="Pills" type={"radio"} name={"a"} id={`inline-radio-3`} onChange={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/><br />*/}
           <span className="small text-muted">Scale glyphs:</span>
           <ReactBootstrapSlider title="Scale glyps" value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1}></ReactBootstrapSlider>
+          <div className={"credits"}>
+            <Badge><a target="_blank" className="text-secondary" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map/issues"}><FontAwesomeIcon icon={faBug} /> Issues</a></Badge>
+            <Badge><a target="_blank" className="text-secondary" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map#contributors"}><FontAwesomeIcon icon={faCode} /> Credits</a></Badge>
+            <Badge><a target="_blank" className="text-secondary" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map/blob/master/LICENSE.txt"}><FontAwesomeIcon icon={faBalanceScale} /> MIT</a></Badge>
+          </div>
         </div>
       </div>
       <div className="small timeline">
