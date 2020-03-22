@@ -420,7 +420,7 @@ class MapChart extends Map {
         <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last3" } label="Momentum last 3 days" type={"radio"} name={"b"} id={`inline-radio-6`} onClick={() => {that.setState({momentum: "last3", chart: "pie"});}} />
         <Form.Check inline className="small hideInJh" checked={that.state.momentum==="last7" } label="Momentum last 7 days" type={"radio"} name={"b"} id={`inline-radio-7`} onClick={() => {that.setState({momentum: "last7", chart: "pie"});}} />*/}
         <button hidden={that.state.minimized} className={"btn-collapse"} onClick={() => {that.setState({minimized: true})}}>minimize <FontAwesomeIcon icon={faWindowMinimize}/></button>
-        <button hidden={!that.state.minimized} className={"btn-collapse"} onClick={() => {that.setState({minimized: false})}}>settings <FontAwesomeIcon icon={faWindowRestore}/></button>
+        <button hidden={!that.state.minimized} className={"btn-collapse"} onClick={() => {that.setState({minimized: false})}}>open <FontAwesomeIcon icon={faWindowRestore}/></button>
         <div hidden={that.state.minimized}>
           <span className="small text-muted">Mode:</span>
           <Form.Control title={"Live mode: Show live data (updated daily). Change: Show increase/decrease in numbers since last 1, 3 or 7 days.  "} value={that.state.momentum} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({momentum: e.nativeEvent.target.value, chart: "pie", testmode: false});}}>
@@ -557,7 +557,7 @@ class MapChart extends Map {
     return (
       <Map ref={(ref) => { this.map = ref}} center={position} zoom={this.state.zoom} zoomControl={false}>
         <TileLayer
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
+          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           // url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
           url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'
         />

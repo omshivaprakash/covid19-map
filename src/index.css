@@ -22,22 +22,23 @@ body {
 
 .controls {
   position: absolute;
-  left: 10px;
-  top:10px;
-  background: #fffd;
+  left: 0px;
+  top:0px;
+  background: #eeee;
   padding: 10px;
-  border-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-top:1px solid #ccc;
   width: 230px;
   z-index: 1000;
   box-shadow: 0px 0px 10px #333;
 }
 
 .controls.minimized {
-  width: 66px;
+  width: 53px;
   height: 20px;
   background: white;
-  border: 1px solid #337ab7;
-  border-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-top:1px solid #ccc;
   z-index: 1000;
 }
 
@@ -48,12 +49,12 @@ body {
 
 .timeline {
   position: absolute;
-  bottom: 10px;
-  left: 10px;
-  background: #fffd;
+  bottom: 0px;
+  left: 0px;
+  background: #eeee;
   padding: 4px;
   padding-right: 10px;
-  border-radius: 5px;
+  border-top-right-radius: 5px;
   z-index: 1000;
   box-shadow: 0px 0px 10px #333;
 }
