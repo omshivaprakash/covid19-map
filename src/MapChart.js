@@ -476,7 +476,6 @@ onRemove(selectedList, removedItem) {
           {/*<Form.Check inline title="Represent data as bubbles. Hover bubbles on map to see more details." className="small" checked={that.state.chart==="pie" } label="Bubbles" type={"radio"} name={"a"} id={`inline-radio-1`} onChange={() => {that.setState({chart: "pie"});}}/><br />*/}
           {/*<Form.Check inline title="Represent data as vertical bars. Hover bars on map to see more details." className="small hideInMomentum" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onChange={() => {that.setState({chart: "bar"});}} disabled={that.state.momentum!=="none" ? true : false}/>
           <Form.Check inline title="Represent data as horizontal pill. Hover pill on map to see more details." className="small hideInMomentum" checked={that.state.chart==="pill" } label="Pills" type={"radio"} name={"a"} id={`inline-radio-3`} onChange={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/><br />*/}
-
           <span className="small text-muted">Map style:</span>
           <Form.Control value={that.state.mapstyle} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({mapstyle: e.nativeEvent.target.value});}}>
             <option value="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png">Light</option>
@@ -952,6 +951,9 @@ onRemove(selectedList, removedItem) {
       let d = 1 - (d1 + d3 + d7);
 
       let stayAtHomeScore = Math.round(g * 10);
+      if(confirmed < 100) {
+        stayAtHomeScore = "N/A";
+      }
 
 
       return (

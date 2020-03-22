@@ -115,8 +115,9 @@ body {
   height: 30px;
   display: inline-block;
   border-radius: 50%;
-  background: black;
-  color: white;
+  background: white;
+  color: #999;
+  border: 1px solid #999;
   text-align: center;
   line-height: 30px;
   font-weight: bold;
@@ -126,51 +127,68 @@ body {
 
 .stayAtHomeScore0 {
   background: #a50026;
+  border: none;
+  color: white;
 }
 
 .stayAtHomeScore1 {
   background: #d73027;
+  border: none;
+  color: white;
 }
 
 .stayAtHomeScore2 {
   background: #f46d43;
+  border: none;
+  color: white;
 }
 
 .stayAtHomeScore3 {
   background: #fdae61;
   color: black;
+  border: none;
 }
 
 .stayAtHomeScore4 {
   background: #fee08b;
   color: black;
+  border: none;
 }
 
 .stayAtHomeScore5 {
   background: #ffffbf;
   color: black;
+  border: none;
 }
 
 .stayAtHomeScore6 {
   background: #d9ef8b;
   color: black;
+  border: none;
 }
 
 .stayAtHomeScore7 {
   background: #a6d96a;
   color: black;
+  border: none;
 }
 
 .stayAtHomeScore8 {
   background: #66bd63;
+  color: white;
+  border: none;
 }
 
 .stayAtHomeScore9 {
   background: #1a9850;
+  color: white;
+  border: none;
 }
 
 .stayAtHomeScore10 {
   background: #006837;
+  color: white;
+  border: none;
 }
 
 .stayAtHomeScoreLabel {
