@@ -973,7 +973,10 @@ onRemove(selectedList, removedItem) {
             }
           </div>
           <div className="stayAtHomeScoreLabel">
-            <span className="stayAtHomeAdvice">{this.stayAtHomeAdvice(stayAtHomeScore)}</span><br/>
+            {
+              confirmed > 100 &&
+              [<span className="stayAtHomeAdvice">{this.stayAtHomeAdvice(stayAtHomeScore)}</span>, <br/>]
+            }
             STAY@HOME Score reflects how well this region contains<br />
             the spread of COVID-19 in ratio to their local threat level.<br/>
             Follow the advice of the WHO and your local administration.<br />
@@ -1002,22 +1005,22 @@ onRemove(selectedList, removedItem) {
       return "Only leave the house if absolutely necessary!"
     }
     if(score === 5 ) {
-      return "You will save lives by staying at home today!"
+      return "You save lives by staying at home today!"
     }
     if(score === 4 ) {
-      return "You will save lives by staying at home today!"
+      return "You save lives by staying at home today!"
     }
     if(score === 3 ) {
-      return "You will save lives by staying at home today!"
+      return "You save lives by staying at home today!"
     }
     if(score === 2 ) {
-      return "You will save lives by staying at home today!"
+      return "You save lives by staying at home today!"
     }
     if(score === 1 ) {
-      return "You will save lives by staying at home today!"
+      return "You save lives by staying at home today!"
     }
     if(score === 0 ) {
-      return "You will save lives by staying at home today!"
+      return "You save lives by staying at home today!"
     }
   } ;
 
