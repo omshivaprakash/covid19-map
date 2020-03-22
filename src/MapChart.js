@@ -948,9 +948,9 @@ onRemove(selectedList, removedItem) {
             }
           </div>
           <div className="stayAtHomeScoreLabel">
-            STAY@HOME Score reflects the effectiveness<br/>
-            of this region within the last 7 days scaled<br />
-            at their local threat level.
+            STAY@HOME Score reflects the effectiveness<br />
+            of this region within the last 7 days scaled to<br/>
+            their local threat level.
           </div>
         </div>
       )
