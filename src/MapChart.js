@@ -21,7 +21,7 @@ import {
   faPlayCircle,
   faStopCircle,
   faPauseCircle,
-  faCode, faBug, faBalanceScale
+  faQuestionCircle, faBug, faBalanceScale
 } from '@fortawesome/free-solid-svg-icons';
 
 import Papa from "papaparse";
@@ -485,7 +485,7 @@ onRemove(selectedList, removedItem) {
 
           <div className={"credits"}>
             <Badge><a target="_blank" className="text-secondary" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map/issues"}><FontAwesomeIcon icon={faBug} /> Issues</a></Badge>
-            <Badge><a target="_blank" className="text-secondary" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map#contributors"}><FontAwesomeIcon icon={faCode} /> Credits</a></Badge>
+            <Badge><a target="_blank" className="text-secondary" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map#about"}><FontAwesomeIcon icon={faQuestionCircle} /> About</a></Badge>
             <Badge><a target="_blank" className="text-secondary" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map/blob/master/LICENSE.txt"}><FontAwesomeIcon icon={faBalanceScale} /> MIT</a></Badge>
           </div>
         </div>
