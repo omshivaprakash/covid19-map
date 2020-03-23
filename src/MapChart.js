@@ -509,9 +509,6 @@ onRemove(selectedList, removedItem) {
               this.state.dayOffset = Math.min(0, this.state.dayOffset + 1);
               if(this.state.dayOffset === 0) {
                 this.state.playmode = false;
-                if(this.state.momentum === "none") {
-                  this.state.testmode = true;
-                }
               } else {
                 this.state.testmode = false;
               }
@@ -524,9 +521,6 @@ onRemove(selectedList, removedItem) {
             style={{height: "30px", lineHeight: "20px"}}
             onClick={()=>{
               this.state.dayOffset = 0;
-              if(this.state.momentum === "none") {
-                this.state.testmode = true;
-              }
               this.reload();
             }}
         >Today</button>
