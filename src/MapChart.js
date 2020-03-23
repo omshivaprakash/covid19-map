@@ -83,7 +83,7 @@ class MapChart extends Map {
     this.confirmed = [];
     this.recovered = [];
     this.deaths = [];
-    this.unconfirmed = []; /* this will be local_confirmed_rate * avg_test_rate / local_test_rate */
+    this.projected = []; /* this will be local_confirmed_rate * avg_test_rate / local_test_rate */
 
     this.totConf = 0;
     this.totRec = 0;
@@ -141,7 +141,7 @@ class MapChart extends Map {
 	  let that = this;
 			  let population_sum = 0;
 			  let confirmed_sum = 0;
-			  let unconfirmed_sum = 0;
+			  let projected_sum = 0;
 			  let active_sum = 0;
 			  let recovered_sum = 0;
 			  let deaths_sum = 0;
@@ -150,14 +150,14 @@ class MapChart extends Map {
                       if (!isNaN(Population.ABSOLUTE[c.name])) {
                         population_sum += Population.ABSOLUTE[c.name];
                         confirmed_sum += that.confirmed[c.rowId].val;
-                        unconfirmed_sum += that.unconfirmed[c.rowId].val;
+                        projected_sum += that.projected[c.rowId].val;
                         active_sum += that.confirmed[c.rowId].val - that.recoveredAbsByRowId[c.rowId] - that.deathsAbsByRowId[c.rowId];
                         recovered_sum += that.recovered[c.rowId].val;
                         deaths_sum += that.deaths[c.rowId].val;
                       }
                     }
                   }
-	  return [population_sum, confirmed_sum, unconfirmed_sum, active_sum, recovered_sum, deaths_sum];
+	  return [population_sum, confirmed_sum, projected_sum, active_sum, recovered_sum, deaths_sum];
   }
 
   reload = () => {
@@ -253,9 +253,9 @@ class MapChart extends Map {
           that.confirmed[i].momentumLast7 = that.confirmed[i].size - (that.confirmed[i].sizeMin7 - minSize) / (that.state.maxSize - minSize);
         }
 
-        // unconfirmed
+        // projected
         let globalTestRate = avgTested / avgPopulation;
-        that.unconfirmed = [];
+        that.projected = [];
         skipRow = true;
         rowId = 0;
         for(let data of results.data) {
@@ -281,7 +281,7 @@ class MapChart extends Map {
             val: val,
             rowId: that.confirmed[rowId].rowId,
           };
-          that.unconfirmed.push(marker);
+          that.projected.push(marker);
           rowId++;
         }
         that.setState({});
@@ -715,7 +715,7 @@ onRemove(selectedList, removedItem) {
                           <div>
                             <b>{NAME}</b> &nbsp;
                             <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[NAME])}</span><br />
-                            <span><FontAwesomeIcon icon={faBiohazard}/> {rounded(this.confirmed[rowId].val)} confirmed (>{rounded(this.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
+                            <span><FontAwesomeIcon icon={faBiohazard}/> {rounded(this.confirmed[rowId].val)} confirmed (>{rounded(this.projected[rowId].val)} at avg. test rate)</span><br/>
                             <span><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</span>
                             &nbsp;<span><FontAwesomeIcon icon={faHeartbeat}/> {rounded(this.recovered[rowId].val)} recovered</span>
                             &nbsp;<span><FontAwesomeIcon icon={faHeartBroken}/> {rounded(this.deaths[rowId].val)} deceased</span>
@@ -813,7 +813,7 @@ onRemove(selectedList, removedItem) {
   projectedMarkers = () => {
     return (
       this.state.momentum==="none" && this.state.testmode &&
-        this.unconfirmed.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
+        this.projected.map(({ rowId, name, coordinates, markerOffset, size, val }) => {
           let color = "#00f";
           let pop = Population.ABSOLUTE[name];
           let active = val - this.recoveredAbsByRowId[rowId] - this.deathsAbsByRowId[rowId];
@@ -926,7 +926,7 @@ onRemove(selectedList, removedItem) {
   tooltip = (name, rowId) => {
     try {
       let confirmed = this.confirmed[rowId].val;
-      let unconfirmed = this.unconfirmed[rowId].val;
+      let projected = this.projected[rowId].val;
       let recovered = this.recovered[rowId].val;
       let deaths = this.deaths[rowId].val;
       let active = this.confirmed[rowId].val - this.recoveredAbsByRowId[rowId] - this.deathsAbsByRowId[rowId];
@@ -956,8 +956,8 @@ onRemove(selectedList, removedItem) {
             <Badge className="ml-1" variant={"success"}><FontAwesomeIcon icon={faHeartbeat}/> {rounded(recovered)} recovered</Badge>
             <Badge className="ml-1" variant={"dark"}><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths)} deceased</Badge><br />
             {
-              unconfirmed > confirmed && this.state.testmode &&
-              <Badge variant={"primary"}><FontAwesomeIcon icon={faBiohazard}/> &gt;{rounded(unconfirmed)} projected at global avg. testing rate</Badge>
+              projected > confirmed && this.state.testmode &&
+              <Badge variant={"primary"}><FontAwesomeIcon icon={faBiohazard}/> &gt;{rounded(projected)} projected at global avg. testing rate</Badge>
             }
           </div>
           <div className="stayAtHomeScoreLabel">
@@ -1020,7 +1020,7 @@ onRemove(selectedList, removedItem) {
                         <b>{name}</b> &nbsp;
                         <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])}</span><br/>
                         <span><FontAwesomeIcon
-                            icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
+                            icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.projected[rowId].val)} at avg. test rate)</span><br/>
                         <span><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</span>
                         &nbsp;<span><FontAwesomeIcon
                           icon={faHeartbeat}/> {rounded(that.recovered[rowId].val)} recovered</span>
@@ -1053,7 +1053,7 @@ onRemove(selectedList, removedItem) {
                         <b>{name}</b> &nbsp;
                         <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])}</span><br/>
                         <span><FontAwesomeIcon
-                            icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
+                            icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.projected[rowId].val)} at avg. test rate)</span><br/>
                         <span><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</span>
                         &nbsp;<span><FontAwesomeIcon
                           icon={faHeartbeat}/> {rounded(that.recovered[rowId].val)} recovered</span>
@@ -1083,7 +1083,7 @@ onRemove(selectedList, removedItem) {
                         <b>{name}</b> &nbsp;
                         <span><FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])}</span><br/>
                         <span><FontAwesomeIcon
-                            icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.unconfirmed[rowId].val)} at avg. test rate)</span><br/>
+                            icon={faBiohazard}/> {rounded(that.confirmed[rowId].val)} confirmed (>{rounded(that.projected[rowId].val)} at avg. test rate)</span><br/>
                         <span><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</span>
                         &nbsp;<span><FontAwesomeIcon
                           icon={faHeartbeat}/> {rounded(that.recovered[rowId].val)} recovered</span>
