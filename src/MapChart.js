@@ -931,57 +931,95 @@ onRemove(selectedList, removedItem) {
       let deaths = this.deaths[rowId].val;
       let active = this.confirmed[rowId].val - this.recoveredAbsByRowId[rowId] - this.deathsAbsByRowId[rowId];
 
-      let g1 = 0.5 * this.confirmed[rowId].momentumLast1; // growth factor
-      let g3 = 0.3 * this.confirmed[rowId].momentumLast3; // growth factor
-      let g7 = 0.2 * this.confirmed[rowId].momentumLast7; // growth factor
+      let g1 = 0.5 * this.confirmed[rowId].momentumLast1 / this.confirmed[rowId].size; // difference between current and last 1
+      let g3 = 0.3 * this.confirmed[rowId].momentumLast3 / this.confirmed[rowId].size; // difference between current and last 3
+      let g7 = 0.2 * this.confirmed[rowId].momentumLast7 / this.confirmed[rowId].size; // difference between current and last 7
       let g = (g1 + g3 + g7);
-      console.log(name + " : " + g)
-      if(g <= 0) {
-        g = 10;
-      }
-      else if(g <= 0.001) {
-        g = 9;
-      }
-      else if(g <= 0.002) {
-        g = 8;
-      }
-      else if(g <= 0.005) {
-        g = 7;
-      }
-      else if(g <= 0.01) {
-        g = 6;
-      }
-      else if(g <= 0.02) {
-        g = 5;
-      }
-      else if(g <= 0.05) {
-        g = 4;
-      }
-      else if(g <= 0.1) {
-        g = 3;
-      }
-      else if(g <= 0.2) {
-        g = 2;
-      }
-      else if(g <= 0.3) {
-        g = 1;
-      }
-      else {
+      if(g >= 1) {
         g = 0;
       }
+      else if(g >= 0.5) {
+        g = 1;
+      }
+      else if(g >= 0.2) {
+        g = 2;
+      }
+      else if(g >= 0.1) {
+        g = 3;
+      }
+      else if(g >= 0.05) {
+        g = 4;
+      }
+      else if(g >= 0.02) {
+        g = 5;
+      }
+      else if(g >= 0.01) {
+        g = 6;
+      }
+      else if(g >= 0.005) {
+        g = 7;
+      }
+      else if(g >= 0.002) {
+        g = 8;
+      }
+      else if(g >= 0.001) {
+        g = 9;
+      }
+      else if(g >= 0.0) {
+        g = 10;
+      }
+      else {
+        g = "N/A";
+      }
 
-      let d1 = 0.5 * this.deaths[rowId].momentumLast1 / this.recovered[rowId].size; // death factor
-      let d3 = 0.3 * this.deaths[rowId].momentumLast3 / this.recovered[rowId].size; // death factor
-      let d7 = 0.2 * this.deaths[rowId].momentumLast7 / this.recovered[rowId].size; // death factor
-      let d = 1 - (d1 + d3 + d7);
+      let d1 = 0.7 * this.deaths[rowId].momentumLast1; // death factor
+      let d3 = 0.2 * this.deaths[rowId].momentumLast3; // death factor
+      let d7 = 0.1 * this.deaths[rowId].momentumLast7; // death factor
+      let d = (d1 ? d1 : 0 + d3 ? d3 : 0 + d7 ? d7 : 0);
+      if(d <= 0) {
+        d = 10;
+      }
+      else if(d <= 0.001) {
+        d = 9;
+      }
+      else if(d <= 0.002) {
+        d = 8;
+      }
+      else if(d <= 0.005) {
+        d = 7;
+      }
+      else if(d <= 0.01) {
+        d = 6;
+      }
+      else if(d <= 0.02) {
+        d = 5;
+      }
+      else if(d <= 0.022) {
+        d = 4;
+      }
+      else if(d <= 0.24) {
+        d = 3;
+      }
+      else if(d <= 0.26) {
+        d = 2;
+      }
+      else if(d <= 0.28) {
+        d = 1;
+      }
+      else {
+        d = 0;
+      }
 
       let stayAtHomeScore = Math.round(g);
-      if(confirmed < 100) {
+      if(confirmed < 1) {
         stayAtHomeScore = "N/A";
       }
 
-      let lifeSaverScore = Math.round(d * 10);
-      if(deaths < 100) {
+      let lifeSaverScore = Math.round(d);
+      if(deaths < 1 && confirmed > 0) {
+        lifeSaverScore = "10";
+      }
+      else if(deaths < 1) {
         lifeSaverScore = "N/A";
       }
       return (
@@ -1001,38 +1039,46 @@ onRemove(selectedList, removedItem) {
           </div>
           <div className="stayAtHomeScoreLabel">
             {
-              [<span className="stayAtHomeAdvice">{this.stayAtHomeAdvice(active)}</span>, <br/>]
+              [
+                <span className="stayAtHomeAdvice">{this.stayAtHomeAdvice(active)}</span>,
+                <br/>
+              ]
             }
             <table>
-              <tr>
-                <td valign={"top"}>
-                  <div className={`stayAtHomeScore stayAtHomeScore${stayAtHomeScore}`}>
-                    {stayAtHomeScore}{stayAtHomeScore !== "N/A" ? "/10" : ""}
-                  </div>
-                </td>
-                <td>
-                  <div>
-                    <i>STAYING@HOME Score</i> reflects how well this region<br/>
-                    responded to the spread of COVID19 in relation to their<br/>
-                    local threat level over the past 14 days. Continue to follow<br />
-                    the advice of the WHO and your local administration.
-                  </div>
-                </td>
-              </tr>
-              {/*<tr>
-                <td valign={"top"}>
-                  <div className={`stayAtHomeScore stayAtHomeScore${lifeSaverScore}`}>
-                    {lifeSaverScore}{lifeSaverScore !== "N/A" ? "/10" : ""}
-                  </div>
-                </td>
-                <td>
-                  <div>
-                    <i>LifeSaver Score</i> reflects how well this region can mitigate<br/>
-                    fatalities from COVID19 in relation to their local threat <br/>
-                    level over the past 14 days.
-                  </div>
-                </td>
-              </tr>*/}
+              <tbody>
+                <tr>
+                  <td valign={"top"}>
+                    <div className={`stayAtHomeScore stayAtHomeScore${stayAtHomeScore}`}>
+                      {stayAtHomeScore}{stayAtHomeScore !== "N/A" ? "/10" : ""}
+                    </div>
+                  </td>
+                  <td>
+                    <div>
+                      <i>STAYING@HOME Score</i> reflects how well this region<br/>
+                      responded to the spread of COVID19 in relation to their<br/>
+                      local threat level over the past 14 days.
+                    </div>
+                  </td>
+                </tr>
+                {/*<tr>
+                  <td valign={"top"}>
+                    <div className={`stayAtHomeScore stayAtHomeScore${lifeSaverScore}`}>
+                      {lifeSaverScore}{lifeSaverScore !== "N/A" ? "/10" : ""}
+                    </div>
+                  </td>
+                  <td>
+                    <div>
+                      <i>LifeSaver Score</i> reflects how well this region mitigated<br/>
+                      increasing fatalities from COVID19 in relation to their<br />
+                      local threat level over the past 7 days.
+                    </div>
+                  </td>
+                </tr>*/}
+                <tr>
+                  <td></td>
+                  <td><b>Continue to follow the advice of the WHO and your<br/>local administration.</b></td>
+                </tr>
+              </tbody>
             </table>
           </div>
         </div>
