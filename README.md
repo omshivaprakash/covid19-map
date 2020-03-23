@@ -6,14 +6,14 @@ Hi, I'm Daniel Karl 🙋🏻‍♂️
 
 I wanted to see whether I can reproduce the Johns Hopkins map visualization of COVID19. Therefore I set out to build my own version 👨🏻‍💻 using the very same live data source that they kindly provide in their GitHub repo 🙏🏻.
 
-Thanks to the already available data set the process of ramping up a visualization tool in React went fairly smooth ☘️. Meanwhile covid19map.io already has even more features:
+Thanks to the already available data set the process of ramping up a visualization tool in React went fairly smooth ☘️. Since then, covid19map.io is getting more and more features:
 
-- project the confirmed cases at global average testing rate
-- can show the momentum of the spread in glyphs directly, i.e. change over the last 1, 3 or 7 days
-- compute STAYING@HOME Score based on the weighted average of active case momentum 1, 3 and 7 days in relation to the total number of confirmed cases
-- replay mode to go back in time (also works in momentum mode)
-- can additionally normalize by population
-- is open source, therefore allows other researchers to contribute on GitHub
+- project the confirmed cases at global average testing rate 🧪👩🏾‍🔬
+- can show the momentum of the spread in glyphs directly, i.e. change over the last 1, 3 or 7 days 🦠😷
+- compute STAYING@HOME Score based on the weighted average of active case momentum 1, 3 and 7 days in relation to the total number of confirmed cases 🏡🌍
+- replay mode to go back in time (also works in momentum mode) 🎥🍿🎬
+- can additionally normalize by population 👨‍👩‍👦
+- is open source, therefore allows other researchers to contribute on GitHub ⭐😍🤩
 
 Please check it out, and hopefully it helps to drive more research and to provide a better understanding of the situation we are currently facing. 
 If you want to contribute a feature I will roll out your pull request timely and add your name here.
@@ -34,8 +34,8 @@ npm run deploy      # Please do not forget to include link to license and mentio
 ```
 
 # Contributors
-- Daniel Karl
-- Michael Baentsch
+- Daniel Karl 👨🏻‍🔧
+- Michael Baentsch 👨🏻‍🏫
 
 ## Attributions
 ### Software dependencies
