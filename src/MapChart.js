@@ -786,7 +786,7 @@ onRemove(selectedList, removedItem) {
         size = this.scaleLog(size);
         size = this.scalePpm(size, pop);
         size = this.scaleLogAndPpm(size);
-        if (size > 0) {
+        if (size > 0 && name !== "US, US") {
           return (
               <CircleMarker
                   key={"change_" + rowId}
@@ -909,7 +909,7 @@ onRemove(selectedList, removedItem) {
   };
 
   marker = (coordinates, rowId, color, text, size, val, name, markerOffset, type, opacity) => {
-    if(size > 0) {
+    if(size > 0 && name !== "US, US") {
       return (
         // bubble
         <CircleMarker
