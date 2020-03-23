@@ -541,9 +541,9 @@ onRemove(selectedList, removedItem) {
               this.state.testmode = false;
               this.state.playmode = true;
               this.state.playpause = false;
-              this.state.lat = 30.5928;
-              this.state.lng = 114.3055;
-              this.state.zoom = 4;
+              this.state.lat = 0.01;//30.5928;
+              this.state.lng = 0.01;//114.3055;
+              this.state.zoom = 2.01;
               let interval = setInterval(() => {
                 if(!that.state.playmode) {
                   clearInterval(interval);
@@ -554,6 +554,18 @@ onRemove(selectedList, removedItem) {
                 if(!this.state.playpause) {
                   this.state.dayOffset++;
                   this.reload();
+                  if(this.state.dayOffset === 0) {
+                    document.getElementsByClassName("todayTime")[0].style.display = "inline";
+                    document.getElementsByClassName("play")[0].style.display = "inline";
+                    document.getElementsByClassName("leftTime")[0].style.display = "inline";
+                    document.getElementsByClassName("midTime")[0].style.display = "none";
+                    this.state.playmode = false;
+                    this.setState({
+                      lat: 0,
+                      lng: 0,
+                      zoom: 1.99
+                    });
+                  }
                 }
               }, 500);
             }}
@@ -589,7 +601,7 @@ onRemove(selectedList, removedItem) {
               this.setState({
                 lat: 0,
                 lng: 0,
-                zoom: 2
+                zoom: 1.99
               });
             }}
         ><FontAwesomeIcon icon={faStopCircle}/> Stop</button>
