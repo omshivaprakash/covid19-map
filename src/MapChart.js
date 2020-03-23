@@ -1231,7 +1231,7 @@ onRemove(selectedList, removedItem) {
       return value;
     }
     if(population) {
-      if(value > 0) {
+      if((value > 0)&&(population>ONE_M)) {
         return ONE_M * value / population * 10;
       }
     }
