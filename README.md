@@ -2,7 +2,7 @@
 
 ## About
 
-Hi, I'm Daniel Karl 👋
+Hi, I'm Daniel Karl 🙋🏻‍♂️
 
 I wanted to see whether I can reproduce the Johns Hopkins map visualization of COVID19. Therefore I set out to build my own version using the very same live data source that they kindly provide in their GitHub repo.
 
