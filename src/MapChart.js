@@ -554,9 +554,6 @@ onRemove(selectedList, removedItem) {
                 if(!that.state.playmode) {
                   clearInterval(interval);
                   this.state.dayOffset = 0;
-                    if(this.state.momentum === "none") {
-                    this.state.testmode = true;
-                  }
                   this.reload();
                   return;
                 }
