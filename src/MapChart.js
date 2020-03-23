@@ -1011,7 +1011,7 @@ onRemove(selectedList, removedItem) {
       }
 
       let stayAtHomeScore = Math.round(g);
-      if(confirmed < 1) {
+      if(confirmed < 1 || !stayAtHomeScore) {
         stayAtHomeScore = "N/A";
       }
 
