@@ -1080,7 +1080,7 @@ onRemove(selectedList, removedItem) {
                 </tr>
                 <tr>
                   <td></td>
-                  <td>ppm: confirmed in parts per million people</td>
+                  <td>ppm: confirmed cases per one million people</td>
                 </tr>
               </tbody>
             </table>
