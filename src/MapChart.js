@@ -60,7 +60,7 @@ class MapChart extends Map {
       momentum: "none",
       ppmmode: false,
       minimized: false,
-      testmode: true,
+      testmode: false,
       dayOffset: 0,
       playmode: false,
       mapstyle: "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
@@ -464,7 +464,7 @@ onRemove(selectedList, removedItem) {
             placeholder={"toggle data"}
             showCheckbox={true}
           />*/}
-          <Form.Check inline disabled={that.state.momentum !== "none" || that.state.dayOffset < 0} className="small" checked={that.state.testmode} label={<span title={"Displays a projection of how many confirmed cases there might be if testing rate was as high/low as global average (shown on the map as blue halos)."}>Project global testing rate</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-4`}
+          <Form.Check inline disabled={that.state.momentum !== "none" || that.state.dayOffset < 0} className="small" checked={that.state.testmode} label={<span title={"Displays a projection of how many confirmed cases there might be if testing rate was as high/low as global average (shown on the map as blue halos)."}>Project global avg. testing rate</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-4`}
             onChange={() => {that.setState({testmode: !that.state.testmode});}} /><br />
           <span className="small text-muted mr-2">Normalization:</span><br />
           <Form.Check inline className="small" checked={that.state.logmode} label={<span title={"Scales the glyphs on the map logarithmically."}>Log</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
@@ -965,8 +965,8 @@ onRemove(selectedList, removedItem) {
             <Badge className="ml-1" variant={"success"}><FontAwesomeIcon icon={faHeartbeat}/> {rounded(recovered)} recovered</Badge>
             <Badge className="ml-1" variant={"dark"}><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths)} deceased</Badge><br />
             {
-              unconfirmed > confirmed &&
-              <Badge variant={"primary"}><FontAwesomeIcon icon={faBiohazard}/> &gt;{rounded(unconfirmed)} at avg. test rate</Badge>
+              unconfirmed > confirmed && this.state.testmode &&
+              <Badge variant={"primary"}><FontAwesomeIcon icon={faBiohazard}/> &gt;{rounded(unconfirmed)} projected at global avg. testing rate</Badge>
             }
           </div>
           <div className="stayAtHomeScoreLabel">
