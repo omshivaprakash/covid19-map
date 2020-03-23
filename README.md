@@ -11,7 +11,7 @@ Thanks to the already available data set the process of ramping up a visualizati
 - project the confirmed cases at global average testing rate 🧪👩🏾‍🔬
 - can show the momentum of the spread in glyphs directly, i.e. change over the last 1, 3 or 7 days 🦠😷
 - compute STAYING@HOME Score based on the weighted average of active case momentum 1, 3 and 7 days in relation to the total number of confirmed cases 🏡🌍
-- replay mode to go back in time (also works in momentum mode) 🎥🤩🎬
+- replay mode to go back in time (also works in momentum mode) 🎟️🎥🎬
 - can additionally normalize by population 👨‍👩‍👦
 - is open source, therefore allows other researchers to contribute on GitHub ⭐😍🥰
 
