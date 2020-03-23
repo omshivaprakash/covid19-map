@@ -328,7 +328,7 @@ export const ABSOLUTE = {
   "Martinique": 375265,
   "Mauritania": 4649660,
   "Mauritius": 1271767,
-  "Mayotte": 272813,
+  "Mayotte, France": 272813,
   "Melanesia": 11122990,
   "Mexico": 128932753,
   "Micronesia": 548927,
