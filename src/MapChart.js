@@ -21,7 +21,7 @@ import {
   faPlayCircle,
   faStopCircle,
   faPauseCircle,
-  faQuestionCircle, faBug, faBalanceScale
+  faQuestionCircle, faBug, faBalanceScale, faBolt
 } from '@fortawesome/free-solid-svg-icons';
 
 import Papa from "papaparse";
@@ -1026,7 +1026,7 @@ onRemove(selectedList, removedItem) {
         <div>
           <div>
               <b>{name}</b><br />
-              <FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])} &middot; <FontAwesomeIcon icon={faBiohazard}/> {rounded(confirmed)} ({Math.round(1000000*confirmed/Population.ABSOLUTE[name])} ppm)
+              <FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])} &middot; <FontAwesomeIcon icon={faBiohazard}/> {rounded(confirmed)} &middot; <FontAwesomeIcon icon={faBolt}/> {rounded(1000000*confirmed/Population.ABSOLUTE[name])} ppm
           </div>
           <div>
             <Badge variant={"danger"}><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</Badge>
@@ -1077,6 +1077,10 @@ onRemove(selectedList, removedItem) {
                 <tr>
                   <td></td>
                   <td><b>Continue to follow the advice of the WHO and your<br/>local administration.</b></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>ppm: confirmed in parts per million people</td>
                 </tr>
               </tbody>
             </table>
