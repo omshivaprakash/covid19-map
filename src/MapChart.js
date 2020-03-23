@@ -464,7 +464,7 @@ onRemove(selectedList, removedItem) {
             placeholder={"toggle data"}
             showCheckbox={true}
           />*/}
-          <Form.Check inline disabled={that.state.momentum !== "none" || that.state.dayOffset < 0} className="small" checked={that.state.testmode} label={<span title={"Displays a projection of how many confirmed cases there might be if testing rate was as high/low as global average (shown on the map as blue halos)."}>Project global avg. testing rate</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-4`}
+          <Form.Check inline disabled={that.state.momentum !== "none" || that.state.dayOffset < 0} className="small" checked={that.state.testmode} label={<span title={"Displays a projection of how many confirmed cases there might be if local testing rate coincided with global average (shown on the map as blue bubble)."}>Project global avg. testing rate</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-4`}
             onChange={() => {that.setState({testmode: !that.state.testmode});}} /><br />
           <span className="small text-muted mr-2">Normalization:</span><br />
           <Form.Check inline className="small" checked={that.state.logmode} label={<span title={"Scales the glyphs on the map logarithmically."}>Log</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
@@ -1066,7 +1066,7 @@ onRemove(selectedList, removedItem) {
                   </td>
                   <td>
                     <div>
-                      <i>STAYING@HOME Score</i> reflects how well this region<br/>
+                      Score reflects how well this region<br/>
                       responded to the spread of COVID19 in relation to their<br/>
                       local threat level over the past 14 days.
                     </div>
