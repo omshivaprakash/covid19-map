@@ -282,6 +282,7 @@ export const ABSOLUTE = {
   "Kazakhstan": 18776707,
   "Kenya": 53771300,
   "Kiribati": 119446,
+  "Kosovo": 1831000,
   "Kuwait": 4270563,
   "Kyrgyzstan": 6524191,
   "LLDC: Africa": 341388552,
