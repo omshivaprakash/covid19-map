@@ -249,7 +249,7 @@ export const ABSOLUTE = {
   "Gibraltar, United Kingdom": 33691,
   "Greater Arab Free Trade Area (GAFTA)": 413978399,
   "Greece": 10423056,
-  "Greenland": 56772,
+  "Greenland, Denmark": 56772,
   "Grenada": 112519,
   "Group of 77 (G77)": 6135279467,
   "Group of Eight (G8)": 918561011,
