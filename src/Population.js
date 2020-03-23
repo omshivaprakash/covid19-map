@@ -392,7 +392,7 @@ export const ABSOLUTE = {
   "Puerto Rico, US": 2860840,
   "Qatar": 2881060,
   "Korea, South": 51269183,
-  "Republic of Moldova": 4033963,
+  "Moldova": 4033963,
   "Romania": 19237682,
   "Russia": 145934460,
   "Rwanda": 12952209,
