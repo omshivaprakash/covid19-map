@@ -931,19 +931,58 @@ onRemove(selectedList, removedItem) {
       let deaths = this.deaths[rowId].val;
       let active = this.confirmed[rowId].val - this.recoveredAbsByRowId[rowId] - this.deathsAbsByRowId[rowId];
 
-      let g1 = 0.5 * this.confirmed[rowId].momentumLast7 / this.confirmed[rowId].size; // growth factor
-      let g3 = 0.3 * this.confirmed[rowId].momentumLast7 / this.confirmed[rowId].size; // growth factor
-      let g7 = 0.2 * this.confirmed[rowId].momentumLast7 / this.confirmed[rowId].size; // growth factor
-      let g = 1 - (g1 + g3 + g7);
+      let g1 = 0.5 * this.confirmed[rowId].momentumLast1; // growth factor
+      let g3 = 0.3 * this.confirmed[rowId].momentumLast3; // growth factor
+      let g7 = 0.2 * this.confirmed[rowId].momentumLast7; // growth factor
+      let g = (g1 + g3 + g7);
+      console.log(name + " : " + g)
+      if(g <= 0) {
+        g = 10;
+      }
+      else if(g <= 0.001) {
+        g = 9;
+      }
+      else if(g <= 0.002) {
+        g = 8;
+      }
+      else if(g <= 0.005) {
+        g = 7;
+      }
+      else if(g <= 0.01) {
+        g = 6;
+      }
+      else if(g <= 0.02) {
+        g = 5;
+      }
+      else if(g <= 0.05) {
+        g = 4;
+      }
+      else if(g <= 0.1) {
+        g = 3;
+      }
+      else if(g <= 0.2) {
+        g = 2;
+      }
+      else if(g <= 0.3) {
+        g = 1;
+      }
+      else {
+        g = 0;
+      }
 
-      let d1 = 0.5 * this.deaths[rowId].momentumLast7 / this.deaths[rowId].size; // death factor
-      let d3 = 0.3 * this.deaths[rowId].momentumLast7 / this.deaths[rowId].size; // death factor
-      let d7 = 0.2 * this.deaths[rowId].momentumLast7 / this.deaths[rowId].size; // death factor
+      let d1 = 0.5 * this.deaths[rowId].momentumLast1 / this.recovered[rowId].size; // death factor
+      let d3 = 0.3 * this.deaths[rowId].momentumLast3 / this.recovered[rowId].size; // death factor
+      let d7 = 0.2 * this.deaths[rowId].momentumLast7 / this.recovered[rowId].size; // death factor
       let d = 1 - (d1 + d3 + d7);
 
-      let stayAtHomeScore = Math.round(g * 10);
+      let stayAtHomeScore = Math.round(g);
       if(confirmed < 100) {
         stayAtHomeScore = "N/A";
+      }
+
+      let lifeSaverScore = Math.round(d * 10);
+      if(deaths < 100) {
+        lifeSaverScore = "N/A";
       }
       return (
         <div>
@@ -980,6 +1019,20 @@ onRemove(selectedList, removedItem) {
                   </div>
                 </td>
               </tr>
+              {/*<tr>
+                <td valign={"top"}>
+                  <div className={`stayAtHomeScore stayAtHomeScore${lifeSaverScore}`}>
+                    {lifeSaverScore}{lifeSaverScore !== "N/A" ? "/10" : ""}
+                  </div>
+                </td>
+                <td>
+                  <div>
+                    <i>LifeSaver Score</i> reflects how well this region can mitigate<br/>
+                    fatalities from COVID19 in relation to their local threat <br/>
+                    level over the past 14 days.
+                  </div>
+                </td>
+              </tr>*/}
             </table>
           </div>
         </div>
