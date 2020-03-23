@@ -1026,7 +1026,7 @@ onRemove(selectedList, removedItem) {
         <div>
           <div>
               <b>{name}</b><br />
-              <FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])} &middot; <FontAwesomeIcon icon={faBiohazard}/> {rounded(confirmed)}
+              <FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])} &middot; <FontAwesomeIcon icon={faBiohazard}/> {rounded(confirmed)} ({Math.round(1000000*confirmed/Population.ABSOLUTE[name])} ppm)
           </div>
           <div>
             <Badge variant={"danger"}><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</Badge>
