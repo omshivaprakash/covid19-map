@@ -65,9 +65,10 @@ class MapChart extends Map {
       testscale: 0,
       dayOffset: 0,
       playmode: false,
+      recoveryweeks: 2,
       mapstyle: "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
       selectedData: ["projected", "confirmed", "recovered", "deceased"],
-      datasource: "jh",
+      datasource: "jh2",
 
       maxSize: 67021,
 
@@ -163,6 +164,25 @@ class MapChart extends Map {
 	  return [population_sum, confirmed_sum, projected_sum, active_sum, recovered_sum, deaths_sum];
   }
 
+  reset = () => {
+    this.deathsByRowId = {};
+    this.recoveredAbsByRowId = {};
+    this.deathsAbsByRowId = {};
+
+    this.confirmed = [];
+    this.recovered = [];
+    this.deaths = [];
+    this.projected = []; /* this will be local_confirmed_rate * avg_test_rate / local_test_rate */
+
+    this.totConf = 0;
+    this.totRec = 0;
+    this.totDead = 0;
+
+    this.state.setTotConf(this.totConf);
+    this.state.setTotRec(this.totRec);
+    this.state.setTotDead(this.totDead);
+  };
+
   reload = () => {
     let that = this;
     that.totConf = 0;
@@ -172,9 +192,24 @@ class MapChart extends Map {
     that.recoveredAbsByRowId = {};
     that.deathsAbsByRowId = {};
 
-    Papa.parse("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv", {
+    let confirmedDataSource = null;
+    let recoveredDataSource = null;
+    let deceasedDataSource = null;
+    switch(that.state.datasource) {
+      case "jh":
+        confirmedDataSource = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv";
+        recoveredDataSource = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv";
+        deceasedDataSource = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv";
+        break;
+      case "jh2":
+        confirmedDataSource = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv";
+        recoveredDataSource = null;
+        deceasedDataSource = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"
+    }
+
+    Papa.parse(confirmedDataSource, {
       download: true,
-      complete: function(results) {
+      complete: async function(results) {
         // confirmed
         that.confirmed = [];
         let skipRow = true;
@@ -188,6 +223,9 @@ class MapChart extends Map {
           if(skipRow) {
             skipRow = false;
             continue;
+          }
+          if(data.length === 1 ) {
+              continue;
           }
           let size = "";
           let sizeMin1 = "";
@@ -264,6 +302,9 @@ class MapChart extends Map {
             skipRow = false;
             continue;
           }
+          if(data.length === 1 ) {
+              continue;
+          }
           let size = that.confirmed[rowId].size;
           let val = that.confirmed[rowId].val;
           if(Testing.RATES[that.confirmed[rowId].name] && Population.ABSOLUTE[that.confirmed[rowId].name]) {
@@ -285,81 +326,157 @@ class MapChart extends Map {
           that.projected.push(marker);
           rowId++;
         }
+        if(that.state.datasource === "jh2") {
+          that.recovered = [];
+          let skipRow = true;
+          let minSize = 0;
+          let rowId = 0;
+          for (let data of results.data) {
+            if (skipRow) {
+              skipRow = false;
+              continue;
+            }
+            if(data.length === 1 ) {
+              continue;
+            }
+            let size = "";
+            let sizeMin1 = "";
+            let sizeMin3 = "";
+            let sizeMin7 = "";
+            let idx = data.length - 1 + that.state.dayOffset;
+            while(that.deaths.length < 10) {
+              await that.sleep(1000);
+            }
+            size =      Math.max(0, data[Math.max(0, idx     - that.state.recoveryweeks * 7)] - that.deaths[rowId].val);
+            sizeMin1 =  Math.max(data[Math.max(0, idx - 1 - that.state.recoveryweeks * 7)] - that.deaths[rowId].valMin1);
+            sizeMin3 =  Math.max(data[Math.max(0, idx - 3 - that.state.recoveryweeks * 7)] - that.deaths[rowId].valMin3);
+            sizeMin7 =  Math.max(data[Math.max(0, idx - 7 - that.state.recoveryweeks * 7)] - that.deaths[rowId].valMin7);
+            if (size === "") {
+              size = 0;
+            }
+            if (sizeMin1 === "") {
+              sizeMin1 = 0;
+            }
+            if (sizeMin3 === "") {
+              sizeMin3 = 0;
+            }
+            if (sizeMin7 === "") {
+              sizeMin7 = 0;
+            }
+            size = Number(size);
+            sizeMin1 = Number(sizeMin1);
+            sizeMin3 = Number(sizeMin3);
+            sizeMin7 = Number(sizeMin7);
+            if (size > that.state.maxSize) {
+              that.state.maxSize = size;
+            }
+            let marker = {
+              markerOffset: 0,
+              name: data[0] ? data[0] + ", " + data[1] : data[1],
+              coordinates: [data[3], data[2]],
+              size: size,
+              sizeMin1: sizeMin1,
+              sizeMin3: sizeMin3,
+              sizeMin7: sizeMin7,
+              val: size,
+              rowId: rowId,
+              valMin1: size - sizeMin1,
+              valMin3: size - sizeMin3,
+              valMin7: size - sizeMin7
+            };
+            that.totRec += size;
+            that.recovered.push(marker);
+            rowId++;
+          }
+          that.state.setTotRec(that.totRec);
+          for (let i = 0; i < that.recovered.length; i++) {
+            that.recoveredAbsByRowId[that.recovered[i].rowId] = that.recovered[i].size;
+            that.recovered[i].size = (that.recovered[i].size - minSize) / (that.state.maxSize - minSize);
+            that.recovered[i].momentumLast1 = that.recovered[i].size - (that.recovered[i].sizeMin1 - minSize) / (that.state.maxSize - minSize);
+            that.recovered[i].momentumLast3 = that.recovered[i].size - (that.recovered[i].sizeMin3 - minSize) / (that.state.maxSize - minSize);
+            that.recovered[i].momentumLast7 = that.recovered[i].size - (that.recovered[i].sizeMin7 - minSize) / (that.state.maxSize - minSize);
+          }
+        }
         that.setState({});
       }
     });
 
-    Papa.parse("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv", {
-      download: true,
-      complete: function(results) {
-        that.recovered = [];
-        let skipRow = true;
-        let minSize = 0;
-        let rowId = 0;
-        for(let data of results.data) {
-          if(skipRow) {
-            skipRow = false;
-            continue;
+    if(recoveredDataSource) {
+      Papa.parse(recoveredDataSource, {
+        download: true,
+        complete: function (results) {
+          that.recovered = [];
+          let skipRow = true;
+          let minSize = 0;
+          let rowId = 0;
+          for (let data of results.data) {
+            if (skipRow) {
+              skipRow = false;
+              continue;
+            }
+            if(data.length === 1 ) {
+              continue;
+            }
+            let size = "";
+            let sizeMin1 = "";
+            let sizeMin3 = "";
+            let sizeMin7 = "";
+            let idx = data.length - 1 + that.state.dayOffset;
+            size = data[idx];
+            sizeMin1 = data[idx - 1];
+            sizeMin3 = data[idx - 3];
+            sizeMin7 = data[idx - 7];
+            if (size === "") {
+              size = 0;
+            }
+            if (sizeMin1 === "") {
+              sizeMin1 = 0;
+            }
+            if (sizeMin3 === "") {
+              sizeMin3 = 0;
+            }
+            if (sizeMin7 === "") {
+              sizeMin7 = 0;
+            }
+            size = Number(size);
+            sizeMin1 = Number(sizeMin1);
+            sizeMin3 = Number(sizeMin3);
+            sizeMin7 = Number(sizeMin7);
+            if (size > that.state.maxSize) {
+              that.state.maxSize = size;
+            }
+            let marker = {
+              markerOffset: 0,
+              name: data[0] ? data[0] + ", " + data[1] : data[1],
+              coordinates: [data[3], data[2]],
+              size: size,
+              sizeMin1: sizeMin1,
+              sizeMin3: sizeMin3,
+              sizeMin7: sizeMin7,
+              val: size,
+              rowId: rowId,
+              valMin1: size - sizeMin1,
+              valMin3: size - sizeMin3,
+              valMin7: size - sizeMin7
+            };
+            that.totRec += size;
+            that.recovered.push(marker);
+            rowId++;
           }
-          let size = "";
-          let sizeMin1 = "";
-          let sizeMin3 = "";
-          let sizeMin7 = "";
-          let idx = data.length - 1 + that.state.dayOffset;
-          size = data[idx];
-          sizeMin1 = data[idx - 1];
-          sizeMin3 = data[idx - 3];
-          sizeMin7 = data[idx - 7];
-          if(size==="") {
-            size = 0;
+          that.state.setTotRec(that.totRec);
+          for (let i = 0; i < that.recovered.length; i++) {
+            that.recoveredAbsByRowId[that.recovered[i].rowId] = that.recovered[i].size;
+            that.recovered[i].size = (that.recovered[i].size - minSize) / (that.state.maxSize - minSize);
+            that.recovered[i].momentumLast1 = that.recovered[i].size - (that.recovered[i].sizeMin1 - minSize) / (that.state.maxSize - minSize);
+            that.recovered[i].momentumLast3 = that.recovered[i].size - (that.recovered[i].sizeMin3 - minSize) / (that.state.maxSize - minSize);
+            that.recovered[i].momentumLast7 = that.recovered[i].size - (that.recovered[i].sizeMin7 - minSize) / (that.state.maxSize - minSize);
           }
-          if(sizeMin1==="") {
-            sizeMin1 = 0;
-          }
-          if(sizeMin3==="") {
-            sizeMin3 = 0;
-          }
-          if(sizeMin7==="") {
-            sizeMin7 = 0;
-          }
-          size = Number(size);
-          sizeMin1 = Number(sizeMin1);
-          sizeMin3 = Number(sizeMin3);
-          sizeMin7 = Number(sizeMin7);
-          if(size > that.state.maxSize) {
-            that.state.maxSize = size;
-          }
-          let marker = {
-            markerOffset: 0,
-            name: data[0] ? data[0] + ", " + data[1] : data[1],
-            coordinates: [data[3], data[2]],
-            size: size,
-            sizeMin1: sizeMin1,
-            sizeMin3: sizeMin3,
-            sizeMin7: sizeMin7,
-            val: size,
-            rowId: rowId,
-            valMin1: size - sizeMin1,
-            valMin3: size - sizeMin3,
-            valMin7: size - sizeMin7
-          };
-          that.totRec += size;
-          that.recovered.push(marker);
-          rowId++;
+          that.setState({});
         }
-        that.state.setTotRec(that.totRec);
-        for(let i = 0; i < that.recovered.length; i++) {
-          that.recoveredAbsByRowId[that.recovered[i].rowId] = that.recovered[i].size;
-          that.recovered[i].size = (that.recovered[i].size - minSize) / (that.state.maxSize - minSize);
-          that.recovered[i].momentumLast1 = that.recovered[i].size - (that.recovered[i].sizeMin1 - minSize) / (that.state.maxSize - minSize);
-          that.recovered[i].momentumLast3 = that.recovered[i].size - (that.recovered[i].sizeMin3 - minSize) / (that.state.maxSize - minSize);
-          that.recovered[i].momentumLast7 = that.recovered[i].size - (that.recovered[i].sizeMin7 - minSize) / (that.state.maxSize - minSize);
-        }
-        that.setState({});
-      }
-    });
+      });
+    }
 
-    Papa.parse("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv", {
+    Papa.parse(deceasedDataSource, {
       download: true,
       complete: function(results) {
         that.deaths = [];
@@ -371,6 +488,9 @@ class MapChart extends Map {
             skipRow = false;
             continue;
           }
+          if(data.length === 1 ) {
+              continue;
+            }
           let size = "";
           let sizeMin1 = "";
           let sizeMin3 = "";
@@ -458,9 +578,9 @@ onRemove(selectedList, removedItem) {
         <button hidden={!that.state.minimized} className={"btn-collapse"} onClick={() => {that.setState({minimized: false})}}>open</button>
         <div hidden={that.state.minimized}>
           <span className="small text-muted">Data source:</span>
-          <Form.Control value={that.state.datasource} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({datasource: e.nativeEvent.target.value});}}>
-            <option value="jh">Johns Hopkins v1</option>
-            <option disabled={true} value="jh2">Johns Hopkins v2</option>
+          <Form.Control value={that.state.datasource} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.state.datasource = e.nativeEvent.target.value; that.reset(); that.reload();}}>
+            <option value="jh2">Johns Hopkins v2</option>
+            <option value="jh">Johns Hopkins v1 (legacy)</option>
           </Form.Control>
           <span className={"small text-secondary tiny"}>
             *) JH stopped reporting v1 on March 23, 2020.
@@ -487,6 +607,27 @@ onRemove(selectedList, removedItem) {
             onChange={() => {that.setState({logmode: !that.state.logmode});}} />
           <Form.Check inline className="small" checked={that.state.ppmmode} label={<span title={"Scales the glyphs on the map according to the number of people in each country/region."}>Population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
             onChange={() => {that.setState({ppmmode: !that.state.ppmmode});}} /><br />
+          {
+            that.state.datasource === "jh2" &&
+            [
+              <span className="small text-muted mr-2">Avg. number of weeks to recover:</span>,
+              <FontAwesomeIcon size={"xs"} icon={faQuestion}
+                               title={"Johns Hopkins v2 does not report recovery data. Therefore we estimate recovery data via a simple model: a person recovers after X weeks, unless they died."} />,
+              <br/>,
+              <ReactBootstrapSlider
+                  ticks={[1, 2, 3, 4, 5, 6]}
+                  ticks_labels={["1", "2", "3", "4", "5", "6"]}
+                  value={this.state.recoveryweeks}
+                  change={e => {
+                    this.setState({recoveryweeks: e.target.value});
+                    this.reload();
+                  }}
+                  step={1}
+                  max={6}
+                  min={1}
+              ></ReactBootstrapSlider>
+            ]
+          }
           {
             that.state.momentum === "none" && !that.state.playmode &&
             [
@@ -1287,6 +1428,10 @@ onRemove(selectedList, removedItem) {
     }
     return value;
   };
+
+  sleep = async (msec) => {
+    return new Promise(resolve => setTimeout(resolve, msec));
+  }
 
 }
 
