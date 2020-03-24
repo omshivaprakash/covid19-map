@@ -480,10 +480,10 @@ onRemove(selectedList, removedItem) {
           {
             that.state.momentum === "none" && !that.state.playmode &&
             [
-              <span className="small text-muted mr-2">Project confirmed cases:</span>,
-              <FontAwesomeIcon size={"xs"} icon={faQuestion} title={"Project blue bubbles showing how many confirmed cases there might be if local testing rate was coinciding with global average."}/>,
+              <span className="small text-muted mr-2">Project global testing:</span>,
+              <FontAwesomeIcon size={"xs"} icon={faQuestion} title={"Display blue bubbles projecting how many confirmed cases there might be if local testing rate was coinciding with global average."}/>,
               <br/>,
-              <ReactBootstrapSlider ticks={[0, 1, 3]} ticks_labels = {["0x", "global avg. testing rate", "3x"]} value={this.state.testscale} change={e => {this.setState({ testscale: e.target.value, testmode: true });}} step={0.2} max={3} min={0}></ReactBootstrapSlider>
+              <ReactBootstrapSlider ticks={[0, 1, 2]} ticks_labels = {["0x", "global avg.", "2x"]} value={this.state.testscale} change={e => {this.setState({ testscale: e.target.value, testmode: true });}} step={0.2} max={2} min={0}></ReactBootstrapSlider>
             ]
           }
           <span className="small text-muted mr-2">Glyph scale:</span><br/>
@@ -1063,7 +1063,7 @@ onRemove(selectedList, removedItem) {
             <Badge className="ml-1" variant={"success"}><FontAwesomeIcon icon={faHeartbeat}/> {rounded(recovered)} recovered</Badge>
             <Badge className="ml-1" variant={"dark"}><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths)} deceased</Badge><br />
             {
-              projected > confirmed && this.state.testmode &&
+              projected > confirmed && this.state.testmode && this.state.testscale > 0 &&
               <Badge variant={"primary"}><FontAwesomeIcon icon={faBiohazard}/> &gt;{rounded(projected)} projected at global avg. testing rate</Badge>
             }
           </div>
