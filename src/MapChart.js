@@ -580,12 +580,8 @@ onRemove(selectedList, removedItem) {
           <span className="small text-muted">Data source:</span>
           <Form.Control value={that.state.datasource} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.state.datasource = e.nativeEvent.target.value; that.reset(); that.reload();}}>
             <option value="jh2">Johns Hopkins v2</option>
-            <option value="jh">Johns Hopkins v1 (legacy)</option>
+            <option value="jh">Johns Hopkins v1 until 03/23/2020</option>
           </Form.Control>
-          <span className={"small text-secondary tiny"}>
-            *) JH stopped reporting v1 on March 23, 2020.
-            We are working hard to offer v2 later today 👨🏻‍💻
-          </span><br />
           <span className="small text-muted">Mode:</span>
           <Form.Control title={"Live mode: Show live data (updated daily). Change: Show increase/decrease in numbers since last 1, 3 or 7 days."} value={that.state.momentum} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({momentum: e.nativeEvent.target.value, chart: "pie", testmode: false, testscale: 0});}}>
             <option value="none">Live</option>
