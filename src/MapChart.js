@@ -612,7 +612,8 @@ onRemove(selectedList, removedItem) {
                   step={0.1}
                   max={3}
                   min={0}
-              ></ReactBootstrapSlider>
+              ></ReactBootstrapSlider>,
+              <br />
             ]
           }
           {
