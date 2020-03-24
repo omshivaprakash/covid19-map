@@ -480,10 +480,10 @@ onRemove(selectedList, removedItem) {
           {
             that.state.momentum === "none" && !that.state.playmode &&
             [
-              <span className="small text-muted mr-2">Project global testing:</span>,
+              <span className="small text-muted mr-2">Project testing rates:</span>,
               <FontAwesomeIcon size={"xs"} icon={faQuestion} title={"Display blue bubbles projecting how many confirmed cases there might be if local testing rate was coinciding with global average."}/>,
               <br/>,
-              <ReactBootstrapSlider ticks={[0, 1, 2]} ticks_labels = {["0x", "global avg.", "2x"]} value={this.state.testscale} change={e => {this.setState({ testscale: e.target.value, testmode: true });}} step={0.2} max={2} min={0}></ReactBootstrapSlider>
+              <ReactBootstrapSlider ticks={[0, 1, 2, 3]} ticks_labels = {["off", "global avg.", "x2", "x3"]} value={this.state.testscale} change={e => {this.setState({ testscale: e.target.value, testmode: true });}} step={0.2} max={3} min={0}></ReactBootstrapSlider>
             ]
           }
           <span className="small text-muted mr-2">Glyph scale:</span><br/>
