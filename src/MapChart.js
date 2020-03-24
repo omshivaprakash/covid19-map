@@ -599,6 +599,23 @@ onRemove(selectedList, removedItem) {
           <Form.Check inline className="small" checked={that.state.ppmmode} label={<span title={"Scales the glyphs on the map according to the number of people in each country/region."}>Population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
             onChange={() => {that.setState({ppmmode: !that.state.ppmmode});}} /><br />
           {
+            that.state.momentum === "none" && !that.state.playmode &&
+            [
+              <span className="small text-muted mr-2">Project testing rates:</span>,
+              <FontAwesomeIcon size={"xs"} icon={faQuestion} title={"Display blue bubbles projecting how many confirmed cases there might be if local testing rate was coinciding with global average."}/>,
+              <br/>,
+              <ReactBootstrapSlider
+                  ticks={[0, 1, 2, 3]}
+                  ticks_labels = {["off", "global avg.", "x2", "x3"]}
+                  value={this.state.testscale}
+                  change={e => {this.setState({ testscale: e.target.value, testmode: true });}}
+                  step={0.1}
+                  max={3}
+                  min={0}
+              ></ReactBootstrapSlider>
+            ]
+          }
+          {
             that.state.datasource === "jh2" &&
             [
               <span className="small text-muted mr-2">Avg. number of days to recover:</span>,
@@ -616,23 +633,6 @@ onRemove(selectedList, removedItem) {
                   step={1}
                   max={18}
                   min={6}
-              ></ReactBootstrapSlider>
-            ]
-          }
-          {
-            that.state.momentum === "none" && !that.state.playmode &&
-            [
-              <span className="small text-muted mr-2">Project testing rates:</span>,
-              <FontAwesomeIcon size={"xs"} icon={faQuestion} title={"Display blue bubbles projecting how many confirmed cases there might be if local testing rate was coinciding with global average."}/>,
-              <br/>,
-              <ReactBootstrapSlider
-                  ticks={[0, 1, 2, 3]}
-                  ticks_labels = {["off", "global avg.", "x2", "x3"]}
-                  value={this.state.testscale}
-                  change={e => {this.setState({ testscale: e.target.value, testmode: true });}}
-                  step={0.1}
-                  max={3}
-                  min={0}
               ></ReactBootstrapSlider>
             ]
           }
