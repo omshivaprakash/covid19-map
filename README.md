@@ -21,7 +21,7 @@ Please check it out, and hopefully it helps to drive more ideas and to provide a
 If you want to contribute a feature I will roll out your pull request timely and add your name here.
 
 ## Users
-Open https://covid19map.io
+Visit https://covid19map.io
 
 ## Developers
 ### Install and run
