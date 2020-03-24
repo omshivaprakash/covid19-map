@@ -1222,16 +1222,29 @@ onRemove(selectedList, removedItem) {
           <div>
               <b>{name}</b><br />
               <FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])} &middot; <FontAwesomeIcon icon={faBiohazard}/> {rounded(confirmed)} &middot; <FontAwesomeIcon icon={faBolt}/> {rounded(1000000*confirmed/Population.ABSOLUTE[name])} ppm
+              {
+                (!this.state.recoveryMode && this.state.datasource !== "jh") &&
+                  [
+                     " · ",
+                     <Badge variant={"dark"}><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths)} deceased</Badge>
+                  ]
+              }
           </div>
           <div>
             {
-              (this.state.recoveryMode || this.state.datasource == "jh") &&
+              (this.state.recoveryMode || this.state.datasource === "jh") &&
               [
                 <Badge variant={"danger"}><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</Badge>,
                 <Badge className="ml-1 mr-1" variant={"success"}><FontAwesomeIcon icon={faHeartbeat}/> {rounded(recovered)} recovered</Badge>
               ]
             }
-            <Badge variant={"dark"}><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths)} deceased</Badge><br />
+            {
+              (this.state.recoveryMode || this.state.datasource === "jh") &&
+              [
+                <Badge variant={"dark"}><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths)} deceased</Badge>,
+                <br />
+              ]
+            }
             {
               projected > confirmed && this.state.testmode && this.state.testscale > 0 &&
               <Badge variant={"primary"}><FontAwesomeIcon icon={faBiohazard}/> &gt;{rounded(projected)} projected at global avg. testing rate</Badge>
@@ -1254,8 +1267,9 @@ onRemove(selectedList, removedItem) {
                   </td>
                   <td>
                     <div>
-                      Score reflects how well this region contained<br/>
-                      the spread of COVID19 over the past 14 days.<br/>
+                      <i>Containment Score</i> reflects the spread of COVID19<br />
+                      in the region, based on weighted average growth<br />
+                      of confirmed cases over the past 1, 3 and 7 days.
                     </div>
                   </td>
                 </tr>
