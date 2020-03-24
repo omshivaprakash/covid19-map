@@ -66,7 +66,7 @@ class MapChart extends Map {
       dayOffset: 0,
       playmode: false,
       recoverydays: 12,
-      mapstyle: "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+      mapstyle: "https://{s}.tile.osm.org/{z}/{x}/{y}.png",
       selectedData: ["projected", "confirmed", "recovered", "deceased"],
       datasource: "jh2",
       recoveryMode: false,
@@ -653,8 +653,8 @@ onRemove(selectedList, removedItem) {
           <Form.Check inline title="Represent data as horizontal pill. Hover pill on map to see more details." className="small hideInMomentum" checked={that.state.chart==="pill" } label="Pills" type={"radio"} name={"a"} id={`inline-radio-3`} onChange={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/><br />*/}
           <span className="small text-muted">Map style:</span><br/>
           <Form.Control value={that.state.mapstyle} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({mapstyle: e.nativeEvent.target.value});}}>
-            <option value="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png">Light</option>
             <option value="https://{s}.tile.osm.org/{z}/{x}/{y}.png">Color</option>
+            <option value="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png">Light</option>
             <option value="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png">Dark</option>
           </Form.Control>
           <span className="small text-muted">Data source:</span>
@@ -950,16 +950,31 @@ onRemove(selectedList, removedItem) {
         let val;
         switch (this.state.momentum) {
           case "last1":
-            size = momentumLast1 - this.recovered[rowId].momentumLast1;
-            val = valMin1 - this.recovered[rowId].valMin1;
+            if((this.state.recoveryMode || this.state.datasource === "jh") && this.recovered[rowId]) {
+              size = momentumLast1 - this.recovered[rowId].momentumLast1;
+              val = valMin1 - this.recovered[rowId].valMin1;
+            } else {
+              size = momentumLast1;
+              val = valMin1;
+            }
             break;
           case "last3":
-            size = momentumLast3 - this.recovered[rowId].momentumLast3;
-            val = valMin3 - this.recovered[rowId].valMin3;
+            if((this.state.recoveryMode || this.state.datasource === "jh") && this.recovered[rowId]) {
+              size = momentumLast3 - this.recovered[rowId].momentumLast3;
+              val = valMin3 - this.recovered[rowId].valMin3;
+            } else {
+              size = momentumLast3;
+              val = valMin3;
+            }
             break;
           case "last7":
-            size = momentumLast7 - this.recovered[rowId].momentumLast7;
-            val = valMin7 - this.recovered[rowId].valMin7;
+            if((this.state.recoveryMode || this.state.datasource === "jh") && this.recovered[rowId]) {
+              size = momentumLast7 - this.recovered[rowId].momentumLast7;
+              val = valMin7 - this.recovered[rowId].valMin7;
+            } else {
+              size = momentumLast7;
+              val = valMin7;
+            }
             break;
           default:
             alert("something went wrong");
