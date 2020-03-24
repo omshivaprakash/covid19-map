@@ -42,7 +42,7 @@ body {
 }
 
 .navbar {
-  box-shadow: 0px 0px 10px #333;
+  /*box-shadow: 0px 0px 10px #333;*/
 }
 
 .controls.minimized {
@@ -65,6 +65,7 @@ body {
   top: 0px;
   left: 0px;
   background: #eeee;
+  border-top: 1px solid #e0e0e0;
   padding: 4px;
   padding-top: 6px;
   padding-right: 10px;
