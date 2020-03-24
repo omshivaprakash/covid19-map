@@ -65,7 +65,7 @@ class MapChart extends Map {
       testscale: 0,
       dayOffset: 0,
       playmode: false,
-      recoveryweeks: 2,
+      recoverydays: 12,
       mapstyle: "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
       selectedData: ["projected", "confirmed", "recovered", "deceased"],
       datasource: "jh2",
@@ -344,13 +344,13 @@ class MapChart extends Map {
             let sizeMin3 = "";
             let sizeMin7 = "";
             let idx = data.length - 1 + that.state.dayOffset;
-            while(that.deaths.length < 10) {
+            while(that.deaths.length < idx) {
               await that.sleep(100);
             }
-            size =      Math.max(0, data[Math.max(0, idx     - that.state.recoveryweeks * 7)] - that.deaths[rowId].val);
-            sizeMin1 =  Math.max(data[Math.max(0, idx - 1 - that.state.recoveryweeks * 7)] - that.deaths[rowId].valMin1);
-            sizeMin3 =  Math.max(data[Math.max(0, idx - 3 - that.state.recoveryweeks * 7)] - that.deaths[rowId].valMin3);
-            sizeMin7 =  Math.max(data[Math.max(0, idx - 7 - that.state.recoveryweeks * 7)] - that.deaths[rowId].valMin7);
+            size =      Math.max(0, data[Math.max(0, idx     - that.state.recoverydays)] - that.deaths[rowId].val);
+            sizeMin1 =  Math.max(data[Math.max(0, idx - 1 - that.state.recoverydays)] - that.deaths[rowId].valMin1);
+            sizeMin3 =  Math.max(data[Math.max(0, idx - 3 - that.state.recoverydays)] - that.deaths[rowId].valMin3);
+            sizeMin7 =  Math.max(data[Math.max(0, idx - 7 - that.state.recoverydays)] - that.deaths[rowId].valMin7);
             if (size === "") {
               size = 0;
             }
@@ -606,21 +606,21 @@ onRemove(selectedList, removedItem) {
           {
             that.state.datasource === "jh2" &&
             [
-              <span className="small text-muted mr-2">Avg. number of weeks to recover:</span>,
+              <span className="small text-muted mr-2">Avg. number of days to recover:</span>,
               <FontAwesomeIcon size={"xs"} icon={faQuestion}
-                               title={"Johns Hopkins v2 does not report recovery data. Therefore we estimate recovery data via a simple model: a person recovers after X weeks, unless they died."} />,
+                               title={"Johns Hopkins v2 does not report recovery data. Therefore we estimate recovery data by assuming patients recover after X days on average. This is early work and may be revised in line with new research."} />,
               <br/>,
               <ReactBootstrapSlider
-                  ticks={[1, 2, 3, 4, 5, 6]}
-                  ticks_labels={["1", "2", "3", "4", "5", "6"]}
-                  value={this.state.recoveryweeks}
+                  ticks={[6, 9, 12, 15, 18]}
+                  ticks_labels={["6", "9", "12", "15", "18"]}
+                  value={this.state.recoverydays}
                   change={e => {
-                    this.setState({recoveryweeks: e.target.value});
+                    this.setState({recoverydays: e.target.value});
                     this.reload();
                   }}
                   step={1}
-                  max={6}
-                  min={1}
+                  max={18}
+                  min={6}
               ></ReactBootstrapSlider>
             ]
           }
@@ -630,7 +630,15 @@ onRemove(selectedList, removedItem) {
               <span className="small text-muted mr-2">Project testing rates:</span>,
               <FontAwesomeIcon size={"xs"} icon={faQuestion} title={"Display blue bubbles projecting how many confirmed cases there might be if local testing rate was coinciding with global average."}/>,
               <br/>,
-              <ReactBootstrapSlider ticks={[0, 1, 2, 3]} ticks_labels = {["off", "global avg.", "x2", "x3"]} value={this.state.testscale} change={e => {this.setState({ testscale: e.target.value, testmode: true });}} step={0.2} max={3} min={0}></ReactBootstrapSlider>
+              <ReactBootstrapSlider
+                  ticks={[0, 1, 2, 3]}
+                  ticks_labels = {["off", "global avg.", "x2", "x3"]}
+                  value={this.state.testscale}
+                  change={e => {this.setState({ testscale: e.target.value, testmode: true });}}
+                  step={0.1}
+                  max={3}
+                  min={0}
+              ></ReactBootstrapSlider>
             ]
           }
           <span className="small text-muted mr-2">Bubble size:</span><br/>
