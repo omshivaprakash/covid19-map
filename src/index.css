@@ -211,3 +211,10 @@ body {
 .slider-tick-label {
   font-size: 12px;
 }
+
+.tiny {
+  float: left;
+  font-size: 10px !important;
+  line-height: 12px !important;
+  height: auto !important;
+}
