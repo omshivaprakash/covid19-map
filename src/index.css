@@ -47,7 +47,7 @@ body {
 
 .controls.minimized {
   width: 45px;
-  height: 20px;
+  height: 24px;
   background: #eeee;
   border-bottom-right-radius: 5px;
   z-index: 999;
@@ -56,7 +56,8 @@ body {
 
 .controls.minimized .btn-collapse{
   top: 4px;
-  left: 0px;
+  left: 6px;
+  padding: 3px;
 }
 
 .timeline {
@@ -79,7 +80,7 @@ body {
 .btn-collapse {
   position: absolute;
   right: 10px;
-  top: 5px;
+  top: 10px;
   font-size: 10px !important;
   line-height: 12px !important;
   height: 12px !important;
