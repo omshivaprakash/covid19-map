@@ -1,4 +1,4 @@
-# COVID19 Map 🦠😷🗺️
+# Open COVID19 Map 🦠😷🗺️
 
 ## About
 
