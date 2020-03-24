@@ -619,7 +619,7 @@ onRemove(selectedList, removedItem) {
           {
             that.state.datasource === "jh2" &&
             [
-              <span className="small text-muted mr-2">Avg. number of days to recover:</span>,
+              <span className="small text-muted mr-2">Number of days to recover:</span>,
               <FontAwesomeIcon size={"xs"} icon={faQuestion}
                                title={"Johns Hopkins v2 does not report recovery data. Therefore we estimate recovery data by assuming patients recover after X days on average. This is early work and may be revised in line with new research."} />,
               <br/>,
