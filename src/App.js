@@ -33,7 +33,10 @@ function App() {
           <span>
             <span className={"small text-muted mr-3"}><FontAwesomeIcon icon={faGlobe} /></span>
             <span className={"small text-danger mr-3"}>{rounded(totConf)}</span>
-            <span className={"small text-success mr-3"}>{rounded(totRec)}</span>
+            {
+              totRec > 0 &&
+              <span className={"small text-success mr-3"}>{rounded(totRec)}</span>
+            }
             <span className={"small mr-3"}>{rounded(totDead)}</span>
           </span>
       </Navbar>,

@@ -69,6 +69,7 @@ class MapChart extends Map {
       mapstyle: "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
       selectedData: ["projected", "confirmed", "recovered", "deceased"],
       datasource: "jh2",
+      recoveryMode: false,
 
       maxSize: 67021,
 
@@ -179,7 +180,11 @@ class MapChart extends Map {
     this.totDead = 0;
 
     this.state.setTotConf(this.totConf);
-    this.state.setTotRec(this.totRec);
+    if(this.state.recoveryMode || this.state.datasource == "jh") {
+      this.state.setTotRec(this.totRec);
+    } else {
+      this.state.setTotRec("-");
+    }
     this.state.setTotDead(this.totDead);
   };
 
@@ -388,7 +393,11 @@ class MapChart extends Map {
             that.recovered.push(marker);
             rowId++;
           }
-          that.state.setTotRec(that.totRec);
+          if(that.state.recoveryMode || that.state.datasource == "jh") {
+            that.state.setTotRec(that.totRec);
+          } else {
+            that.state.setTotRec(0);
+          }
           for (let i = 0; i < that.recovered.length; i++) {
             that.recoveredAbsByRowId[that.recovered[i].rowId] = that.recovered[i].size;
             that.recovered[i].size = (that.recovered[i].size - minSize) / (that.state.maxSize - minSize);
@@ -617,7 +626,7 @@ onRemove(selectedList, removedItem) {
             ]
           }
           {
-            that.state.datasource === "jh2" &&
+            this.state.recoveryMode && that.state.datasource === "jh2" &&
             [
               <span className="small text-muted mr-2">Number of days to recover:</span>,
               <FontAwesomeIcon size={"xs"} icon={faQuestion}
@@ -823,7 +832,7 @@ onRemove(selectedList, removedItem) {
         </LayerGroup>
 
         <LayerGroup key={2} className={"recoveredLayer"}>
-          { this.recoveredMarkers() }
+          { (this.state.recoveryMode || this.state.datasource == "jh") && this.recoveredMarkers() }
         </LayerGroup>
 
         <LayerGroup key={1} className={"deceasedLayer"}>
@@ -1215,9 +1224,14 @@ onRemove(selectedList, removedItem) {
               <FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])} &middot; <FontAwesomeIcon icon={faBiohazard}/> {rounded(confirmed)} &middot; <FontAwesomeIcon icon={faBolt}/> {rounded(1000000*confirmed/Population.ABSOLUTE[name])} ppm
           </div>
           <div>
-            <Badge variant={"danger"}><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</Badge>
-            <Badge className="ml-1" variant={"success"}><FontAwesomeIcon icon={faHeartbeat}/> {rounded(recovered)} recovered</Badge>
-            <Badge className="ml-1" variant={"dark"}><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths)} deceased</Badge><br />
+            {
+              (this.state.recoveryMode || this.state.datasource == "jh") &&
+              [
+                <Badge variant={"danger"}><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</Badge>,
+                <Badge className="ml-1 mr-1" variant={"success"}><FontAwesomeIcon icon={faHeartbeat}/> {rounded(recovered)} recovered</Badge>
+              ]
+            }
+            <Badge variant={"dark"}><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths)} deceased</Badge><br />
             {
               projected > confirmed && this.state.testmode && this.state.testscale > 0 &&
               <Badge variant={"primary"}><FontAwesomeIcon icon={faBiohazard}/> &gt;{rounded(projected)} projected at global avg. testing rate</Badge>
