@@ -345,7 +345,7 @@ class MapChart extends Map {
             let sizeMin7 = "";
             let idx = data.length - 1 + that.state.dayOffset;
             while(that.deaths.length < idx) {
-              await that.sleep(100);
+              await that.sleep(50);
             }
             size =      Math.max(0, data[Math.max(0, idx     - that.state.recoverydays)] - that.deaths[rowId].val);
             sizeMin1 =  Math.max(data[Math.max(0, idx - 1 - that.state.recoverydays)] - that.deaths[rowId].valMin1);
