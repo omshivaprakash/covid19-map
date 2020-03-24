@@ -10,8 +10,10 @@ Thanks to the already available data set the process of ramping up a visualizati
 
 - project the confirmed cases at global average testing rate 🌍🧪👩🏾‍🔬
 - display the momentum of the spread 🦠📈🗺️ in glyphs directly, i.e. change over the last 1, 3 or 7 days
-- compute STAYING@HOME Score 🏡😷📉 based on the weighted average of active case momentum 1, 3 and 7 days in relation to the total number of confirmed cases
-- replay mode 🎟️🎥🎬 to go back in time (also works in momentum mode) 
+- compute score 🏡😷📉 to reflect how well regions contained the spread of COVID19 over the past 14 days, based on the weighted average growth of confirmed cases from the past 1, 3 and 7 days
+- replay mode 🎟️🎥🎬 to go back in time (also works in momentum mode)
+- estimate number of recovered cases
+- works with Johns Hopkins data version 1 and 2 (they changed their format on 03/23/2020)
 - normalize data by population 👨‍👩‍👧‍👦📊👫
 - is open source ⭐😍🥰, therefore allows other researchers 🔬🧑🏾‍🔬🧬 to study this source code and contribute more features
 
