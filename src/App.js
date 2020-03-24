@@ -7,6 +7,7 @@ import Navbar from 'react-bootstrap/Navbar';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDotCircle} from '@fortawesome/free-regular-svg-icons';
+import { faGlobe} from '@fortawesome/free-solid-svg-icons';
 
 const rounded = (num) => {
     if (num > 1000000000) {
@@ -30,7 +31,7 @@ function App() {
             <span className="small">C<FontAwesomeIcon icon={faDotCircle} />VID19 </span>
         </Navbar.Brand>
           <span>
-            <span className={"small text-muted mr-3"}>Total:</span>
+            <span className={"small text-muted mr-3"}><FontAwesomeIcon icon={faGlobe} /></span>
             <span className={"small text-danger mr-3"}>{rounded(totConf)}</span>
             <span className={"small text-success mr-3"}>{rounded(totRec)}</span>
             <span className={"small mr-3"}>{rounded(totDead)}</span>
