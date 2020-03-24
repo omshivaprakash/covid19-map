@@ -577,11 +577,6 @@ onRemove(selectedList, removedItem) {
         <button hidden={that.state.minimized} className={"btn-collapse"} onClick={() => {that.setState({minimized: true})}}>minimize <FontAwesomeIcon icon={faWindowMinimize}/></button>
         <button hidden={!that.state.minimized} className={"btn-collapse"} onClick={() => {that.setState({minimized: false})}}>open</button>
         <div hidden={that.state.minimized}>
-          <span className="small text-muted">Data source:</span>
-          <Form.Control value={that.state.datasource} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.state.datasource = e.nativeEvent.target.value; that.reset(); that.reload();}}>
-            <option value="jh2">Johns Hopkins v2</option>
-            <option value="jh">Johns Hopkins v1 until 03/23/2020</option>
-          </Form.Control>
           <span className="small text-muted">Mode:</span>
           <Form.Control title={"Live mode: Show live data (updated daily). Change: Show increase/decrease in numbers since last 1, 3 or 7 days."} value={that.state.momentum} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({momentum: e.nativeEvent.target.value, chart: "pie", testmode: false, testscale: 0});}}>
             <option value="none">Live</option>
@@ -642,7 +637,7 @@ onRemove(selectedList, removedItem) {
             ]
           }
           <span className="small text-muted mr-2">Bubble size:</span><br/>
-          <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1}></ReactBootstrapSlider>
+          <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1}></ReactBootstrapSlider><br />
           {/*<Form.Check inline title="Represent data as bubbles. Hover bubbles on map to see more details." className="small" checked={that.state.chart==="pie" } label="Bubbles" type={"radio"} name={"a"} id={`inline-radio-1`} onChange={() => {that.setState({chart: "pie"});}}/><br />*/}
           {/*<Form.Check inline title="Represent data as vertical bars. Hover bars on map to see more details." className="small hideInMomentum" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onChange={() => {that.setState({chart: "bar"});}} disabled={that.state.momentum!=="none" ? true : false}/>
           <Form.Check inline title="Represent data as horizontal pill. Hover pill on map to see more details." className="small hideInMomentum" checked={that.state.chart==="pill" } label="Pills" type={"radio"} name={"a"} id={`inline-radio-3`} onChange={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/><br />*/}
@@ -651,6 +646,11 @@ onRemove(selectedList, removedItem) {
             <option value="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png">Light</option>
             <option value="https://{s}.tile.osm.org/{z}/{x}/{y}.png">Color</option>
             <option value="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png">Dark</option>
+          </Form.Control>
+          <span className="small text-muted">Data source:</span>
+          <Form.Control value={that.state.datasource} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.state.datasource = e.nativeEvent.target.value; that.reset(); that.reload();}}>
+            <option value="jh2">Johns Hopkins v2</option>
+            <option value="jh">Johns Hopkins v1 until 03/23/2020</option>
           </Form.Control>
 
           <div className={"credits"}>
