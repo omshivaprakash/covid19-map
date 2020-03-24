@@ -583,5 +583,8 @@ export const ABSOLUTE = {
   "Ontario, Canada": 14441694,
   "Quebec, Canada": 8429241,
   "Saskatchewan, Canada": 1170028,
-  "Manitoba, Canada": 1361997
+  "Manitoba, Canada": 1361997,
+
+  "Diamond Princess, Cruise Ship": 3700,
+  "Grand Princess, Canada": 3100
 };
