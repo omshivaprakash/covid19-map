@@ -60,7 +60,8 @@ class MapChart extends Map {
       momentum: "none",
       ppmmode: false,
       minimized: false,
-      testmode: false,
+      testmode: true,
+      testscale: 0,
       dayOffset: 0,
       playmode: false,
       mapstyle: "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
@@ -190,14 +191,12 @@ class MapChart extends Map {
           let sizeMin1 = "";
           let sizeMin3 = "";
           let sizeMin7 = "";
-          let i = data.length - 1 + that.state.dayOffset;
-          while(size==="" && i > 0) {
-            size = data[i];
-            sizeMin1 = data[i - 1];
-            sizeMin3 = data[i - 3];
-            sizeMin7 = data[i - 7];
-            i = i - 1;
-          }
+          console.log(data.length);
+          let idx = data.length - 1 + that.state.dayOffset;
+          size = data[idx];
+          sizeMin1 = data[idx - 1];
+          sizeMin3 = data[idx - 3];
+          sizeMin7 = data[idx - 7];
           if(size==="") {
             size = 0;
           }
@@ -304,14 +303,11 @@ class MapChart extends Map {
           let sizeMin1 = "";
           let sizeMin3 = "";
           let sizeMin7 = "";
-          let i = data.length - 1 + that.state.dayOffset;
-          while(size==="" && i > 0) {
-            size = data[i];
-            sizeMin1 = data[i - 1];
-            sizeMin3 = data[i - 3];
-            sizeMin7 = data[i - 7];
-            i = i - 1;
-          }
+          let idx = data.length - 1 + that.state.dayOffset;
+          size = data[idx];
+          sizeMin1 = data[idx - 1];
+          sizeMin3 = data[idx - 3];
+          sizeMin7 = data[idx - 7];
           if(size==="") {
             size = 0;
           }
@@ -377,13 +373,22 @@ class MapChart extends Map {
           let sizeMin1 = "";
           let sizeMin3 = "";
           let sizeMin7 = "";
-          let i = data.length - 1 + that.state.dayOffset;
-          while(size==="" && i > 0) {
-            size = data[i];
-            i = i - 1;
-          }
+          let idx = data.length - 1 + that.state.dayOffset;
+          size = data[idx];
+          sizeMin1 = data[idx - 1];
+          sizeMin3 = data[idx - 3];
+          sizeMin7 = data[idx - 7];
           if(size==="") {
             size = 0;
+          }
+          if(sizeMin1==="") {
+            sizeMin1 = 0;
+          }
+          if(sizeMin3==="") {
+            sizeMin3 = 0;
+          }
+          if(sizeMin7==="") {
+            sizeMin7 = 0;
           }
           size = Number(size);
           sizeMin1 = Number(sizeMin1);
@@ -451,7 +456,7 @@ onRemove(selectedList, removedItem) {
         <button hidden={!that.state.minimized} className={"btn-collapse"} onClick={() => {that.setState({minimized: false})}}>open</button>
         <div hidden={that.state.minimized}>
           <span className="small text-muted">Mode:</span>
-          <Form.Control title={"Live mode: Show live data (updated daily). Change: Show increase/decrease in numbers since last 1, 3 or 7 days.  "} value={that.state.momentum} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({momentum: e.nativeEvent.target.value, chart: "pie", testmode: false});}}>
+          <Form.Control title={"Live mode: Show live data (updated daily). Change: Show increase/decrease in numbers since last 1, 3 or 7 days.  "} value={that.state.momentum} style={{lineHeight: "12px", padding: "0px", fontSize: "12px", height: "24px"}} size="sm" as="select" onChange={(e) => {that.setState({momentum: e.nativeEvent.target.value, chart: "pie", testmode: false, testscale: 0});}}>
             <option value="none">Live</option>
             <option value="last1">Change since last 24 hours</option>
             <option value="last3">Change since last 3 days</option>
@@ -464,15 +469,20 @@ onRemove(selectedList, removedItem) {
             placeholder={"toggle data"}
             showCheckbox={true}
           />*/}
-          <Form.Check inline disabled={that.state.momentum !== "none" || that.state.dayOffset < 0} className="small" checked={that.state.testmode} label={<span title={"Displays a projection of how many confirmed cases there might be if local testing rate coincided with global average (shown on the map as blue bubble)."}>Project global avg. testing rate</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-4`}
-            onChange={() => {that.setState({testmode: !that.state.testmode});}} /><br />
           <span className="small text-muted mr-2">Normalization:</span><br />
           <Form.Check inline className="small" checked={that.state.logmode} label={<span title={"Scales the glyphs on the map logarithmically."}>Log</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
             onChange={() => {that.setState({logmode: !that.state.logmode});}} />
           <Form.Check inline className="small" checked={that.state.ppmmode} label={<span title={"Scales the glyphs on the map according to the number of people in each country/region."}>Population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
             onChange={() => {that.setState({ppmmode: !that.state.ppmmode});}} /><br />
-          <span className="small text-muted mr-2">Scale:</span><br/>
-          <ReactBootstrapSlider title="Scale glyps" value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1}></ReactBootstrapSlider>
+          {
+            that.state.momentum === "none" && !that.state.playmode &&
+            [
+              <span className="small text-muted mr-2">Project confirmed cases:</span>, <br/>,
+              <ReactBootstrapSlider ticks={[0, 1, 3]} ticks_labels = {["0x", "global avg. testing rate", "3x"]} value={this.state.testscale} change={e => {this.setState({ testscale: e.target.value, testmode: true });}} step={0.2} max={3} min={0}></ReactBootstrapSlider>
+            ]
+          }
+          <span className="small text-muted mr-2">Glyph scale:</span><br/>
+          <ReactBootstrapSlider value={this.state.factor} change={e => {this.setState({ factor: e.target.value, width: e.target.value / 10 });}} step={1} max={100} min={1}></ReactBootstrapSlider>
           {/*<Form.Check inline title="Represent data as bubbles. Hover bubbles on map to see more details." className="small" checked={that.state.chart==="pie" } label="Bubbles" type={"radio"} name={"a"} id={`inline-radio-1`} onChange={() => {that.setState({chart: "pie"});}}/><br />*/}
           {/*<Form.Check inline title="Represent data as vertical bars. Hover bars on map to see more details." className="small hideInMomentum" checked={that.state.chart==="bar" } label="Bars" type={"radio"} name={"a"} id={`inline-radio-2`} onChange={() => {that.setState({chart: "bar"});}} disabled={that.state.momentum!=="none" ? true : false}/>
           <Form.Check inline title="Represent data as horizontal pill. Hover pill on map to see more details." className="small hideInMomentum" checked={that.state.chart==="pill" } label="Pills" type={"radio"} name={"a"} id={`inline-radio-3`} onChange={() => {that.setState({chart: "pill"});}} disabled={that.state.momentum!=="none" ? true : false}/><br />*/}
@@ -486,7 +496,7 @@ onRemove(selectedList, removedItem) {
           <div className={"credits"}>
             <Badge><a target="_blank" className="text-secondary" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map/issues"}><FontAwesomeIcon icon={faBug} /> Issues</a></Badge>
             <Badge><a target="_blank" className="text-secondary" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map#about"}><FontAwesomeIcon icon={faQuestionCircle} /> About</a></Badge>
-            <Badge><a target="_blank" className="text-secondary" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map/blob/master/LICENSE.txt"}><FontAwesomeIcon icon={faBalanceScale} /> MIT</a></Badge>
+            <Badge><a target="_blank" className="text-secondary" rel="noopener noreferrer" href={"https://github.com/daniel-karl/covid19-map/blob/master/LICENSE.txt"}><FontAwesomeIcon icon={faBalanceScale} /> License</a></Badge>
           </div>
         </div>
       </div>
@@ -560,6 +570,7 @@ onRemove(selectedList, removedItem) {
                     document.getElementsByClassName("leftTime")[0].style.display = "inline";
                     document.getElementsByClassName("midTime")[0].style.display = "none";
                     this.state.playmode = false;
+                    this.state.testscale = 0;
                     this.setState({
                       lat: 0,
                       lng: 0,
@@ -598,6 +609,7 @@ onRemove(selectedList, removedItem) {
               document.getElementsByClassName("leftTime")[0].style.display = "inline";
               document.getElementsByClassName("midTime")[0].style.display = "none";
               this.state.playmode = false;
+              this.state.testscale = 0;
               this.setState({
                 lat: 0,
                 lng: 0,
@@ -649,7 +661,7 @@ onRemove(selectedList, removedItem) {
           { this.confirmedMarkers() }
         </LayerGroup>
 
-        <LayerGroup key={2} className={"deceasedLayer"}>
+        <LayerGroup key={2} className={"recoveredLayer"}>
           { this.recoveredMarkers() }
         </LayerGroup>
 
@@ -830,6 +842,7 @@ onRemove(selectedList, removedItem) {
           let pop = Population.ABSOLUTE[name];
           let active = val - this.recoveredAbsByRowId[rowId] - this.deathsAbsByRowId[rowId];
           size = this.scale(size, pop);
+          size = size * this.state.testscale;
           let ppms = pop && !isNaN(val) ? '(' + Math.round(ONE_M * val / pop) + ' ppm)'  : '';
           let ppms2 = pop && !isNaN(active) ? '(' + Math.round(ONE_M * active / pop) + ' ppm)'  : '';
           let text = `${name} - could be >${rounded(val)} confirmed ${ppms}, >${rounded(active)} active ${ppms2} if local test rate was like global average test rate`;
@@ -1066,9 +1079,8 @@ onRemove(selectedList, removedItem) {
                   </td>
                   <td>
                     <div>
-                      Score reflects how well this region<br/>
-                      responded to the spread of COVID19 in relation to their<br/>
-                      local threat level over the past 14 days.
+                      Score reflects how well this region contained<br/>
+                      the spread of COVID19 over the past 14 days.<br/>
                     </div>
                   </td>
                 </tr>
@@ -1088,7 +1100,7 @@ onRemove(selectedList, removedItem) {
                 </tr>*/}
                 <tr>
                   <td></td>
-                  <td><b>Continue to follow the advice of the WHO and your<br/>local administration.</b></td>
+                  <td><b>Continue to follow the advice of the WHO<br/>and your local administration.</b></td>
                 </tr>
                 <tr>
                   <td></td>
