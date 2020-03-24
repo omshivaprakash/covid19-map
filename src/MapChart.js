@@ -727,9 +727,9 @@ onRemove(selectedList, removedItem) {
               this.state.testmode = false;
               this.state.playmode = true;
               this.state.playpause = false;
-              this.state.lat = 0.01;//30.5928;
-              this.state.lng = 0.01;//114.3055;
-              this.state.zoom = 2.01;
+              this.state.lat = 30.5928;
+              this.state.lng = 114.3055;
+              this.state.zoom = 3.01;
               let interval = setInterval(() => {
                 if(!that.state.playmode) {
                   clearInterval(interval);
