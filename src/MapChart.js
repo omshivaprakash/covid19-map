@@ -21,6 +21,7 @@ import {
   faPlayCircle,
   faStopCircle,
   faPauseCircle,
+  faQuestion,
   faQuestionCircle, faBug, faBalanceScale, faBolt
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -469,7 +470,9 @@ onRemove(selectedList, removedItem) {
             placeholder={"toggle data"}
             showCheckbox={true}
           />*/}
-          <span className="small text-muted mr-2">Normalization:</span><br />
+          <span className="small text-muted mr-2">Normalization:</span>
+          <FontAwesomeIcon size={"xs"} icon={faQuestion} title={"Scale the glyphs on the map according to different criteria."}/>
+          <br />
           <Form.Check inline className="small" checked={that.state.logmode} label={<span title={"Scales the glyphs on the map logarithmically."}>Log</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-2`}
             onChange={() => {that.setState({logmode: !that.state.logmode});}} />
           <Form.Check inline className="small" checked={that.state.ppmmode} label={<span title={"Scales the glyphs on the map according to the number of people in each country/region."}>Population</span>} type={"checkbox"} name={"a"} id={`inline-checkbox-3`}
@@ -477,7 +480,9 @@ onRemove(selectedList, removedItem) {
           {
             that.state.momentum === "none" && !that.state.playmode &&
             [
-              <span className="small text-muted mr-2">Project confirmed cases:</span>, <br/>,
+              <span className="small text-muted mr-2">Project confirmed cases:</span>,
+              <FontAwesomeIcon size={"xs"} icon={faQuestion} title={"Project blue bubbles showing how many confirmed cases there might be if local testing rate was coinciding with global average."}/>,
+              <br/>,
               <ReactBootstrapSlider ticks={[0, 1, 3]} ticks_labels = {["0x", "global avg. testing rate", "3x"]} value={this.state.testscale} change={e => {this.setState({ testscale: e.target.value, testmode: true });}} step={0.2} max={3} min={0}></ReactBootstrapSlider>
             ]
           }
