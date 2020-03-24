@@ -18,12 +18,18 @@ import {
   faHeartbeat,
   faHeartBroken,
   faBiohazard,
-  faPlayCircle,
   faStopCircle,
   faPauseCircle,
   faQuestion,
-  faQuestionCircle, faBug, faBalanceScale, faBolt
+  faQuestionCircle, 
+  faBug, 
+  faBalanceScale, 
+  faBolt,
+  faStepBackward,
+  faStepForward
 } from '@fortawesome/free-solid-svg-icons';
+
+import {faPlayCircle} from '@fortawesome/free-regular-svg-icons';
 
 import Papa from "papaparse";
 import Form from 'react-bootstrap/Form';
@@ -680,7 +686,7 @@ onRemove(selectedList, removedItem) {
               this.state.testmode = false;
               this.reload();
             }}
-        >Back</button>
+        ><FontAwesomeIcon icon={faStepBackward}/></button>
 
         <button
             className={"btn btn-sm btn-secondary midTime"}
@@ -694,7 +700,7 @@ onRemove(selectedList, removedItem) {
               }
               this.reload();
             }}
-        >Forward</button>
+        ><FontAwesomeIcon icon={faStepForward}/></button>
 
         <button
             className={this.state.dayOffset < 0 ? "btn btn-sm btn-outline-danger todayTime" : "btn btn-sm btn-danger todayTime"}
@@ -750,7 +756,7 @@ onRemove(selectedList, removedItem) {
                 }
               }, 500);
             }}
-        ><FontAwesomeIcon icon={faPlayCircle}/> Play</button>
+        ><FontAwesomeIcon icon={faPlayCircle}/></button>
 
         <button
             className={"btn btn-sm pause " + (this.state.playpause ? "btn-success" : "btn-outline-dark")}
