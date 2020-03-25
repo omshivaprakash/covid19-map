@@ -6,6 +6,8 @@ import { Map, TileLayer, Marker, Tooltip,
 import * as Testing from "./TestingRates";
 import * as Population from "./Population";
 
+import Utils from "./Utils";
+
 import { CSSTransitionGroup } from 'react-transition-group'
 import {Multiselect} from "multiselect-react-dropdown";
 
@@ -40,18 +42,6 @@ const geoUrl =
   "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-10m.json";
 
 const ONE_M = 1000000;
-
-const rounded = num => {
-  if (num > 1000000000) {
-    return Math.round(num / 100000000) / 10 + "Bn";
-  } else if (num > 1000000) {
-    return Math.round(num / 100000) / 10 + "M";
-  } else if (num > 1000) {
-    return Math.round(num / 100) / 10 + "K";
-  } else {
-    return Math.round(num);
-  }
-};
 
 class MapChart extends Map {
   constructor(props) {
@@ -1035,7 +1025,7 @@ onRemove(selectedList, removedItem) {
           size = size * this.state.testscale;
           let ppms = pop && !isNaN(val) ? '(' + Math.round(ONE_M * val / pop) + ' ppm)'  : '';
           let ppms2 = pop && !isNaN(active) ? '(' + Math.round(ONE_M * active / pop) + ' ppm)'  : '';
-          let text = `${name} - could be >${rounded(val)} confirmed ${ppms}, >${rounded(active)} active ${ppms2} if local test rate was like global average test rate`;
+          let text = `${name} - could be >${Utils.rounded(val)} confirmed ${ppms}, >${Utils.rounded(active)} active ${ppms2} if local test rate was like global average test rate`;
           return this.marker(coordinates, rowId, color, text, size, val, name, markerOffset, "projected", 0.5);
         })
     )
@@ -1051,7 +1041,7 @@ onRemove(selectedList, removedItem) {
           size = this.scale(size, pop);
           let ppms = pop && !isNaN(val) ? '(' + Math.round(ONE_M * val / pop) + ' ppm)'  : '';
           let ppms2 = pop && !isNaN(active) ? '(' + Math.round(ONE_M * active / pop) + ' ppm)'  : '';
-          let text = `${name} - ${rounded(val)} confirmed ${ppms}, ${rounded(active)} active ${ppms2}`;
+          let text = `${name} - ${Utils.rounded(val)} confirmed ${ppms}, ${Utils.rounded(active)} active ${ppms2}`;
           return this.marker(coordinates, rowId, color, text, size, val, name, markerOffset, "confirmed", 0.5);
         })
     )
@@ -1094,7 +1084,7 @@ onRemove(selectedList, removedItem) {
           }
           size = this.scale(size, pop);
           let ppms = pop && !isNaN(val) ? '(' + Math.round(ONE_M * val / pop) + ' ppm)' : '';
-          let text = name + " - " + rounded(val) + " recovered " + ppms;
+          let text = name + " - " + Utils.rounded(val) + " recovered " + ppms;
           return this.marker(coordinates, rowId, color, text, size, val, name, markerOffset, "recovered", 0.5);
         })
     )
@@ -1108,7 +1098,7 @@ onRemove(selectedList, removedItem) {
             let pop = Population.ABSOLUTE[name];
             size = this.scale(size, pop);
             let ppms = pop && !isNaN(val) ? '(' + Math.round(ONE_M * val / pop) + ' ppm)'  : '';
-            let text = name + " - " + rounded(val) + " deceased " + ppms;
+            let text = name + " - " + Utils.rounded(val) + " deceased " + ppms;
             return this.marker(coordinates, rowId, color, text, size, val, name, markerOffset, "deceased", 0.8);
         })
     )
@@ -1241,33 +1231,35 @@ onRemove(selectedList, removedItem) {
         <div>
           <div>
               <b>{name}</b><br />
-              <FontAwesomeIcon icon={faUsers}/> {rounded(Population.ABSOLUTE[name])} &middot; <FontAwesomeIcon icon={faBiohazard}/> {rounded(confirmed)} &middot; <FontAwesomeIcon icon={faBolt}/> {rounded(1000000*confirmed/Population.ABSOLUTE[name])} ppm
+              <FontAwesomeIcon icon={faUsers}/> {Utils.rounded(Population.ABSOLUTE[name])} &middot;
               {
-                (!this.state.recoveryMode && this.state.datasource !== "jh") &&
+                (
+                  this.state.recoveryMode || this.state.datasource === "jh") &&
                   [
-                     " · ",
-                     <Badge variant={"dark"}><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths)} deceased</Badge>
+                    " ",
+                    <FontAwesomeIcon icon={faBiohazard}/>,
+                    <span>{Utils.rounded(confirmed)}</span>,
+                    " ·"
                   ]
               }
+              &nbsp;<FontAwesomeIcon icon={faBolt}/> {Utils.rounded(1000000*confirmed/Population.ABSOLUTE[name])} ppm
           </div>
           <div>
             {
               (this.state.recoveryMode || this.state.datasource === "jh") &&
               [
-                <Badge variant={"danger"}><FontAwesomeIcon icon={faProcedures}/> {rounded(active)} active</Badge>,
-                <Badge className="ml-1 mr-1" variant={"success"}><FontAwesomeIcon icon={faHeartbeat}/> {rounded(recovered)} recovered</Badge>
+                <Badge variant={"danger"}><FontAwesomeIcon icon={faProcedures}/> {Utils.rounded(active)} active</Badge>,
+                <Badge className="ml-1 mr-1" variant={"success"}><FontAwesomeIcon icon={faHeartbeat}/> {Utils.rounded(recovered)} recovered</Badge>
               ]
             }
             {
-              (this.state.recoveryMode || this.state.datasource === "jh") &&
-              [
-                <Badge variant={"dark"}><FontAwesomeIcon icon={faHeartBroken}/> {rounded(deaths)} deceased</Badge>,
-                <br />
-              ]
+              (!this.state.recoveryMode && this.state.datasource !== "jh") &&
+              <Badge className="mr-1" variant={"danger"}><FontAwesomeIcon icon={faBiohazard}/> {Utils.rounded(confirmed)} confirmed</Badge>
             }
+            <Badge variant={"dark"}><FontAwesomeIcon icon={faHeartBroken}/> {Utils.rounded(deaths)} deceased</Badge><br />
             {
               projected > confirmed && this.state.testmode && this.state.testscale > 0 &&
-              <Badge variant={"primary"}><FontAwesomeIcon icon={faBiohazard}/> &gt;{rounded(projected)} projected at global avg. testing rate</Badge>
+              <Badge variant={"primary"}><FontAwesomeIcon icon={faBiohazard}/> &gt;{Utils.rounded(projected)} projected at global avg. testing rate</Badge>
             }
           </div>
           <div className="stayAtHomeScoreLabel">

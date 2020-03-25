@@ -9,15 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDotCircle} from '@fortawesome/free-regular-svg-icons';
 import { faBiohazard, faHeartBroken, faHeartbeat} from '@fortawesome/free-solid-svg-icons';
 
-const rounded = (num) => {
-    if (num > 1000000000) {
-        return Math.round(num / 100000000) / 10 + "Bn";
-    } else if (num > 1000000) {
-        return Math.round(num / 100000) / 10 + "M";
-    } else {
-        return Math.round(num / 100) / 10 + "K";
-    }
-};
+import Utils from "./Utils";
 
 function App() {
   const [totConf, setTotConf] = useState(0);
@@ -33,18 +25,18 @@ function App() {
           <span>
             <span className={"small text-danger mr-2"}>
                 <FontAwesomeIcon icon={faBiohazard} className={"mr-1"} />
-                {rounded(totConf)}
+                {Utils.rounded(totConf)}
             </span>
             {
               totRec > 0 &&
               <span className={"small text-success mr-2"}>
                   <FontAwesomeIcon icon={faHeartbeat} className={"mr-1"} />
-                  {rounded(totRec)}
+                  {Utils.rounded(totRec)}
               </span>
             }
             <span className={"small mr-2"}>
                 <FontAwesomeIcon icon={faHeartBroken} className={"mr-1"} />
-                {rounded(totDead)}
+                {Utils.rounded(totDead)}
             </span>
           </span>
       </Navbar>,
