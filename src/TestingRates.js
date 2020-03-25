@@ -1,6 +1,6 @@
 export const RATES = {
 
-  // world in data
+  // https://en.wikipedia.org/wiki/COVID-19_testing
   "Armenia": 1580,
   "Australia": 169084,
   "Austria": 32407,
@@ -85,6 +85,7 @@ export const RATES = {
   "Vietnam": 24311,
 
 
+  // world in data
   "New South Wales, Australia": 39089,
   "Queensland, Australia": 27000,
   "Western Australia, Australia": 8603,
