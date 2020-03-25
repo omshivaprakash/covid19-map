@@ -242,8 +242,7 @@ class MapChart extends Map {
           let sizeMin1 = "";
           let sizeMin3 = "";
           let sizeMin7 = "";
-          console.log(data.length);
-          let idx = data.length - 1 + that.state.dayOffset;
+          let idx = data.length - 1 + that.state.dayOffset - (that.state.datasource === "jh" ? 1 : 0);
           size = data[idx];
           sizeMin1 = data[idx - 1];
           sizeMin3 = data[idx - 3];
@@ -436,7 +435,7 @@ class MapChart extends Map {
             let sizeMin1 = "";
             let sizeMin3 = "";
             let sizeMin7 = "";
-            let idx = data.length - 1 + that.state.dayOffset;
+            let idx = data.length - 1 + that.state.dayOffset - (that.state.datasource === "jh" ? 1 : 0);
             size = data[idx];
             sizeMin1 = data[idx - 1];
             sizeMin3 = data[idx - 3];
@@ -510,7 +509,7 @@ class MapChart extends Map {
           let sizeMin1 = "";
           let sizeMin3 = "";
           let sizeMin7 = "";
-          let idx = data.length - 1 + that.state.dayOffset;
+          let idx = data.length - 1 + that.state.dayOffset - (that.state.datasource === "jh" ? 1 : 0);
           size = data[idx];
           sizeMin1 = data[idx - 1];
           sizeMin3 = data[idx - 3];
