@@ -747,11 +747,7 @@ onRemove(selectedList, removedItem) {
                     document.getElementsByClassName("midTime")[0].style.display = "none";
                     this.state.playmode = false;
                     this.state.testscale = 0;
-                    this.setState({
-                      lat: 0,
-                      lng: 0,
-                      zoom: 1.99
-                    });
+                    this.setState({});
                   }
                 }
               }, 500);

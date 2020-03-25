@@ -7,7 +7,7 @@ import Navbar from 'react-bootstrap/Navbar';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDotCircle} from '@fortawesome/free-regular-svg-icons';
-import { faGlobe} from '@fortawesome/free-solid-svg-icons';
+import { faBiohazard, faHeartBroken, faHeartbeat} from '@fortawesome/free-solid-svg-icons';
 
 const rounded = (num) => {
     if (num > 1000000000) {
@@ -31,13 +31,21 @@ function App() {
             <span className="small">C<FontAwesomeIcon icon={faDotCircle} />VID19 </span>
         </Navbar.Brand>
           <span>
-            <span className={"small text-muted mr-3"}><FontAwesomeIcon icon={faGlobe} /></span>
-            <span className={"small text-danger mr-3"}>{rounded(totConf)}</span>
+            <span className={"small text-danger mr-2"}>
+                <FontAwesomeIcon icon={faBiohazard} className={"mr-1"} />
+                {rounded(totConf)}
+            </span>
             {
               totRec > 0 &&
-              <span className={"small text-success mr-3"}>{rounded(totRec)}</span>
+              <span className={"small text-success mr-2"}>
+                  <FontAwesomeIcon icon={faHeartbeat} className={"mr-1"} />
+                  {rounded(totRec)}
+              </span>
             }
-            <span className={"small mr-3"}>{rounded(totDead)}</span>
+            <span className={"small mr-2"}>
+                <FontAwesomeIcon icon={faHeartBroken} className={"mr-1"} />
+                {rounded(totDead)}
+            </span>
           </span>
       </Navbar>,
       <Container fluid className={"w-100 h-100 p-0"}>
