@@ -577,7 +577,7 @@ onRemove(selectedList, removedItem) {
 
   render() {
     let that = this;
-    let shownDate = new Date();
+    let shownDate = this.state.datasource !== "jh" ? new Date() : new Date("March 23, 2020 00:00:00");
     shownDate.setDate(shownDate.getDate() + this.state.dayOffset);
 
     let dataOptions = [{name: 'Srigar', id: 1},{name: 'Sam', id: 2}];
@@ -709,7 +709,11 @@ onRemove(selectedList, removedItem) {
               this.state.dayOffset = 0;
               this.reload();
             }}
-        >Today</button>
+        >
+          {
+            this.state.datasource !== "jh" ? "Today" : "Latest"
+          }
+        </button>
 
         <button
             className={"btn btn-sm btn-success play"}
